@@ -1,0 +1,210 @@
+[
+  {
+    "id": "eval_01",
+    "category": "classification",
+    "difficulty": "easy",
+    "prompt": "Classify the following customer query into exactly one category [Billing, Technical Support, Account Access, Sales]: 'I was charged twice on my credit card for invoice #98124 this morning.'",
+    "reference_answer": "Billing",
+    "rubric": {
+      "format_constraint": "single_label",
+      "expected_keywords": ["Billing"],
+      "scoring_criteria": "Must identify the query as Billing without ambiguous qualifiers.",
+      "min_keyword_match_ratio": 1.0
+    }
+  },
+  {
+    "id": "eval_02",
+    "category": "classification",
+    "difficulty": "medium",
+    "prompt": "Classify the severity of this IT incident as P1 (Critical), P2 (Major), P3 (Moderate), or P4 (Minor): 'The primary payment gateway API is throwing 500 errors for all EU customers, blocking 100% of checkout transactions.'",
+    "reference_answer": "P1",
+    "rubric": {
+      "format_constraint": "single_label",
+      "expected_keywords": ["P1", "Critical"],
+      "scoring_criteria": "Must classify as P1 or P1 (Critical) due to 100% loss of revenue-generating checkouts.",
+      "min_keyword_match_ratio": 0.5
+    }
+  },
+  {
+    "id": "eval_03",
+    "category": "classification",
+    "difficulty": "medium",
+    "prompt": "Classify the sentiment of the following product review into [Positive, Neutral, Negative] and state the primary pain point: 'The battery lasts three full days which is fantastic, but the Bluetooth connection constantly drops during calls.'",
+    "reference_answer": "Negative / Mixed (Primary Pain Point: Bluetooth connectivity drops during calls)",
+    "rubric": {
+      "format_constraint": "structured_text",
+      "expected_keywords": ["Bluetooth", "drops", "calls", "Negative"],
+      "scoring_criteria": "Identifies negative/mixed sentiment and highlights unstable Bluetooth connection.",
+      "min_keyword_match_ratio": 0.5
+    }
+  },
+  {
+    "id": "eval_04",
+    "category": "classification",
+    "difficulty": "hard",
+    "prompt": "Identify the CWE category [CWE-89: SQL Injection, CWE-79: XSS, CWE-22: Path Traversal, CWE-502: Deserialization] for this snippet: `query = f\"SELECT * FROM users WHERE username = '{request.args.get('user')}'\"`",
+    "reference_answer": "CWE-89: SQL Injection",
+    "rubric": {
+      "format_constraint": "single_label",
+      "expected_keywords": ["CWE-89", "SQL Injection"],
+      "scoring_criteria": "Must accurately identify SQL Injection vulnerability and CWE-89.",
+      "min_keyword_match_ratio": 0.5
+    }
+  },
+  {
+    "id": "eval_05",
+    "category": "qa",
+    "difficulty": "easy",
+    "prompt": "Under the Greenhouse Gas (GHG) Protocol, what is the key distinction between Scope 1 and Scope 2 carbon emissions?",
+    "reference_answer": "Scope 1 emissions are direct greenhouse gas emissions from sources owned or controlled by the reporting organization (e.g., fuel combustion in boilers, company vehicles). Scope 2 emissions are indirect emissions associated with the generation of purchased electricity, steam, heating, or cooling consumed by the organization.",
+    "rubric": {
+      "format_constraint": "concise_explanation",
+      "expected_keywords": ["direct", "owned", "purchased electricity", "indirect"],
+      "scoring_criteria": "Accurately defines Scope 1 as direct owned/controlled emissions and Scope 2 as indirect purchased electricity/energy emissions.",
+      "min_keyword_match_ratio": 0.75
+    }
+  },
+  {
+    "id": "eval_06",
+    "category": "qa",
+    "difficulty": "medium",
+    "prompt": "Explain how the PACELC theorem extends the CAP theorem for distributed databases when there is no network partition.",
+    "reference_answer": "While the CAP theorem posits that in the presence of a Partition (P), a system must trade off Availability (A) versus Consistency (C), PACELC extends this by stating that Else (E) when the network is operating normally (no partition), the system must still trade off Latency (L) versus Consistency (C).",
+    "rubric": {
+      "format_constraint": "concise_explanation",
+      "expected_keywords": ["Else", "Latency", "Consistency", "partition", "CAP"],
+      "scoring_criteria": "Must explicitly identify the 'Else -> Latency vs Consistency' trade-off during normal non-partitioned operation.",
+      "min_keyword_match_ratio": 0.6
+    }
+  },
+  {
+    "id": "eval_07",
+    "category": "qa",
+    "difficulty": "medium",
+    "prompt": "What does PUE stand for in data center energy efficiency, how is it calculated, and what is the theoretical ideal score?",
+    "reference_answer": "PUE stands for Power Usage Effectiveness. It is calculated as (Total Facility Energy / IT Equipment Energy). The theoretical ideal score is 1.0, representing that 100% of facility power is utilized directly by IT hardware with zero overhead for cooling or power distribution losses.",
+    "rubric": {
+      "format_constraint": "concise_explanation",
+      "expected_keywords": ["Power Usage Effectiveness", "Total Facility Energy", "IT Equipment", "1.0"],
+      "scoring_criteria": "Must provide full expansion, exact formula ratio, and identify 1.0 as ideal.",
+      "min_keyword_match_ratio": 0.75
+    }
+  },
+  {
+    "id": "eval_08",
+    "category": "qa",
+    "difficulty": "hard",
+    "prompt": "Why can the 0/1 Knapsack Problem be solved in pseudo-polynomial time using Dynamic Programming, but not in strict polynomial time with respect to the input size?",
+    "reference_answer": "The dynamic programming algorithm runs in O(n * W) time, where n is the number of items and W is the knapsack capacity. The input size of W is proportional to the number of bits needed to represent it, log2(W). Because O(n * 2^(log W)) is exponential in the bit-length of the numeric input W, the runtime is pseudo-polynomial rather than polynomial in input representation size.",
+    "rubric": {
+      "format_constraint": "technical_proof",
+      "expected_keywords": ["O(n * W)", "capacity", "pseudo-polynomial", "bits", "log", "exponential"],
+      "scoring_criteria": "Clearly distinguishes numeric value W from its bit-length representation size log(W).",
+      "min_keyword_match_ratio": 0.5
+    }
+  },
+  {
+    "id": "eval_09",
+    "category": "generation",
+    "difficulty": "easy",
+    "prompt": "Generate a JSON object matching this schema for a book: `{\"title\": str, \"author\": str, \"published_year\": int, \"genres\": list[str]}`. Use the classic novel '1984'. Output only raw JSON.",
+    "reference_answer": "{\n  \"title\": \"1984\",\n  \"author\": \"George Orwell\",\n  \"published_year\": 1949,\n  \"genres\": [\"Dystopian\", \"Political Fiction\", \"Science Fiction\"]\n}",
+    "rubric": {
+      "format_constraint": "valid_json",
+      "expected_keywords": ["1984", "George Orwell", "1949", "genres"],
+      "scoring_criteria": "Must produce valid parseable JSON matching the exact schema keys.",
+      "min_keyword_match_ratio": 0.75
+    }
+  },
+  {
+    "id": "eval_10",
+    "category": "generation",
+    "difficulty": "medium",
+    "prompt": "Write a Python function `def is_palindrome(s: str) -> bool:` that ignores non-alphanumeric characters and case sensitivity. Include type hints.",
+    "reference_answer": "def is_palindrome(s: str) -> bool:\n    cleaned = [c.lower() for c in s if c.isalnum()]\n    return cleaned == cleaned[::-1]",
+    "rubric": {
+      "format_constraint": "python_code",
+      "expected_keywords": ["def is_palindrome", "isalnum", "lower", "bool"],
+      "scoring_criteria": "Produces valid Python code that filters out punctuation/spaces, ignores case, and tests equality with reverse.",
+      "min_keyword_match_ratio": 0.75
+    }
+  },
+  {
+    "id": "eval_11",
+    "category": "generation",
+    "difficulty": "medium",
+    "prompt": "Write a standard SQL query to compute a 7-day rolling average of daily active users (DAU) from a table `user_logins(login_date DATE, user_id VARCHAR)`. Return `login_date` and `rolling_avg_dau`.",
+    "reference_answer": "WITH daily_counts AS (\n  SELECT login_date, COUNT(DISTINCT user_id) AS dau\n  FROM user_logins\n  GROUP BY login_date\n)\nSELECT login_date,\n  AVG(dau) OVER (\n    ORDER BY login_date\n    ROWS BETWEEN 6 PRECEDING AND CURRENT ROW\n  ) AS rolling_avg_dau\nFROM daily_counts\nORDER BY login_date;",
+    "rubric": {
+      "format_constraint": "sql_query",
+      "expected_keywords": ["AVG", "OVER", "ORDER BY", "login_date", "PRECEDING", "COUNT(DISTINCT"],
+      "scoring_criteria": "Uses window function with rolling frame specification (6 preceding and current row) over distinct user counts.",
+      "min_keyword_match_ratio": 0.5
+    }
+  },
+  {
+    "id": "eval_12",
+    "category": "generation",
+    "difficulty": "hard",
+    "prompt": "Implement a Python thread-safe Token Bucket rate limiter class `TokenBucketLimiter` with methods `__init__(self, capacity: int, fill_rate: float)` and `acquire(self, tokens: int = 1) -> bool`. Use `threading.Lock`.",
+    "reference_answer": "import time\nimport threading\n\nclass TokenBucketLimiter:\n    def __init__(self, capacity: int, fill_rate: float):\n        self.capacity = float(capacity)\n        self.fill_rate = float(fill_rate)\n        self.tokens = float(capacity)\n        self.last_update = time.monotonic()\n        self.lock = threading.Lock()\n\n    def acquire(self, tokens: int = 1) -> bool:\n        with self.lock:\n            now = time.monotonic()\n            elapsed = now - self.last_update\n            self.tokens = min(self.capacity, self.tokens + elapsed * self.fill_rate)\n            self.last_update = now\n            if self.tokens >= tokens:\n                self.tokens -= tokens\n                return True\n            return False",
+    "rubric": {
+      "format_constraint": "python_class",
+      "expected_keywords": ["class TokenBucketLimiter", "threading.Lock", "acquire", "capacity", "fill_rate", "time.monotonic"],
+      "scoring_criteria": "Must correctly manage token replenishment based on elapsed time, cap at capacity, and guard state with lock.",
+      "min_keyword_match_ratio": 0.6
+    }
+  },
+  {
+    "id": "eval_13",
+    "category": "summarization",
+    "difficulty": "easy",
+    "prompt": "Summarize the following release note into 2 bullet points:\n'Version 2.4.0 introduces two major updates. First, we revamped the caching engine using Redis, reducing query response times by 45%. Second, we resolved issue #312 where user sessions were intermittently invalidated during peak loads. Upgrades from v2.3 require running the database migration script db_migrate_v24.py.'",
+    "reference_answer": "- Query response times reduced by 45% via a new Redis caching engine.\n- Fixed intermittent session invalidation during peak loads; upgrade requires running `db_migrate_v24.py`.",
+    "rubric": {
+      "format_constraint": "bullet_points",
+      "expected_keywords": ["Redis", "45%", "session", "db_migrate_v24.py"],
+      "scoring_criteria": "Captures performance gain (45% Redis), bugfix, and mandatory migration step in concise bullets.",
+      "min_keyword_match_ratio": 0.75
+    }
+  },
+  {
+    "id": "eval_14",
+    "category": "summarization",
+    "difficulty": "medium",
+    "prompt": "Summarize this incident root cause into an Executive Summary (max 3 sentences):\n'On Oct 12 at 14:02 UTC, a misconfigured BGP route announcement by transit provider AS1234 advertised invalid prefixes, routing traffic for our us-east edge PoP into a black hole. Edge load balancers began failing automated health checks at 14:05 UTC. SREs rerouted ingress traffic to the eu-west PoP at 14:18 UTC, and transit provider upstream reverted the BGP route leak at 14:32 UTC. Full recovery was achieved at 14:35 UTC with 0% data loss but 33 minutes of customer connection degradation.'",
+    "reference_answer": "An upstream BGP route leak by transit provider AS1234 caused a 33-minute network degradation for us-east traffic between 14:02 and 14:35 UTC. SRE teams mitigated customer impact by rerouting traffic to the eu-west edge until the provider corrected the bad route advertisement. No customer data was lost or compromised during the incident.",
+    "rubric": {
+      "format_constraint": "concise_summary",
+      "expected_keywords": ["BGP", "AS1234", "33 minutes", "rerouted", "no data loss"],
+      "scoring_criteria": "Accurately identifies root cause (upstream BGP leak), duration/mitigation, and zero data loss in under 3 sentences.",
+      "min_keyword_match_ratio": 0.6
+    }
+  },
+  {
+    "id": "eval_15",
+    "category": "summarization",
+    "difficulty": "medium",
+    "prompt": "Extract the key contractual commitments from this SLA clause into 3 concise bullet points:\n'Provider guarantees 99.95% monthly uptime excluding scheduled maintenance windows announced at least 72 hours in advance. For outages exceeding 0.05% in a calendar month, Customer shall receive a 15% service credit, increasing to 30% for outages exceeding 1.0%. All credit claims must be formally submitted within 30 days of the affected billing period.'",
+    "reference_answer": "- 99.95% monthly uptime guarantee, excluding maintenance announced 72+ hours prior.\n- Service credits: 15% credit for downtime >0.05%, escalating to 30% for downtime >1.0%.\n- Claims must be submitted within 30 days of the affected billing period.",
+    "rubric": {
+      "format_constraint": "bullet_points",
+      "expected_keywords": ["99.95%", "72 hours", "15%", "30%", "30 days"],
+      "scoring_criteria": "Clearly outlines uptime threshold, tiered credits (15%/30%), and the 30-day claim submission window.",
+      "min_keyword_match_ratio": 0.8
+    }
+  },
+  {
+    "id": "eval_16",
+    "category": "summarization",
+    "difficulty": "hard",
+    "prompt": "Summarize the primary biochemical findings, sample size, and clinical safety conclusions from this trial abstract into a structured markdown table with columns [Category, Finding]:\n'In a randomized double-blind Phase 3 trial involving 1,420 adult patients with treatment-resistant hypertension, oral Compound X (25mg daily) demonstrated a mean systolic blood pressure reduction of 14.2 mmHg (p < 0.001) compared to 2.1 mmHg in the placebo cohort over 24 weeks. Plasma aldosterone levels decreased by 38% without significant changes in serum potassium or creatinine. Incidence of adverse events was comparable to placebo (4.1% vs 3.8%), with headache and transient dizziness reported most frequently.'",
+    "reference_answer": "| Category | Finding |\n|---|---|\n| Sample Size | 1,420 adult patients with treatment-resistant hypertension |\n| Efficacy | Systolic BP reduced by 14.2 mmHg vs 2.1 mmHg placebo (p < 0.001); 38% decrease in aldosterone |\n| Safety | Adverse event rate comparable to placebo (4.1% vs 3.8%); no significant serum potassium or creatinine changes |",
+    "rubric": {
+      "format_constraint": "markdown_table",
+      "expected_keywords": ["1,420", "14.2 mmHg", "38%", "aldosterone", "4.1%", "safety"],
+      "scoring_criteria": "Formats correctly as a Markdown table capturing sample size (1420), BP reduction (14.2 mmHg), aldosterone decline (38%), and safety comparability.",
+      "min_keyword_match_ratio": 0.6
+    }
+  }
+]

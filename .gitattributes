@@ -1,0 +1,4 @@
+# Keep line endings stable across Windows/macOS/Linux so regenerated files don't show as fully modified
+*.py   text eol=lf
+*.json text eol=lf
+*.md   text eol=lf

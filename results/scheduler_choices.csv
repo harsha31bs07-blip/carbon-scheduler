@@ -1,0 +1,13 @@
+step,policy,model,location,offset,est_latency_ms,est_accuracy,est_cost_usd,est_energy_kwh,est_carbon_g
+step_1,speed,medium,region_a,0,120.0,0.85,0.005,0.002,320.0
+step_1,balanced,medium,region_b,0,132.0,0.8415,0.0045,0.0019,160.0
+step_1,eco,medium,region_b,3,151.8,0.8289,0.00423,0.001843,88.0
+step_2,speed,medium,region_a,0,240.0,0.85,0.025,0.008,960.0
+step_2,balanced,medium,region_b,0,264.0,0.8415,0.0225,0.0076,480.0
+step_2,eco,medium,region_b,3,303.6,0.8289,0.02115,0.007372,264.0
+step_3,speed,small,region_a,0,50.0,0.72,0.001,0.0005,80.0
+step_3,balanced,small,region_b,0,55.0,0.7128,0.0009,0.000475,40.0
+step_3,eco,small,region_b,3,63.25,0.7021,0.000846,0.000461,22.0
+step_4,speed,medium,region_a,0,60.0,0.85,0.0015,0.0008,160.0
+step_4,balanced,medium,region_a,0,60.0,0.85,0.0015,0.0008,160.0
+step_4,eco,medium,region_a,0,60.0,0.85,0.0015,0.0008,160.0

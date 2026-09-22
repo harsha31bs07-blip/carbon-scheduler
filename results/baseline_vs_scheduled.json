@@ -1,0 +1,71 @@
+{
+  "speed": {
+    "baseline": {
+      "latency_ms": 1125.0,
+      "accuracy": 0.93,
+      "cost_usd": 0.146,
+      "energy_kwh": 0.064,
+      "carbon_g": 4400.0
+    },
+    "scheduled": {
+      "latency_ms": 470.0,
+      "accuracy": 0.8175,
+      "cost_usd": 0.0325,
+      "energy_kwh": 0.0113,
+      "carbon_g": 1520.0
+    },
+    "percent_diff": {
+      "latency_ms": -58.22,
+      "accuracy": -12.1,
+      "cost_usd": -77.74,
+      "energy_kwh": -82.34,
+      "carbon_g": -65.45
+    }
+  },
+  "balanced": {
+    "baseline": {
+      "latency_ms": 1125.0,
+      "accuracy": 0.93,
+      "cost_usd": 0.146,
+      "energy_kwh": 0.064,
+      "carbon_g": 4400.0
+    },
+    "scheduled": {
+      "latency_ms": 511.0,
+      "accuracy": 0.8115,
+      "cost_usd": 0.0294,
+      "energy_kwh": 0.0108,
+      "carbon_g": 840.0
+    },
+    "percent_diff": {
+      "latency_ms": -54.58,
+      "accuracy": -12.75,
+      "cost_usd": -79.86,
+      "energy_kwh": -83.16,
+      "carbon_g": -80.91
+    }
+  },
+  "eco": {
+    "baseline": {
+      "latency_ms": 1125.0,
+      "accuracy": 0.93,
+      "cost_usd": 0.146,
+      "energy_kwh": 0.064,
+      "carbon_g": 4400.0
+    },
+    "scheduled": {
+      "latency_ms": 578.65,
+      "accuracy": 0.8025,
+      "cost_usd": 0.0277,
+      "energy_kwh": 0.0105,
+      "carbon_g": 534.0
+    },
+    "percent_diff": {
+      "latency_ms": -48.56,
+      "accuracy": -13.71,
+      "cost_usd": -81.01,
+      "energy_kwh": -83.63,
+      "carbon_g": -87.86
+    }
+  }
+}
