@@ -720,7 +720,7 @@ with st.sidebar:
     st.caption("🖥️ Local Models: qwen3.5:4b (4B params) · llama3.2:3b (3B params)")
     if GEMINI_AVAILABLE or NVIDIA_AVAILABLE:
         st.caption("☁️ Cloud Models: " + (
-            "gemini-3-flash, gemini-3-pro" if GEMINI_AVAILABLE else ""
+            "gemini-3-flash" if GEMINI_AVAILABLE else ""
         ) + (", " if GEMINI_AVAILABLE and NVIDIA_AVAILABLE else "") + (
             "nemotron-ultra-3" if NVIDIA_AVAILABLE else ""
         ))

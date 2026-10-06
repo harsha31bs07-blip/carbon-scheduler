@@ -143,8 +143,7 @@ _STEP_PROMPTS: dict[str, str] = {
 
 
 # ── Model name mapping (Person A's IDs → Real model names) ──────────────────
-# Person A's data layer uses abstract model IDs (haiku, sonnet, opus).
-# Person C's model_clients use real model names.
+# Data-layer model names that differ from model_clients' registry keys.
 MODEL_NAME_MAP = {
     # ── LOCAL MODELS ─────────────────────────────────────────────────────────
     "local-qwen3.5": "qwen3.5:4b",
@@ -152,10 +151,7 @@ MODEL_NAME_MAP = {
     "qwen3.5:4b": "qwen3.5:4b",
     "llama3.2:3b": "llama3.2:3b",
     
-    # ── CLOUD MODELS (hybrid mode) ───────────────────────────────────────────
-    "haiku": "gemini-3-flash",
-    "sonnet": "nemotron-ultra-3",
-    "opus": "gemini-3-flash",  # Was gemini-3-pro, now using flash (free tier)
+    # Cloud models use their registry names directly (gemini-3-flash, nemotron-ultra-3).
 }
 
 # ── Model dispatcher ──────────────────────────────────────────────────────────

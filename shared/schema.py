@@ -33,7 +33,7 @@ class Candidate:
 
 # HYBRID MODE: Adjusted thresholds accommodate both local and cloud models
 # Local models: qwen3.5:4b accuracy 0.65, llama3.2:3b accuracy 0.63
-# Cloud models: haiku 0.76, sonnet 0.88, opus 0.94 (when API keys present)
+# Cloud models: gemini-3-flash 0.76, nemotron-ultra-3 0.88 (assumed; when API keys present)
 # Latency constraints relaxed to match actual local model performance
 STEP_DEFINITIONS: list[dict] = [
     {"step_id": "classify",  "task_type": "classification", "sla_ms": 4000, "min_accuracy": 0.60, "max_latency_ms": 4000},

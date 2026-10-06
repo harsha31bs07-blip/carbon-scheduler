@@ -5,15 +5,15 @@ token counts) into a fully populated `shared.schema.Candidate`.
 
     from data.candidate_builder import estimate_candidate, enumerate_candidates
 
-    c = estimate_candidate("step_1", "haiku", "eu-west", time_offset_hr=4,
+    c = estimate_candidate("step_1", "gemini-3-flash", "eu-west", time_offset_hr=4,
                            input_tokens=1200, output_tokens=300, category="summarization")
     all_c = enumerate_candidates("step_1", input_tokens=1200, output_tokens=300)
 
 Conventions
 -----------
-* Token counts are given in "baseline" tokens (Haiku-4.5 tokenizer). Sonnet 5 / Opus 5 use a
-  newer tokenizer that yields ~30% more tokens for the same text; that factor is applied
-  automatically (disable with apply_tokenizer_factor=False).
+* Token counts are given in "baseline" tokens. A model whose tokenizer yields more tokens
+  for the same text sets ModelSpec.tokenizer_factor; it is applied automatically
+  (disable with apply_tokenizer_factor=False). All current models use 1.0.
 * est_cost_usd    : exact input/output pricing for the given token counts.
 * est_energy_kwh  : assumed prefill + decode energy (see model_table.py).
 * est_carbon_g    : est_energy_kwh * grid intensity at (location, time_offset_hr).
@@ -43,11 +43,11 @@ from shared.schema import Candidate
 
 # ── Candidate pool ────────────────────────────────────────────────────────────
 # Local models always run on-device; cloud models join when their provider's keys
-# are configured (hybrid mode). Which provider serves each cloud tier is set by
-# MODEL_NAME_MAP in workflow/executor.py.
+# are configured (hybrid mode). Names match workflow.model_clients.MODEL_REGISTRY.
+# gemini-3-pro has a client but no free tier, so it is not in the pool.
 LOCAL_MODELS: Sequence[str] = ("local-qwen3.5", "local-llama3.2")
-GEMINI_MODELS: Sequence[str] = ("haiku", "opus")
-NVIDIA_MODELS: Sequence[str] = ("sonnet",)
+GEMINI_MODELS: Sequence[str] = ("gemini-3-flash",)
+NVIDIA_MODELS: Sequence[str] = ("nemotron-ultra-3",)
 
 LOCAL_LOCATIONS: Sequence[str] = ("local-gpu",)
 CLOUD_LOCATIONS: Sequence[str] = ("us-west", "eu-west", "in-south")

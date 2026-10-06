@@ -1,12 +1,12 @@
 """data/eval/run_eval.py
 
-Evaluation harness that executes the benchmark prompt suite (eval_set.json)
-against target models (Haiku, Sonnet, Opus). Supports live API execution when
-an API key is configured, with seamless deterministic fallback simulation
-when offline or in test environments.
+Evaluation harness that runs the benchmark prompt suite (eval_set.json) against the
+models the scheduler can pick, through the same clients the pipeline uses
+(workflow.model_clients: Ollama for local models, Gemini / NVIDIA NIM for cloud).
 
-Outputs empirical accuracy metrics to data/eval/eval_results.json and updates
-the accuracy calibration consumed by data/model_table.py.
+Live by default; --mock gives deterministic simulated scores instead (never treated
+as measured). Writes data/eval/eval_results.json, which data/model_table.py uses for
+accuracy once a run is fully live ("is_measured": true).
 """
 
 from __future__ import annotations
@@ -14,11 +14,8 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import os
 import sys
 import time
-import urllib.request
-import urllib.error
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -27,32 +24,21 @@ EVAL_DIR = Path(__file__).parent
 EVAL_SET_PATH = EVAL_DIR / "eval_set.json"
 RESULTS_OUTPUT_PATH = EVAL_DIR / "eval_results.json"
 
-MODEL_API_IDENTIFIERS: Dict[str, str] = {
-    "haiku": "claude-haiku-4-5-20251001",
-    "sonnet": "claude-sonnet-5",
-    "opus": "claude-opus-5",
-}
-
-# Empirical simulation probabilities by [model][category][difficulty]
-# Calibrated against published HELM / MMLU / HumanEval capability curves
+# Simulation-only probabilities by [model][category][difficulty] (ASSUMPTIONS, used by
+# --mock and --allow-fallback). Models without a profile use DEFAULT_SIMULATION_MODEL's.
+DEFAULT_SIMULATION_MODEL = "gemini-3-flash"
 SIMULATION_PROBABILITIES: Dict[str, Dict[str, Dict[str, float]]] = {
-    "haiku": {
+    "gemini-3-flash": {
         "classification": {"easy": 0.95, "medium": 0.85, "hard": 0.65},
         "qa": {"easy": 0.90, "medium": 0.78, "hard": 0.58},
         "generation": {"easy": 0.88, "medium": 0.72, "hard": 0.52},
         "summarization": {"easy": 0.92, "medium": 0.80, "hard": 0.60},
     },
-    "sonnet": {
+    "nemotron-ultra-3": {
         "classification": {"easy": 0.98, "medium": 0.94, "hard": 0.82},
         "qa": {"easy": 0.96, "medium": 0.90, "hard": 0.78},
         "generation": {"easy": 0.95, "medium": 0.88, "hard": 0.76},
         "summarization": {"easy": 0.96, "medium": 0.91, "hard": 0.80},
-    },
-    "opus": {
-        "classification": {"easy": 0.99, "medium": 0.96, "hard": 0.90},
-        "qa": {"easy": 0.98, "medium": 0.94, "hard": 0.88},
-        "generation": {"easy": 0.97, "medium": 0.92, "hard": 0.86},
-        "summarization": {"easy": 0.98, "medium": 0.95, "hard": 0.90},
     },
 }
 
@@ -69,33 +55,11 @@ def load_eval_set(path: Optional[Path] = None) -> List[Dict[str, Any]]:
     return data
 
 
-def call_anthropic_api(
-    model_id: str, prompt: str, api_key: str, timeout: float = 20.0
-) -> str:
-    """Execute live model inference against the Anthropic Messages API using standard library."""
-    url = "https://api.anthropic.com/v1/messages"
-    headers = {
-        "Content-Type": "application/json",
-        "x-api-key": api_key,
-        "anthropic-version": "2023-06-01",
-    }
-    payload = {
-        "model": model_id,
-        "max_tokens": 1024,
-        "messages": [{"role": "user", "content": prompt}],
-    }
+def call_live_model(model: str, prompt: str) -> str:
+    """Run one prompt on the model through the pipeline's own client; returns the text."""
+    from workflow.model_clients import call_model  # imported lazily: only needed for live runs
 
-    req = urllib.request.Request(
-        url, data=json.dumps(payload).encode("utf-8"), headers=headers, method="POST"
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            body = json.loads(resp.read().decode("utf-8"))
-            content_blocks = body.get("content", [])
-            text_parts = [b.get("text", "") for b in content_blocks if b.get("type") == "text"]
-            return "".join(text_parts).strip()
-    except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, json.JSONDecodeError) as e:
-        raise RuntimeError(f"API request failed for model {model_id}: {e}") from e
+    return call_model(model, prompt)["text"]
 
 
 def simulate_model_response(
@@ -112,7 +76,7 @@ def simulate_model_response(
     ref_ans = eval_item.get("reference_answer", "")
 
     # Base target capability probability
-    cat_profile = SIMULATION_PROBABILITIES.get(model, SIMULATION_PROBABILITIES["haiku"])
+    cat_profile = SIMULATION_PROBABILITIES.get(model, SIMULATION_PROBABILITIES[DEFAULT_SIMULATION_MODEL])
     prob = cat_profile.get(category, {}).get(difficulty, 0.75)
 
     # Deterministic hash variation [-0.04, +0.04] based on prompt ID and model
@@ -195,12 +159,16 @@ def run_evaluation(
     verbose: bool = True,
     allow_fallback: bool = False,
 ) -> Dict[str, Any]:
-    """Execute the full evaluation suite across target models."""
-    target_models = models or ["haiku", "sonnet", "opus"]
+    """Execute the full evaluation suite across target models.
+
+    models defaults to every model available in the current mode (local + configured cloud).
+    """
+    from data.candidate_builder import available_models
+
+    target_models = models or list(available_models())
     items = load_eval_set(eval_set_path)
 
-    api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
-    is_live = bool(api_key and not force_mock)
+    is_live = not force_mock
     mode_label = "live_api" if is_live else "mock_simulation"
     fallback_count = 0
 
@@ -225,8 +193,6 @@ def run_evaluation(
         category_scores: Dict[str, List[float]] = {}
         detail_records: List[Dict[str, Any]] = []
 
-        api_id = MODEL_API_IDENTIFIERS.get(model, model)
-
         for item in items:
             cat = item.get("category", "general")
             category_scores.setdefault(cat, [])
@@ -235,15 +201,15 @@ def run_evaluation(
             if is_live:
                 try:
                     t0 = time.perf_counter()
-                    resp_text = call_anthropic_api(api_id, item["prompt"], api_key)
+                    resp_text = call_live_model(model, item["prompt"])
                     latency_ms = round((time.perf_counter() - t0) * 1000.0, 1)
                     score = score_response(resp_text, item)
                     source = "live"
                 except Exception as exc:
                     if not allow_fallback:
                         raise RuntimeError(
-                            f"Live API call failed for {model}/{item['id']}: {exc}. "
-                            "Fix the key/model ID, or re-run with --allow-fallback to substitute "
+                            f"Live call failed for {model}/{item['id']}: {exc}. "
+                            "Check Ollama / API keys, or re-run with --allow-fallback to substitute "
                             "simulated scores (results will then be flagged as NOT measured)."
                         ) from exc
                     if verbose:
@@ -323,7 +289,7 @@ def print_summary_table(results: Dict[str, Any], output_path: Optional[Path] = N
     print("=" * 68)
     print(f"Results written to: {output_path or RESULTS_OUTPUT_PATH}")
     if results.get("is_measured"):
-        print("MEASURED (live API). Consumed by data.model_table.get_model_accuracy(model, category)")
+        print("MEASURED (live calls). Consumed by data.model_table.get_model_accuracy(model, category)")
     else:
         print("NOT MEASURED (simulated). model_table keeps using its assumed base accuracies.")
 
@@ -333,13 +299,13 @@ def main() -> int:
     parser.add_argument(
         "--models",
         nargs="+",
-        default=["haiku", "sonnet", "opus"],
-        help="Target models to evaluate (haiku, sonnet, opus)",
+        default=None,
+        help="Models to evaluate (default: every model available in the current mode)",
     )
     parser.add_argument(
         "--mock",
         action="store_true",
-        help="Force deterministic offline mock simulation mode even if ANTHROPIC_API_KEY exists",
+        help="Use deterministic simulated scores instead of calling the models (not treated as measured)",
     )
     parser.add_argument(
         "--eval-set",

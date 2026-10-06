@@ -20,7 +20,7 @@ TASK_TYPE_TO_CATEGORY = {
     "batch": "generation",       # fallback
 }
 
-# Default token counts per task type (baseline tokens, Haiku-4.5 tokenizer)
+# Default token counts per task type (baseline tokens)
 TASK_TOKENS = {
     "classification": (500, 100),
     "qa": (1000, 300),

@@ -1,16 +1,16 @@
 {
-  "evaluation_timestamp": "2026-09-21T19:15:05.708891+00:00",
+  "evaluation_timestamp": "2026-10-06T18:30:14.457391+00:00",
   "mode": "mock_simulation",
   "total_test_cases": 16,
   "models": {
-    "haiku": {
-      "accuracy": 0.7608,
+    "gemini-3-flash": {
+      "accuracy": 0.7629,
       "num_evaluated": 16,
       "category_accuracy": {
-        "classification": 0.8256,
-        "qa": 0.7446,
-        "generation": 0.7014,
-        "summarization": 0.7714
+        "classification": 0.8272,
+        "qa": 0.7692,
+        "generation": 0.6938,
+        "summarization": 0.7612
       },
       "avg_latency_ms": null,
       "details": [
@@ -18,7 +18,7 @@
           "item_id": "eval_01",
           "category": "classification",
           "difficulty": "easy",
-          "score": 0.966,
+          "score": 0.9388,
           "source": "simulated",
           "latency_ms": null
         },
@@ -26,7 +26,7 @@
           "item_id": "eval_02",
           "category": "classification",
           "difficulty": "medium",
-          "score": 0.8444,
+          "score": 0.81,
           "source": "simulated",
           "latency_ms": null
         },
@@ -34,7 +34,7 @@
           "item_id": "eval_03",
           "category": "classification",
           "difficulty": "medium",
-          "score": 0.8172,
+          "score": 0.8708,
           "source": "simulated",
           "latency_ms": null
         },
@@ -42,7 +42,7 @@
           "item_id": "eval_04",
           "category": "classification",
           "difficulty": "hard",
-          "score": 0.6748,
+          "score": 0.6892,
           "source": "simulated",
           "latency_ms": null
         },
@@ -50,7 +50,7 @@
           "item_id": "eval_05",
           "category": "qa",
           "difficulty": "easy",
-          "score": 0.8672,
+          "score": 0.9,
           "source": "simulated",
           "latency_ms": null
         },
@@ -58,7 +58,7 @@
           "item_id": "eval_06",
           "category": "qa",
           "difficulty": "medium",
-          "score": 0.7752,
+          "score": 0.8,
           "source": "simulated",
           "latency_ms": null
         },
@@ -66,7 +66,7 @@
           "item_id": "eval_07",
           "category": "qa",
           "difficulty": "medium",
-          "score": 0.7472,
+          "score": 0.7656,
           "source": "simulated",
           "latency_ms": null
         },
@@ -74,7 +74,7 @@
           "item_id": "eval_08",
           "category": "qa",
           "difficulty": "hard",
-          "score": 0.5888,
+          "score": 0.6112,
           "source": "simulated",
           "latency_ms": null
         },
@@ -82,7 +82,7 @@
           "item_id": "eval_09",
           "category": "generation",
           "difficulty": "easy",
-          "score": 0.8696,
+          "score": 0.8608,
           "source": "simulated",
           "latency_ms": null
         },
@@ -90,7 +90,7 @@
           "item_id": "eval_10",
           "category": "generation",
           "difficulty": "medium",
-          "score": 0.708,
+          "score": 0.692,
           "source": "simulated",
           "latency_ms": null
         },
@@ -98,7 +98,7 @@
           "item_id": "eval_11",
           "category": "generation",
           "difficulty": "medium",
-          "score": 0.7232,
+          "score": 0.7224,
           "source": "simulated",
           "latency_ms": null
         },
@@ -106,7 +106,7 @@
           "item_id": "eval_12",
           "category": "generation",
           "difficulty": "hard",
-          "score": 0.5048,
+          "score": 0.5,
           "source": "simulated",
           "latency_ms": null
         },
@@ -114,20 +114,12 @@
           "item_id": "eval_13",
           "category": "summarization",
           "difficulty": "easy",
-          "score": 0.9464,
+          "score": 0.9,
           "source": "simulated",
           "latency_ms": null
         },
         {
           "item_id": "eval_14",
-          "category": "summarization",
-          "difficulty": "medium",
-          "score": 0.76,
-          "source": "simulated",
-          "latency_ms": null
-        },
-        {
-          "item_id": "eval_15",
           "category": "summarization",
           "difficulty": "medium",
           "score": 0.784,
@@ -135,23 +127,31 @@
           "latency_ms": null
         },
         {
+          "item_id": "eval_15",
+          "category": "summarization",
+          "difficulty": "medium",
+          "score": 0.7992,
+          "source": "simulated",
+          "latency_ms": null
+        },
+        {
           "item_id": "eval_16",
           "category": "summarization",
           "difficulty": "hard",
-          "score": 0.5952,
+          "score": 0.5616,
           "source": "simulated",
           "latency_ms": null
         }
       ]
     },
-    "sonnet": {
-      "accuracy": 0.8969,
+    "nemotron-ultra-3": {
+      "accuracy": 0.8934,
       "num_evaluated": 16,
       "category_accuracy": {
         "classification": 0.9254,
-        "qa": 0.8912,
-        "generation": 0.8547,
-        "summarization": 0.9164
+        "qa": 0.892,
+        "generation": 0.8591,
+        "summarization": 0.8972
       },
       "avg_latency_ms": null,
       "details": [
@@ -159,7 +159,7 @@
           "item_id": "eval_01",
           "category": "classification",
           "difficulty": "easy",
-          "score": 0.9976,
+          "score": 0.9896,
           "source": "simulated",
           "latency_ms": null
         },
@@ -167,7 +167,7 @@
           "item_id": "eval_02",
           "category": "classification",
           "difficulty": "medium",
-          "score": 0.9568,
+          "score": 0.964,
           "source": "simulated",
           "latency_ms": null
         },
@@ -175,7 +175,7 @@
           "item_id": "eval_03",
           "category": "classification",
           "difficulty": "medium",
-          "score": 0.96,
+          "score": 0.964,
           "source": "simulated",
           "latency_ms": null
         },
@@ -183,7 +183,7 @@
           "item_id": "eval_04",
           "category": "classification",
           "difficulty": "hard",
-          "score": 0.7872,
+          "score": 0.784,
           "source": "simulated",
           "latency_ms": null
         },
@@ -191,7 +191,7 @@
           "item_id": "eval_05",
           "category": "qa",
           "difficulty": "easy",
-          "score": 0.9408,
+          "score": 0.9688,
           "source": "simulated",
           "latency_ms": null
         },
@@ -199,7 +199,7 @@
           "item_id": "eval_06",
           "category": "qa",
           "difficulty": "medium",
-          "score": 0.9352,
+          "score": 0.9264,
           "source": "simulated",
           "latency_ms": null
         },
@@ -207,7 +207,7 @@
           "item_id": "eval_07",
           "category": "qa",
           "difficulty": "medium",
-          "score": 0.9336,
+          "score": 0.872,
           "source": "simulated",
           "latency_ms": null
         },
@@ -215,7 +215,7 @@
           "item_id": "eval_08",
           "category": "qa",
           "difficulty": "hard",
-          "score": 0.7552,
+          "score": 0.8008,
           "source": "simulated",
           "latency_ms": null
         },
@@ -223,7 +223,7 @@
           "item_id": "eval_09",
           "category": "generation",
           "difficulty": "easy",
-          "score": 0.938,
+          "score": 0.962,
           "source": "simulated",
           "latency_ms": null
         },
@@ -231,7 +231,7 @@
           "item_id": "eval_10",
           "category": "generation",
           "difficulty": "medium",
-          "score": 0.888,
+          "score": 0.8424,
           "source": "simulated",
           "latency_ms": null
         },
@@ -239,7 +239,7 @@
           "item_id": "eval_11",
           "category": "generation",
           "difficulty": "medium",
-          "score": 0.8408,
+          "score": 0.8536,
           "source": "simulated",
           "latency_ms": null
         },
@@ -247,7 +247,7 @@
           "item_id": "eval_12",
           "category": "generation",
           "difficulty": "hard",
-          "score": 0.752,
+          "score": 0.7784,
           "source": "simulated",
           "latency_ms": null
         },
@@ -255,7 +255,7 @@
           "item_id": "eval_13",
           "category": "summarization",
           "difficulty": "easy",
-          "score": 0.9864,
+          "score": 0.948,
           "source": "simulated",
           "latency_ms": null
         },
@@ -263,7 +263,7 @@
           "item_id": "eval_14",
           "category": "summarization",
           "difficulty": "medium",
-          "score": 0.9412,
+          "score": 0.8788,
           "source": "simulated",
           "latency_ms": null
         },
@@ -271,7 +271,7 @@
           "item_id": "eval_15",
           "category": "summarization",
           "difficulty": "medium",
-          "score": 0.914,
+          "score": 0.9372,
           "source": "simulated",
           "latency_ms": null
         },
@@ -279,154 +279,13 @@
           "item_id": "eval_16",
           "category": "summarization",
           "difficulty": "hard",
-          "score": 0.824,
-          "source": "simulated",
-          "latency_ms": null
-        }
-      ]
-    },
-    "opus": {
-      "accuracy": 0.9422,
-      "num_evaluated": 16,
-      "category_accuracy": {
-        "classification": 0.9343,
-        "qa": 0.9432,
-        "generation": 0.9468,
-        "summarization": 0.9446
-      },
-      "avg_latency_ms": null,
-      "details": [
-        {
-          "item_id": "eval_01",
-          "category": "classification",
-          "difficulty": "easy",
-          "score": 0.9956,
-          "source": "simulated",
-          "latency_ms": null
-        },
-        {
-          "item_id": "eval_02",
-          "category": "classification",
-          "difficulty": "medium",
-          "score": 0.9424,
-          "source": "simulated",
-          "latency_ms": null
-        },
-        {
-          "item_id": "eval_03",
-          "category": "classification",
-          "difficulty": "medium",
-          "score": 0.9304,
-          "source": "simulated",
-          "latency_ms": null
-        },
-        {
-          "item_id": "eval_04",
-          "category": "classification",
-          "difficulty": "hard",
-          "score": 0.8688,
-          "source": "simulated",
-          "latency_ms": null
-        },
-        {
-          "item_id": "eval_05",
-          "category": "qa",
-          "difficulty": "easy",
-          "score": 0.9448,
-          "source": "simulated",
-          "latency_ms": null
-        },
-        {
-          "item_id": "eval_06",
-          "category": "qa",
-          "difficulty": "medium",
-          "score": 0.9632,
-          "source": "simulated",
-          "latency_ms": null
-        },
-        {
-          "item_id": "eval_07",
-          "category": "qa",
-          "difficulty": "medium",
-          "score": 0.9736,
-          "source": "simulated",
-          "latency_ms": null
-        },
-        {
-          "item_id": "eval_08",
-          "category": "qa",
-          "difficulty": "hard",
-          "score": 0.8912,
-          "source": "simulated",
-          "latency_ms": null
-        },
-        {
-          "item_id": "eval_09",
-          "category": "generation",
-          "difficulty": "easy",
-          "score": 1.0,
-          "source": "simulated",
-          "latency_ms": null
-        },
-        {
-          "item_id": "eval_10",
-          "category": "generation",
-          "difficulty": "medium",
-          "score": 0.9448,
-          "source": "simulated",
-          "latency_ms": null
-        },
-        {
-          "item_id": "eval_11",
-          "category": "generation",
-          "difficulty": "medium",
-          "score": 0.9512,
-          "source": "simulated",
-          "latency_ms": null
-        },
-        {
-          "item_id": "eval_12",
-          "category": "generation",
-          "difficulty": "hard",
-          "score": 0.8912,
-          "source": "simulated",
-          "latency_ms": null
-        },
-        {
-          "item_id": "eval_13",
-          "category": "summarization",
-          "difficulty": "easy",
-          "score": 0.9928,
-          "source": "simulated",
-          "latency_ms": null
-        },
-        {
-          "item_id": "eval_14",
-          "category": "summarization",
-          "difficulty": "medium",
-          "score": 0.9644,
-          "source": "simulated",
-          "latency_ms": null
-        },
-        {
-          "item_id": "eval_15",
-          "category": "summarization",
-          "difficulty": "medium",
-          "score": 0.9516,
-          "source": "simulated",
-          "latency_ms": null
-        },
-        {
-          "item_id": "eval_16",
-          "category": "summarization",
-          "difficulty": "hard",
-          "score": 0.8696,
+          "score": 0.8248,
           "source": "simulated",
           "latency_ms": null
         }
       ]
     }
   },
-  "simulated_items": 48,
+  "simulated_items": 32,
   "is_measured": false
 }

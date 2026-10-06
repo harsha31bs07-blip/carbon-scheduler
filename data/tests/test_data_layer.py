@@ -1,5 +1,6 @@
 """Run from the repo root:  python -m pytest data/tests -q"""
 
+import dataclasses
 from datetime import datetime, timezone
 
 import pytest
@@ -8,6 +9,7 @@ from data import candidate_builder as cb
 from data.eval import run_eval
 from data.latency_model import PAIRWISE_LATENCY_MS, get_inter_region_latency_ms
 from data.model_table import (
+    MODEL_TABLE,
     get_model_accuracy,
     get_model_cost_per_1k_tokens,
     get_model_detailed_cost,
@@ -20,19 +22,22 @@ T0 = datetime(2026, 9, 22, 6, 0, tzinfo=timezone.utc)
 
 
 def test_model_aliases():
-    assert normalize_model_name("claude-haiku-4-5-20251001") == "haiku"
-    assert normalize_model_name("claude-sonnet-5") == "sonnet"
-    assert normalize_model_name("CLAUDE-OPUS-5") == "opus"
+    assert normalize_model_name("gemini-3-flash-preview") == "gemini-3-flash"
+    assert normalize_model_name("NEMOTRON_ULTRA_3") == "nemotron-ultra-3"
+    assert normalize_model_name("qwen3.5:4b") == "local-qwen3.5"
+    # legacy tier names in old results/ resolve to the models that actually ran
+    assert normalize_model_name("haiku") == "gemini-3-flash"
+    assert normalize_model_name("sonnet") == "nemotron-ultra-3"
     with pytest.raises(ValueError):
         normalize_model_name("gpt-4")
 
 
-def test_pricing_order_and_blend():
-    h, s, o = (get_model_cost_per_1k_tokens(m) for m in ("haiku", "sonnet", "opus"))
-    assert h < s < o
-    assert get_model_detailed_cost("haiku", 1000, 0) == pytest.approx(0.001)
-    assert get_model_detailed_cost("sonnet", 0, 1000) == pytest.approx(0.010)
-    assert get_model_detailed_cost("opus", 1000, 1000) == pytest.approx(0.030)
+def test_published_pricing():
+    assert get_model_detailed_cost("gemini-3-flash", 1000, 0) == pytest.approx(0.0005)
+    assert get_model_detailed_cost("gemini-3-flash", 0, 1000) == pytest.approx(0.003)
+    assert get_model_detailed_cost("nemotron-ultra-3", 1000, 1000) == pytest.approx(0.0027)
+    for local in ("local-qwen3.5", "local-llama3.2"):
+        assert get_model_cost_per_1k_tokens(local) == 0.0
 
 
 def test_region_aliases_and_latency_symmetry():
@@ -68,66 +73,78 @@ def test_scoring_rejects_substring_of_reference():
 
 
 def test_live_failure_does_not_silently_fall_back(monkeypatch):
-    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
-
     def boom(*a, **k):
         raise RuntimeError("model not found")
 
-    monkeypatch.setattr(run_eval, "call_anthropic_api", boom)
+    monkeypatch.setattr(run_eval, "call_live_model", boom)
     with pytest.raises(RuntimeError):
-        run_eval.run_evaluation(models=["haiku"], verbose=False)
-    res = run_eval.run_evaluation(models=["haiku"], verbose=False, allow_fallback=True)
+        run_eval.run_evaluation(models=["gemini-3-flash"], verbose=False)
+    res = run_eval.run_evaluation(models=["gemini-3-flash"], verbose=False, allow_fallback=True)
     assert res["is_measured"] is False and res["mode"] == "live_api_partial"
 
 
+def test_live_run_is_measured(monkeypatch):
+    monkeypatch.setattr(run_eval, "call_live_model", lambda model, prompt: "P1 (Critical)")
+    res = run_eval.run_evaluation(models=["local-qwen3.5"], verbose=False)
+    assert res["is_measured"] is True and res["mode"] == "live_api"
+
+
 def test_mock_results_are_not_treated_as_measured(tmp_path):
-    res = run_eval.run_evaluation(force_mock=True, verbose=False)
+    res = run_eval.run_evaluation(models=["nemotron-ultra-3"], force_mock=True, verbose=False)
     assert res["is_measured"] is False
     path = tmp_path / "r.json"
     run_eval.save_results(res, path)
-    assert get_model_accuracy("sonnet", eval_results_file=path) == 0.88  # assumed base
-    assert get_model_accuracy("sonnet", eval_results_file=path, allow_simulated=True) != 0.88
+    assert get_model_accuracy("nemotron-ultra-3", eval_results_file=path) == 0.88  # assumed base
+    assert get_model_accuracy("nemotron-ultra-3", eval_results_file=path, allow_simulated=True) != 0.88
 
 
 def test_candidate_tradeoffs():
     cands = cb.enumerate_candidates(
         "s1", 1200, 300, base_utc_time=T0,
-        models=("haiku", "sonnet", "opus"),
+        models=("gemini-3-flash", "nemotron-ultra-3"),
         locations=("us-east", "eu-west", "in-south"),
         offsets=(0, 2, 4, 8, 12),
     )
-    assert len(cands) == 3 * 3 * 5
+    assert len(cands) == 2 * 3 * 5
     at = lambda m, loc, off: next(
         c for c in cands if (c.model, c.location, c.time_offset_hr) == (m, loc, off)
     )
-    h, s, o = (at(m, "us-east", 0) for m in ("haiku", "sonnet", "opus"))
-    assert h.est_cost_usd < s.est_cost_usd < o.est_cost_usd
-    assert h.est_latency_ms < s.est_latency_ms < o.est_latency_ms  # model latency now matters
-    assert h.est_energy_kwh < s.est_energy_kwh < o.est_energy_kwh
-    assert h.est_accuracy < s.est_accuracy < o.est_accuracy
+    flash, nemo = at("gemini-3-flash", "us-east", 0), at("nemotron-ultra-3", "us-east", 0)
+    assert flash.est_energy_kwh < nemo.est_energy_kwh
+    assert flash.est_accuracy < nemo.est_accuracy
+    assert flash.est_cost_usd == pytest.approx(1.2 * 0.0005 + 0.3 * 0.003)
     # cleaner grid => less carbon for identical work
-    assert at("sonnet", "eu-west", 0).est_carbon_g < at("sonnet", "in-south", 0).est_carbon_g
+    assert at("nemotron-ultra-3", "eu-west", 0).est_carbon_g < at("nemotron-ultra-3", "in-south", 0).est_carbon_g
+
+
+def test_local_models_are_free_and_on_device():
+    c = cb.estimate_candidate("s1", "local-qwen3.5", "local-gpu", 0, 1200, 300, base_utc_time=T0)
+    assert c.est_cost_usd == 0.0
+    assert c.est_carbon_g > 0
 
 
 def test_candidate_roundtrip_and_validation():
-    c = cb.estimate_candidate("s1", "claude-sonnet-5", "Dublin", 2, 500, 200, "qa", T0)
-    assert (c.model, c.location) == ("sonnet", "eu-west")
+    c = cb.estimate_candidate("s1", "gemini-3-flash-preview", "Dublin", 2, 500, 200, "qa", T0)
+    assert (c.model, c.location) == ("gemini-3-flash", "eu-west")
     from shared.schema import Candidate
 
     assert Candidate.from_dict(c.to_dict()) == c
     with pytest.raises(ValueError):
-        cb.estimate_candidate("s1", "haiku", "us-east", -1)
+        cb.estimate_candidate("s1", "gemini-3-flash", "us-east", -1)
     with pytest.raises(ValueError):
-        cb.estimate_candidate("s1", "haiku", "mars")
+        cb.estimate_candidate("s1", "gemini-3-flash", "mars")
 
 
-def test_tokenizer_factor_applied_to_new_tokenizer_models_only():
+def test_tokenizer_factor_scales_tokens(monkeypatch):
     kw = dict(input_tokens=1000, output_tokens=1000, base_utc_time=T0)
-    for model, factor in (("haiku", 1.0), ("sonnet", 1.3), ("opus", 1.3)):
-        with_f = cb.estimate_candidate("s", model, "us-east", **kw)
-        without = cb.estimate_candidate("s", model, "us-east", apply_tokenizer_factor=False, **kw)
-        assert with_f.est_cost_usd == pytest.approx(without.est_cost_usd * factor)
-        assert with_f.est_energy_kwh == pytest.approx(without.est_energy_kwh * factor)
+    base = cb.estimate_candidate("s", "gemini-3-flash", "us-east", **kw)
+    spec = MODEL_TABLE["gemini-3-flash"]
+    monkeypatch.setitem(MODEL_TABLE, "gemini-3-flash", dataclasses.replace(spec, tokenizer_factor=1.3))
+    scaled = cb.estimate_candidate("s", "gemini-3-flash", "us-east", **kw)
+    off = cb.estimate_candidate("s", "gemini-3-flash", "us-east", apply_tokenizer_factor=False, **kw)
+    assert scaled.est_cost_usd == pytest.approx(base.est_cost_usd * 1.3)
+    assert scaled.est_energy_kwh == pytest.approx(base.est_energy_kwh * 1.3)
+    assert off.est_cost_usd == pytest.approx(base.est_cost_usd)
 
 
 def test_enumerate_uses_one_reference_time():

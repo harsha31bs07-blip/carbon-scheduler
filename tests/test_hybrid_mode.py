@@ -23,15 +23,15 @@ class TestCandidatePool:
         assert candidate_pool() == [(m, "local-gpu") for m in LOCAL_MODELS]
         assert availability.mode_label() == "Offline"
 
-    def test_gemini_adds_its_tiers_in_cloud_regions(self, hybrid):
+    def test_gemini_adds_flash_in_cloud_regions(self, hybrid):
         hybrid(gemini=True)
         pool = candidate_pool()
-        assert {m for m, _ in pool} == {*LOCAL_MODELS, "haiku", "opus"}
+        assert {m for m, _ in pool} == {*LOCAL_MODELS, "gemini-3-flash"}
         assert availability.mode_label() == "Hybrid: Gemini"
 
-    def test_nvidia_adds_sonnet(self, hybrid):
+    def test_nvidia_adds_nemotron(self, hybrid):
         hybrid(gemini=False, nvidia=True)
-        assert set(available_models()) == {*LOCAL_MODELS, "sonnet"}
+        assert set(available_models()) == {*LOCAL_MODELS, "nemotron-ultra-3"}
 
     def test_no_cross_deployment_pairs(self, hybrid):
         """Local models never land in a cloud region, cloud models never on-device."""
@@ -47,7 +47,7 @@ class TestCandidatePool:
         hybrid(gemini=True)
         after = len(generate_candidates("classify"))
         assert before == len(LOCAL_MODELS) * len(TIME_OFFSETS)
-        assert after == (len(LOCAL_MODELS) + 2 * len(CLOUD_LOCATIONS)) * len(TIME_OFFSETS)
+        assert after == (len(LOCAL_MODELS) + len(CLOUD_LOCATIONS)) * len(TIME_OFFSETS)
 
     def test_every_hybrid_model_is_dispatchable(self, hybrid):
         hybrid(gemini=True, nvidia=True)
@@ -59,10 +59,12 @@ class TestBaseline:
     def test_offline_baseline_is_larger_local_model(self):
         assert baseline_choice() == ("local-qwen3.5", "local-gpu")
 
-    def test_hybrid_baseline_is_largest_cloud_tier(self, hybrid):
+    def test_hybrid_baseline_is_most_accurate_available_model(self, hybrid):
         hybrid(gemini=True)
+        assert baseline_choice()[0] == "gemini-3-flash"
+        hybrid(gemini=True, nvidia=True)
         model, location = baseline_choice()
-        assert model == "opus"
+        assert model == "nemotron-ultra-3"
         assert location in CLOUD_LOCATIONS
 
     def test_baseline_priced_like_scheduled_candidates(self):
@@ -91,6 +93,6 @@ class TestFallback:
         assert (fb.model, fb.location, fb.time_offset_hr) == ("local-qwen3.5", "local-gpu", 2)
 
     def test_cloud_pick_falls_back_to_best_local_model(self):
-        c = build_candidate("classify", "opus", "eu-west", 0)
+        c = build_candidate("classify", "gemini-3-flash", "eu-west", 0)
         fb = _fallback_candidate(c)
         assert (fb.model, fb.location) == ("local-qwen3.5", "local-gpu")

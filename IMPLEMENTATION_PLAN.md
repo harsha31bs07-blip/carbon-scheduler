@@ -31,7 +31,7 @@ The system schedules a 4-step support-ticket pipeline (`classify → retrieve �
 - Bug fixed: `local-gpu` carried a phantom 195 ms network latency (missing table entry → cross-continent default).
 - Added `Candidate.to_dict()` and `from_dict()`.
 
-## ✅ Phase 2 — Hybrid mode (done, except item 4)
+## ✅ Phase 2 — Hybrid mode (done)
 
 - `shared/availability.py` detects providers lazily from env vars. `data/` no longer imports `workflow/`, and a mode switch takes effect without re-importing.
 - Single source for the pool: `data.candidate_builder.candidate_pool()` gives the valid (model, location) pairs. Local models run only on `local-gpu` and cloud tiers only in cloud regions. The scheduler uses this pool.
@@ -42,13 +42,14 @@ The system schedules a 4-step support-ticket pipeline (`classify → retrieve �
 - Fallback is correct: it retries with the right local model, and the log messages no longer say "gemini-3-flash".
 - The dashboard shows a mode badge and a fallback badge (your in-progress work, now committed).
 
-### ⏳ Item 4 — model naming (needs your decision)
+### ✅ Item 4 — model naming (done, option b)
 
-The tiers `haiku`/`sonnet`/`opus` are priced at Claude rates in `data/model_table.py`, but `MODEL_NAME_MAP` runs them on **Gemini 3 Flash** (haiku and opus) and **Nemotron** (sonnet). Cloud cost and carbon figures are therefore Claude estimates attached to Gemini/NVIDIA calls. The options:
-
-- **a)** Point the tiers at the Claude API (add an Anthropic client) so the names and prices are true.
-- **b)** Rename the tiers to the models that actually run (`gemini-flash`, `nemotron`, …) and re-price them from Google and NVIDIA pricing.
-- **c)** Use provider-neutral tiers (`cloud-small`/`-mid`/`-large`) and label the numbers clearly as tier assumptions.
+- The tiers `haiku`/`sonnet`/`opus` were priced at Claude rates but ran on Gemini 3 Flash (haiku *and* opus) and Nemotron (sonnet). The cloud models are now `gemini-3-flash` and `nemotron-ultra-3`, priced from Google's and NVIDIA-hosting pricing (checked 2026-10-06).
+- Cloud time-to-first-token is calibrated from real calls in `results/`.
+- The old names still resolve as aliases, so old results load, and replay matches the existing `gemini-3-flash` recordings again.
+- `data/eval/run_eval.py` now calls the pipeline's own clients (Ollama, Gemini, NIM) instead of the Anthropic API.
+- `gemini-3-pro` has a client but no free tier, so it isn't in the pool. To enable it, add it to `GEMINI_MODELS` in `data/candidate_builder.py` with a `model_table` row ($2 / $12 per MTok).
+- Consequence: with Gemini only, the baseline and the scheduler both pick `gemini-3-flash @ us-west`, so the comparison differs only by the time offset. This makes Phase 3 item 1 urgent.
 
 ## Phase 3 — Scheduler quality (next, ~1 day)
 
@@ -74,4 +75,4 @@ The tiers `haiku`/`sonnet`/`opus` are priced at Claude rates in `data/model_tabl
 
 ## Order
 
-Decide Phase 2 item 4 → Phase 3 → Phase 4 → Phase 5. Commit at the end of each phase.
+Phase 3 → Phase 4 → Phase 5. Commit at the end of each phase.

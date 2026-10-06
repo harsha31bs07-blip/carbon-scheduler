@@ -1,21 +1,25 @@
 """data/model_table.py
 
-Pricing, energy, latency and accuracy specifications for the three model tiers
-(Haiku, Sonnet, Opus) used by the Candidate modeling pipeline.
+Pricing, energy, latency and accuracy specifications for every model the scheduler
+can pick: two local models (Ollama) and the cloud models the executor actually calls.
 
 What is sourced and what is assumed
 -----------------------------------
-* PRICING is published API pricing (checked against the official pricing page on
-  2026-09-22): https://platform.claude.com/docs/en/about-claude/pricing
-  Haiku 4.5 $1/$5, Sonnet 5 $2/$10, Opus 5 $5/$25 per MTok (input/output). Re-check before the demo.
-* TOKENIZER: Claude 4.7+ models (Sonnet 5, Opus 5) use a newer tokenizer that yields ~30% more
-  tokens for the same text (official pricing page). `tokenizer_factor` models this.
-* ENERGY, LATENCY and BASE ACCURACY are ASSUMPTIONS, not published figures.
-  Anthropic does not publish parameter counts or energy per token. Only the
-  *relative* ordering Haiku < Sonnet < Opus is meant to be meaningful.
-  Change ENERGY_SCALE to rescale all energy numbers at once.
-* Accuracy only comes from measurement when data/eval/run_eval.py has been run
-  against the live API (results file has "is_measured": true).
+* PRICING is published per-token pricing, checked 2026-10-06:
+  - gemini-3-flash: Gemini API paid tier, https://ai.google.dev/gemini-api/docs/pricing
+    ($0.50 / $3.00 per MTok in/out; a free tier also exists)
+  - nemotron-ultra-3: Nemotron 3 Ultra (550B A55B) at hosted providers, $0.50 / $2.20 per MTok
+    (https://pricepertoken.com/pricing-page/model/nvidia-nemotron-3-ultra-550b-a55b).
+    NVIDIA's own build.nvidia.com catalog is free for prototyping. If NVIDIA_NIM_MODEL points
+    at a different model, re-price this row.
+  - local models: $0 (on-device).
+* LATENCY: cloud TTFT is calibrated from real calls logged in results/ (see each row);
+  local rows come from full_benchmark.py.
+* ENERGY and BASE ACCURACY are ASSUMPTIONS, not published figures. Neither Google nor
+  NVIDIA publishes energy per token or parameter counts for these deployments. Only the
+  relative ordering is meant to be meaningful. Change ENERGY_SCALE to rescale all energy.
+* Accuracy only comes from measurement when data/eval/run_eval.py has been run live
+  against the models (results file has "is_measured": true).
 """
 
 from __future__ import annotations
@@ -47,7 +51,7 @@ class ModelSpec:
     ttft_ms: float  # ASSUMPTION: time to first token
     output_tokens_per_sec: float  # ASSUMPTION: decode speed
     base_accuracy: float  # ASSUMPTION until a live eval is run [0.0 - 1.0]
-    tokenizer_factor: float = 1.0  # tokens produced vs. the Haiku-4.5 tokenizer for the same text
+    tokenizer_factor: float = 1.0  # tokens produced vs. the reference tokenizer for the same text
 
     @property
     def cost_blended_per_1k_usd(self) -> float:
@@ -65,11 +69,11 @@ class ModelSpec:
         )
 
 
-# Energy: output (decode) energy ratio Haiku:Sonnet:Opus = 1:6:32 (kept from the first version);
+# Energy (ASSUMPTION): decode energy per 1k output tokens, relative-size guesses;
 # input (prefill) tokens assumed to cost 20% of an output token.
 # LOCAL MODELS: Based on GPU measurements (RTX 3050 Laptop, 48W inference power)
 _IN_FRACTION = 0.2
-_OUT_KWH = {"haiku": 0.00010, "sonnet": 0.00060, "opus": 0.00320}
+_OUT_KWH = {"gemini-3-flash": 0.00010, "nemotron-ultra-3": 0.00060}
 
 # Local model specs from benchmark measurements (2026-09-22)
 # Latency: from full_benchmark.py measured averages
@@ -88,43 +92,31 @@ _LOCAL_LLAMA_LATENCY_MS = {
 }
 
 MODEL_TABLE: Dict[str, ModelSpec] = {
-    "haiku": ModelSpec(
-        canonical_name="haiku",
-        display_name="Claude Haiku 4.5",
-        api_model_id="claude-haiku-4-5-20251001",
-        cost_input_per_1k_usd=0.001,  # $1 / MTok
-        cost_output_per_1k_usd=0.005,  # $5 / MTok
-        energy_in_per_1k_kwh=_OUT_KWH["haiku"] * _IN_FRACTION * ENERGY_SCALE,
-        energy_out_per_1k_kwh=_OUT_KWH["haiku"] * ENERGY_SCALE,
-        ttft_ms=400.0,
-        output_tokens_per_sec=150.0,
-        base_accuracy=0.760,
+    "gemini-3-flash": ModelSpec(
+        canonical_name="gemini-3-flash",
+        display_name="Gemini 3 Flash",
+        api_model_id="gemini-3-flash-preview",
+        cost_input_per_1k_usd=0.0005,  # $0.50 / MTok
+        cost_output_per_1k_usd=0.003,  # $3.00 / MTok
+        energy_in_per_1k_kwh=_OUT_KWH["gemini-3-flash"] * _IN_FRACTION * ENERGY_SCALE,
+        energy_out_per_1k_kwh=_OUT_KWH["gemini-3-flash"] * ENERGY_SCALE,
+        # CALIBRATED: 29 calls on 2026-09-21, median 1371 ms for 42 output tokens
+        ttft_ms=1000.0,
+        output_tokens_per_sec=150.0,  # ASSUMPTION
+        base_accuracy=0.760,  # ASSUMPTION until run_eval.py is run live
     ),
-    "sonnet": ModelSpec(
-        canonical_name="sonnet",
-        display_name="Claude Sonnet 5",
-        api_model_id="claude-sonnet-5",
-        cost_input_per_1k_usd=0.002,  # $2 / MTok (introductory price made permanent)
-        cost_output_per_1k_usd=0.010,  # $10 / MTok
-        energy_in_per_1k_kwh=_OUT_KWH["sonnet"] * _IN_FRACTION * ENERGY_SCALE,
-        energy_out_per_1k_kwh=_OUT_KWH["sonnet"] * ENERGY_SCALE,
-        ttft_ms=700.0,
-        output_tokens_per_sec=80.0,
-        base_accuracy=0.880,
-        tokenizer_factor=1.3,
-    ),
-    "opus": ModelSpec(
-        canonical_name="opus",
-        display_name="Claude Opus 5",
-        api_model_id="claude-opus-5",
-        cost_input_per_1k_usd=0.005,  # $5 / MTok
-        cost_output_per_1k_usd=0.025,  # $25 / MTok
-        energy_in_per_1k_kwh=_OUT_KWH["opus"] * _IN_FRACTION * ENERGY_SCALE,
-        energy_out_per_1k_kwh=_OUT_KWH["opus"] * ENERGY_SCALE,
-        ttft_ms=1200.0,
-        output_tokens_per_sec=45.0,
-        base_accuracy=0.940,
-        tokenizer_factor=1.3,
+    "nemotron-ultra-3": ModelSpec(
+        canonical_name="nemotron-ultra-3",
+        display_name="Nemotron 3 Ultra",
+        api_model_id="nvidia/nemotron-3-ultra",  # actual ID comes from NVIDIA_NIM_MODEL
+        cost_input_per_1k_usd=0.0005,  # $0.50 / MTok
+        cost_output_per_1k_usd=0.0022,  # $2.20 / MTok
+        energy_in_per_1k_kwh=_OUT_KWH["nemotron-ultra-3"] * _IN_FRACTION * ENERGY_SCALE,
+        energy_out_per_1k_kwh=_OUT_KWH["nemotron-ultra-3"] * ENERGY_SCALE,
+        # CALIBRATED (thin sample): 4 calls on 2026-09-21, median 1313 ms for 36 output tokens
+        ttft_ms=800.0,
+        output_tokens_per_sec=80.0,  # ASSUMPTION
+        base_accuracy=0.880,  # ASSUMPTION until run_eval.py is run live
     ),
     # LOCAL MODELS (Ollama via RTX 3050 Laptop GPU)
     "local-qwen3.5": ModelSpec(
@@ -153,28 +145,17 @@ MODEL_TABLE: Dict[str, ModelSpec] = {
     ),
 }
 
-# Aliases: full API IDs and older names. Legacy names map to the tier, not to legacy pricing.
+# Aliases: API IDs, client names, and legacy tier names.
 MODEL_ALIASES: Dict[str, str] = {
-    "claude-haiku-4-5": "haiku",
-    "claude-haiku-4-5-20251001": "haiku",
-    "claude-3-5-haiku": "haiku",
-    "claude-3-haiku": "haiku",
-    "claude-haiku": "haiku",
-    "haiku-4.5": "haiku",
-    "haiku-3.5": "haiku",
-    "claude-sonnet-5": "sonnet",
-    "claude-sonnet-4-6": "sonnet",
-    "claude-3-5-sonnet": "sonnet",
-    "claude-3-sonnet": "sonnet",
-    "claude-sonnet": "sonnet",
-    "sonnet-5": "sonnet",
-    "sonnet-3.5": "sonnet",
-    "claude-opus-5": "opus",
-    "claude-opus-4-6": "opus",
-    "claude-3-opus": "opus",
-    "claude-opus": "opus",
-    "opus-5": "opus",
-    "opus-3": "opus",
+    "gemini-3-flash-preview": "gemini-3-flash",
+    "gemini_3_flash": "gemini-3-flash",
+    "nemotron_ultra_3": "nemotron-ultra-3",
+    "nemotron": "nemotron-ultra-3",
+    # Legacy tier names in results/ before 2026-10: these ran on Gemini Flash / Nemotron
+    # (only their estimated cost/energy used Claude figures).
+    "haiku": "gemini-3-flash",
+    "opus": "gemini-3-flash",
+    "sonnet": "nemotron-ultra-3",
     # Local model aliases
     "qwen3.5:4b": "local-qwen3.5",
     "qwen": "local-qwen3.5",
@@ -189,13 +170,13 @@ EVAL_RESULTS_PATH = Path(__file__).parent / "eval" / "eval_results.json"
 
 
 def normalize_model_name(model: str) -> str:
-    """Normalize a model string to a canonical key ('haiku', 'sonnet', 'opus')."""
+    """Normalize a model string to a canonical MODEL_TABLE key."""
     cleaned = model.strip().lower()
     if cleaned in MODEL_TABLE:
         return cleaned
     if cleaned in MODEL_ALIASES:
         return MODEL_ALIASES[cleaned]
-    for key in MODEL_TABLE:  # partial match, e.g. "claude-sonnet-5-20260601"
+    for key in MODEL_TABLE:  # partial match, e.g. "gemini-3-flash-preview-0925"
         if key in cleaned:
             return key
     raise ValueError(f"Unsupported model '{model}'. Supported models: {list(MODEL_TABLE)}.")
