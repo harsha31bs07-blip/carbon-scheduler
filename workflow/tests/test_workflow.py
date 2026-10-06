@@ -16,7 +16,7 @@ import os
 
 import pytest
 
-from data.candidate_builder import DEFAULT_MODELS, estimate_candidate
+from data.candidate_builder import available_models, estimate_candidate
 from shared.schema import Candidate, STEP_DEFINITIONS
 from workflow import executor
 from workflow.dag import STEP_IDS, DAG_EDGES, get_next_steps
@@ -121,7 +121,7 @@ class TestScheduleStepIntegration:
                 assert MODEL_NAME_MAP.get(model, model) in MODEL_REGISTRY
 
     def test_every_candidate_model_is_dispatchable(self):
-        for model in DEFAULT_MODELS:
+        for model in available_models():
             assert MODEL_NAME_MAP.get(model, model) in MODEL_REGISTRY, model
 
     def test_custom_policy(self):
@@ -242,5 +242,5 @@ class TestRunPipeline:
         assert run_id.startswith("baseline_")
         records = read_records(results_dir / f"{run_id}.jsonl")
         assert {(r["model"], r["location"], r["time_offset"]) for r in records} == {
-            (executor._BASELINE_MODEL, executor._BASELINE_REGION, 0)
+            ("local-qwen3.5", "local-gpu", 0)
         }

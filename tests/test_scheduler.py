@@ -12,12 +12,11 @@ Tests cover:
 
 import pytest
 from shared.schema import Candidate, STEP_DEFINITIONS
+from data.candidate_builder import candidate_pool
 from scheduler.candidate_gen import (
     generate_candidates,
     get_step,
     STEPS,
-    MODELS,
-    REGIONS,
     TIME_OFFSETS,
 )
 from scheduler import optimizer, scorer
@@ -336,8 +335,7 @@ class TestEndToEndScheduling:
             candidate = schedule_step(step_id, "speed")
             assert isinstance(candidate, Candidate)
             assert candidate.step_id == step_id
-            assert candidate.model in MODELS
-            assert candidate.location in REGIONS
+            assert (candidate.model, candidate.location) in candidate_pool()
             assert candidate.time_offset_hr in TIME_OFFSETS
             assert candidate.est_accuracy >= step.get("min_accuracy", 0.7) or True  # fallback may violate
 
@@ -388,17 +386,17 @@ class TestCandidateGeneration:
     """Tests for candidate generation completeness."""
 
     def test_generate_candidates_returns_correct_count(self):
-        """generate_candidates returns MODELS x REGIONS x TIME_OFFSETS candidates."""
+        """generate_candidates returns one candidate per valid (model, location) pair per offset."""
         for step in STEPS:
             candidates = generate_candidates(step["step_id"])
-            assert len(candidates) == len(MODELS) * len(REGIONS) * len(TIME_OFFSETS)
+            assert len(candidates) == len(candidate_pool()) * len(TIME_OFFSETS)
 
     def test_generate_candidates_all_combinations_present(self):
-        """All model/region/offset combinations are generated."""
+        """All valid model/location pairs are generated at every offset."""
         step_id = "classify"
         candidates = generate_candidates(step_id)
         combos = {(c.model, c.location, c.time_offset_hr) for c in candidates}
-        expected = {(m, r, o) for m in MODELS for r in REGIONS for o in TIME_OFFSETS}
+        expected = {(m, r, o) for m, r in candidate_pool() for o in TIME_OFFSETS}
         assert combos == expected
 
     def test_generate_candidates_metrics_populated(self):

@@ -4,9 +4,10 @@ workflow/executor.py
 Runs the 4-step support-ticket triage pipeline end-to-end:
     classify -> retrieve -> draft -> summarize
 
-LOCAL-ONLY SCOPE (2026-09-22):
-  - Uses qwen3.5:4b and llama3.2:3b via Ollama (both installed locally)
-  - Cloud models (gemini, nemotron) disabled unless USE_CLOUD_MODELS=1
+Models:
+  - Local (always): qwen3.5:4b and llama3.2:3b via Ollama
+  - Cloud (hybrid mode, when API keys are set): Gemini and/or NVIDIA NIM
+    (see shared/availability.py)
 
 Execution loop per step:
   1. Call schedule_step() to get a Candidate (model + deployment config + eco metrics).
@@ -47,6 +48,11 @@ root_dir = Path(__file__).resolve().parent.parent
 if str(root_dir) not in sys.path:
     sys.path.insert(0, str(root_dir))
 
+from data.candidate_builder import LOCAL_LOCATIONS, LOCAL_MODELS
+from data.model_table import MODEL_TABLE
+from scheduler.candidate_gen import BASELINE_OFFSET, baseline_choice
+from scheduler.data_adapter import build_candidate
+from shared import availability
 from shared.schema import Candidate, STEP_DEFINITIONS
 from workflow.dag import STEP_IDS, get_next_steps
 from workflow import model_clients
@@ -139,18 +145,14 @@ _STEP_PROMPTS: dict[str, str] = {
 # ── Model name mapping (Person A's IDs → Real model names) ──────────────────
 # Person A's data layer uses abstract model IDs (haiku, sonnet, opus).
 # Person C's model_clients use real model names.
-# 
-# LOCAL-ONLY SCOPE (2026-09-22):
-#   - Only local models (qwen3.5:4b, llama3.2:3b) are in active use
-#   - Cloud models (gemini, nemotron) mapped but disabled unless USE_CLOUD_MODELS=1
 MODEL_NAME_MAP = {
-    # ── LOCAL MODELS (ACTIVE) ────────────────────────────────────────────────
+    # ── LOCAL MODELS ─────────────────────────────────────────────────────────
     "local-qwen3.5": "qwen3.5:4b",
     "local-llama3.2": "llama3.2:3b",
     "qwen3.5:4b": "qwen3.5:4b",
     "llama3.2:3b": "llama3.2:3b",
     
-    # ── CLOUD MODELS (LEGACY, DISABLED unless USE_CLOUD_MODELS=1) ────────────
+    # ── CLOUD MODELS (hybrid mode) ───────────────────────────────────────────
     "haiku": "gemini-3-flash",
     "sonnet": "nemotron-ultra-3",
     "opus": "gemini-3-flash",  # Was gemini-3-pro, now using flash (free tier)
@@ -176,6 +178,19 @@ def _dispatch(candidate: Candidate, prompt: str, step_context: dict) -> dict:
             f"Registered models: {list(model_clients.MODEL_REGISTRY.keys())}"
         )
     return fn(prompt, step_context)
+
+
+def _fallback_candidate(candidate: Candidate) -> Candidate:
+    """Local model to retry with when a call fails.
+
+    The other local model for a local pick; the most accurate local model for a cloud pick.
+    Estimated exactly like a scheduled candidate, so logged metrics stay comparable.
+    """
+    model = max(
+        (m for m in LOCAL_MODELS if m != candidate.model),
+        key=lambda m: MODEL_TABLE[m].base_accuracy,
+    )
+    return build_candidate(candidate.step_id, model, LOCAL_LOCATIONS[0], candidate.time_offset_hr)
 
 
 # ── Results logging ───────────────────────────────────────────────────────────
@@ -247,7 +262,7 @@ def execute_step(
     Execute one pipeline step:
       1. Schedule  → get Candidate from schedule_step()
       2. Log       → record time_offset (simulation only, no real wait)
-      3. Dispatch  → call real model API (with fallback to gemini-3-flash)
+      3. Dispatch  → call the model (on failure, retry once with a local model)
       4. Log       → write JSONL record to results/<run_id>.jsonl
 
     Returns {"candidate": Candidate, "model_result": dict, "output_text": str}
@@ -310,24 +325,10 @@ def execute_step(
                 print(f"  [ERROR] Authentication failed: {exc}")
                 raise
             
-            # For other errors, try fallback to gemini-3-flash directly
             print(f"  [ERROR] Model call failed: {exc}")
-            print(f"  [FALLBACK] Falling back to gemini-3-flash for step {step_id}")
+            fallback_candidate = _fallback_candidate(candidate)
+            print(f"  [FALLBACK] Retrying step {step_id} with {fallback_candidate.model}")
             fallback_used = True
-            
-            # Create a fallback candidate using the real data layer
-            # LOCAL-ONLY SCOPE: Fallback to the other local model
-            from data.candidate_builder import estimate_candidate
-            fallback_model = "local-llama3.2" if candidate.model == "local-qwen3.5" else "local-qwen3.5"
-            fallback_candidate = estimate_candidate(
-                step_id=candidate.step_id,
-                model=fallback_model,
-                location="local-gpu",
-                time_offset_hr=0,
-                input_tokens=1000,
-                output_tokens=300,
-                category="generation",
-            )
             
             try:
                 model_result = _try_dispatch(fallback_candidate)
@@ -335,7 +336,7 @@ def execute_step(
                 candidate = fallback_candidate
             except Exception as fallback_exc:
                 print(f"  [ERROR] Fallback also failed: {fallback_exc}")
-                raise RuntimeError(f"Both primary model ({original_model}) and fallback (gemini-3-flash) failed") from fallback_exc
+                raise RuntimeError(f"Both primary model ({original_model}) and fallback ({fallback_candidate.model}) failed") from fallback_exc
 
     print(
         f"  [done]  actual_latency={model_result['latency_ms']}ms  "
@@ -363,29 +364,12 @@ def execute_step(
 
 # ── Baseline Candidate factory ────────────────────────────────────────────────
 # "Always biggest model, same location, now" — per the role spec.
-# No scheduling logic invoked. Metrics from real data layer.
-#
-# LOCAL-ONLY SCOPE: Baseline = always qwen3.5:4b (larger of the two local models)
-_BASELINE_MODEL  = "local-qwen3.5"  # qwen3.5:4b is larger than llama3.2:3b
-_BASELINE_REGION = "local-gpu"      # Single deployment location in local scope
+# No scheduling logic invoked; estimated exactly like scheduled candidates.
 
 def _make_baseline_candidate(step_id: str) -> Candidate:
-    """
-    Return a hardcoded baseline Candidate: always qwen3.5:4b (larger local model),
-    local-gpu deployment, time_offset_hr=0. Metrics from real data layer.
-    
-    LOCAL-ONLY SCOPE: Baseline = largest available local model (qwen3.5:4b).
-    """
-    from data.candidate_builder import estimate_candidate
-    return estimate_candidate(
-        step_id=step_id,
-        model=_BASELINE_MODEL,
-        location=_BASELINE_REGION,
-        time_offset_hr=0,
-        input_tokens=1500,
-        output_tokens=500,
-        category="generation",
-    )
+    """Baseline: most accurate available model, its fixed location, no deferral."""
+    model, region = baseline_choice()
+    return build_candidate(step_id, model, region, BASELINE_OFFSET)
 
 
 # ── run_pipeline: full 4-step pipeline ───────────────────────────────────────
@@ -405,7 +389,8 @@ def run_pipeline(
       "speed"    — scheduler optimized for lowest-latency routing
       "balanced" — scheduler optimized for best-quality-per-task routing
       "custom"   — scheduler with custom_weights dict
-      "baseline" — NO scheduler: always largest model (opus) / us-east / time_offset=0
+      "baseline" — NO scheduler: always the most accurate available model,
+                   fixed location, time_offset=0
                    (the worst-case reference run for the comparison chart)
     
     replay_mode: If True, skip real API calls and reuse latest recorded
@@ -418,9 +403,10 @@ def run_pipeline(
 
     print("=" * 68)
     print(f"run_pipeline  run_id={run_id}  policy={policy}")
-    print(f"  [LOCAL-ONLY SCOPE] Using qwen3.5:4b and llama3.2:3b via Ollama")
+    print(f"  [MODE] {availability.mode_label()}")
     if is_baseline:
-        print(f"  [BASELINE] always {_BASELINE_MODEL} (largest local model) / {_BASELINE_REGION} / time_offset=0")
+        model, region = baseline_choice()
+        print(f"  [BASELINE] always {model} / {region} / time_offset=0")
     if custom_weights:
         print(f"  custom_weights = {custom_weights}")
     if replay_mode:
@@ -470,11 +456,9 @@ def run_pipeline(
 def _execute_baseline_step(step_id: str, run_id: str, replay_mode: bool = False) -> dict:
     """
     Execute one step in baseline mode:
-      1. Build hardcoded Candidate (qwen3.5:4b / local-gpu / time_offset=0)
+      1. Build the baseline Candidate (see _make_baseline_candidate)
       2. Dispatch to real model client — NO deferral, NO scheduling
       3. Log to results/<run_id>.jsonl
-    
-    LOCAL-ONLY SCOPE: Baseline = always largest local model (qwen3.5:4b).
     
     Returns {"candidate": Candidate, "model_result": dict, "output_text": str}
     """
@@ -523,30 +507,17 @@ def _execute_baseline_step(step_id: str, run_id: str, replay_mode: bool = False)
                 print(f"  [ERROR] Authentication failed: {exc}")
                 raise
             
-            # For other errors, try fallback to gemini-3-flash directly
             print(f"  [ERROR] Model call failed: {exc}")
-            print(f"  [FALLBACK] Falling back to gemini-3-flash for step {step_id}")
+            fallback_candidate = _fallback_candidate(candidate)
+            print(f"  [FALLBACK] Retrying step {step_id} with {fallback_candidate.model}")
             fallback_used = True
-            
-            # LOCAL-ONLY SCOPE: Fallback to the other local model
-            from data.candidate_builder import estimate_candidate
-            fallback_model = "local-llama3.2" if candidate.model == "local-qwen3.5" else "local-qwen3.5"
-            fallback_candidate = estimate_candidate(
-                step_id=candidate.step_id,
-                model=fallback_model,
-                location="local-gpu",
-                time_offset_hr=0,
-                input_tokens=1000,
-                output_tokens=300,
-                category="generation",
-            )
             
             try:
                 model_result = _dispatch(fallback_candidate, prompt, step_context)
                 candidate = fallback_candidate
             except Exception as fallback_exc:
                 print(f"  [ERROR] Fallback also failed: {fallback_exc}")
-                raise RuntimeError(f"Both primary model ({original_model}) and fallback (gemini-3-flash) failed") from fallback_exc
+                raise RuntimeError(f"Both primary model ({original_model}) and fallback ({fallback_candidate.model}) failed") from fallback_exc
 
     print(
         f"  [done]  actual_latency={model_result['latency_ms']}ms  "

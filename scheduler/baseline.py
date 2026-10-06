@@ -7,24 +7,8 @@ import json
 from pathlib import Path
 
 from shared.schema import Candidate
-from scheduler.candidate_gen import (
-    STEPS,
-    MODELS,
-    REGIONS,
-    TIME_OFFSETS,
-    BASELINE_MODEL,
-    BASELINE_REGION,
-    BASELINE_OFFSET,
-    get_step,
-    generate_candidates,
-)
-from scheduler.data_adapter import (
-    get_latency,
-    get_accuracy,
-    get_cost,
-    get_energy,
-    get_carbon,
-)
+from scheduler.candidate_gen import STEPS, BASELINE_OFFSET, baseline_choice
+from scheduler.data_adapter import build_candidate
 from scheduler.optimizer import schedule_step
 
 
@@ -32,20 +16,9 @@ RESULTS_DIR = Path(__file__).parent.parent / "results"
 
 
 def create_baseline_candidate(step_id: str) -> Candidate:
-    """Create the baseline candidate: biggest model, fixed region, offset 0."""
-    step = get_step(step_id)
-    task_type = step["task_type"]
-    return Candidate(
-        step_id=step_id,
-        model=BASELINE_MODEL,
-        location=BASELINE_REGION,
-        time_offset_hr=BASELINE_OFFSET,
-        est_latency_ms=get_latency(BASELINE_MODEL, BASELINE_REGION, BASELINE_OFFSET, task_type),
-        est_accuracy=get_accuracy(BASELINE_MODEL, BASELINE_REGION, BASELINE_OFFSET, task_type),
-        est_cost_usd=get_cost(BASELINE_MODEL, BASELINE_REGION, BASELINE_OFFSET, task_type),
-        est_energy_kwh=get_energy(BASELINE_MODEL, BASELINE_REGION, BASELINE_OFFSET, task_type),
-        est_carbon_g=get_carbon(BASELINE_MODEL, BASELINE_REGION, BASELINE_OFFSET, task_type),
-    )
+    """Create the baseline candidate: biggest available model, fixed location, no deferral."""
+    model, region = baseline_choice()
+    return build_candidate(step_id, model, region, BASELINE_OFFSET)
 
 
 def compute_totals(candidates: list[Candidate]) -> dict:
@@ -134,7 +107,8 @@ def print_summary(baseline_totals: dict, comparison: dict):
     print("\n" + "=" * 80)
     print("BASELINE vs SCHEDULED COMPARISON")
     print("=" * 80)
-    print(f"Baseline (model={BASELINE_MODEL}, region={BASELINE_REGION}, offset={BASELINE_OFFSET}):")
+    model, region = baseline_choice()
+    print(f"Baseline (model={model}, region={region}, offset={BASELINE_OFFSET}):")
     print(f"  Latency: {baseline_totals['latency_ms']:.2f} ms")
     print(f"  Accuracy: {baseline_totals['accuracy']:.4f}")
     print(f"  Cost: ${baseline_totals['cost_usd']:.6f}")

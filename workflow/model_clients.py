@@ -3,21 +3,26 @@ workflow/model_clients.py
 ─────────────────────────────────────────────────────────────────────────────
 Real API client wrappers for the models used in the workflow pipeline.
 
-SCOPE CHANGE (2026-09-22): LOCAL MODELS ONLY
-  - qwen3.5:4b    (Ollama local inference) — local deployment config A, $0 cost
-  - llama3.2:3b   (Ollama local inference) — local deployment config B, $0 cost
+HYBRID MODE (2026-09-22): Offline default, online when keys present
+  LOCAL (always available, zero setup):
+    - qwen3.5:4b    (Ollama local inference) — $0 cost, on-device
+    - llama3.2:3b   (Ollama local inference) — $0 cost, on-device
+  
+  CLOUD (available when API keys detected):
+    - gemini-3-flash   (Google GenAI SDK)        — requires GOOGLE_API_KEY
+    - gemini-3-pro     (Google GenAI SDK)        — requires GOOGLE_API_KEY
+    - nemotron-ultra-3 (NVIDIA NIM API endpoint) — requires NVIDIA_API_KEY + config
 
-DISABLED (cloud models no longer in active use):
-  - gemini-3-flash   (Google GenAI SDK)        — DISABLED, gated behind USE_CLOUD_MODELS flag
-  - nemotron-ultra-3 (NVIDIA NIM API endpoint) — DISABLED, gated behind USE_CLOUD_MODELS flag
-  - gemini-3-pro     (Google GenAI SDK)        — DISABLED, gated behind USE_CLOUD_MODELS flag
+Cloud models are added ALONGSIDE local models when keys are present, not as replacements.
+This restores genuine location diversity (on-device vs. cloud region) per the A2 problem statement.
 
 Each wrapper captures real wall-clock timing (time.perf_counter) and actual
 token usage reported by the respective API.
 
 Environment variables:
   - OLLAMA_BASE_URL (optional, defaults to http://localhost:11434)
-  - USE_CLOUD_MODELS (optional, set to "1" to enable cloud model calls)
+  - GOOGLE_API_KEY (optional, enables Gemini models)
+  - NVIDIA_API_KEY, NVIDIA_NIM_URL, NVIDIA_NIM_MODEL (optional, enables NVIDIA NIM)
 ─────────────────────────────────────────────────────────────────────────────
 """
 
@@ -37,6 +42,8 @@ except ImportError:
     pass
 
 import requests
+
+from shared import availability
 
 try:
     from google import genai
@@ -208,13 +215,21 @@ NVIDIA_NIM_URL = os.environ.get("NVIDIA_NIM_URL")
 NVIDIA_NIM_MODEL = os.environ.get("NVIDIA_NIM_MODEL")
 
 
-# ── Cloud Model Gate ────────────────────────────────────────────────────────
-# Cloud models (gemini, nemotron) are DISABLED by default in local-only scope.
-# Set USE_CLOUD_MODELS=1 environment variable to re-enable them.
-USE_CLOUD_MODELS = os.environ.get("USE_CLOUD_MODELS") == "1"
+# ── Cloud Model Availability Detection ──────────────────────────────────────
+# Detect which cloud providers are available based on API keys present.
+# Cloud models are available ALONGSIDE local models when keys are valid.
+# No keys = offline mode (local models only).
+
+# Snapshot at import, kept for display code. Call paths re-check via shared.availability,
+# so a key added or removed after import takes effect on the next call.
+GEMINI_AVAILABLE, GEMINI_STATUS = availability.gemini_status()
+NVIDIA_AVAILABLE, NVIDIA_STATUS = availability.nvidia_status()
+
+# Backward compat: USE_CLOUD_MODELS is now derived from detection
+USE_CLOUD_MODELS = GEMINI_AVAILABLE or NVIDIA_AVAILABLE
 
 
-# ── Gemini Helpers (DISABLED unless USE_CLOUD_MODELS=1) ─────────────────────
+# ── Gemini Helpers (available when GOOGLE_API_KEY present) ─────────────────────
 def _call_gemini_model(
     model_name_label: str,
     target_model_id: str,
@@ -224,12 +239,13 @@ def _call_gemini_model(
     """
     Helper to execute real Gemini API calls using google-genai SDK.
     
-    DISABLED in local-only scope. Set USE_CLOUD_MODELS=1 to re-enable.
+    HYBRID MODE: Available when GOOGLE_API_KEY is present, alongside local models.
     """
-    if not USE_CLOUD_MODELS:
+    gemini_ok, gemini_reason = availability.gemini_status()
+    if not gemini_ok:
         raise RuntimeError(
-            f"Cloud model '{model_name_label}' is disabled in local-only scope. "
-            f"Set USE_CLOUD_MODELS=1 environment variable to re-enable cloud models. "
+            f"Gemini model '{model_name_label}' is not available. Reason: {gemini_reason}. "
+            f"Set GOOGLE_API_KEY environment variable to enable cloud models. "
             f"Available local models: qwen3.5:4b, llama3.2:3b"
         )
     
@@ -344,18 +360,19 @@ def call_nemotron_ultra_3(prompt: str, step_context: Optional[dict] = None) -> d
     Returns {text, latency_ms, input_tokens, output_tokens, model}.
     Includes retry with exponential backoff for transient errors.
     
-    DISABLED in local-only scope. Set USE_CLOUD_MODELS=1 to re-enable.
+    HYBRID MODE: Available when NVIDIA_API_KEY + config are present, alongside local models.
     
-    Required environment variables (when enabled):
+    Required environment variables:
       - NVIDIA_API_KEY: Your NVIDIA API key
       - NVIDIA_NIM_URL: Full endpoint URL (from build.nvidia.com)
       - NVIDIA_NIM_MODEL: Model identifier (from build.nvidia.com)
     """
-    if not USE_CLOUD_MODELS:
+    nvidia_ok, nvidia_reason = availability.nvidia_status()
+    if not nvidia_ok:
         raise RuntimeError(
-            "Cloud model 'nemotron-ultra-3' is disabled in local-only scope. "
-            "Set USE_CLOUD_MODELS=1 environment variable to re-enable cloud models. "
-            "Available local models: qwen3.5:4b, llama3.2:3b"
+            f"NVIDIA NIM model 'nemotron-ultra-3' is not available. Reason: {nvidia_reason}. "
+            f"Set NVIDIA_API_KEY, NVIDIA_NIM_URL, and NVIDIA_NIM_MODEL environment variables. "
+            f"Available local models: qwen3.5:4b, llama3.2:3b"
         )
     
     # Check for missing configuration before attempting call (fail fast)
@@ -678,7 +695,7 @@ MODEL_REGISTRY: Dict[str, Callable[[str, Optional[dict]], dict]] = {
     # Backward compat aliases
     "local_llama3.2": call_llama_3_2_3b,
     
-    # ── CLOUD MODELS (DISABLED unless USE_CLOUD_MODELS=1) ────────────────────
+    # ── CLOUD MODELS (available when API keys detected) ────────────────────────
     "gemini-3-flash": call_gemini_3_flash,
     "gemini-3-pro": call_gemini_3_pro,
     "nemotron-ultra-3": call_nemotron_ultra_3,
@@ -705,16 +722,17 @@ def smoke_test() -> dict[str, Any]:
     Calls both local models with trivial dummy prompts to verify
     connectivity, wall-clock timing, and token counting.
     
-    LOCAL-ONLY SCOPE: Tests qwen3.5:4b and llama3.2:3b via Ollama.
-    Cloud models (gemini, nemotron) are skipped unless USE_CLOUD_MODELS=1.
+    HYBRID MODE: Tests qwen3.5:4b and llama3.2:3b via Ollama (always available).
+    Cloud models (gemini, nemotron) tested if API keys detected.
     """
     dummy_prompt = "Say 'OK' in one word."
     results: dict[str, Any] = {}
 
     print("=" * 60)
-    print("SMOKE TEST: Verifying Local Model Clients (Ollama)")
-    if USE_CLOUD_MODELS:
-        print("[USE_CLOUD_MODELS=1] Cloud models will also be tested")
+    print("SMOKE TEST: Verifying Model Clients")
+    print(f"  Mode: {'HYBRID' if (GEMINI_AVAILABLE or NVIDIA_AVAILABLE) else 'OFFLINE ONLY'}")
+    print(f"  Gemini: {'AVAILABLE' if GEMINI_AVAILABLE else 'UNAVAILABLE'} ({GEMINI_STATUS})")
+    print(f"  NVIDIA: {'AVAILABLE' if NVIDIA_AVAILABLE else 'UNAVAILABLE'} ({NVIDIA_STATUS})")
     print("=" * 60)
 
     # 1. Check qwen3.5:4b (LOCAL)
@@ -741,8 +759,8 @@ def smoke_test() -> dict[str, Any]:
         results["llama3.2:3b"] = {"status": "FAILED", "error": str(e)}
         print(f"  [FAILED]: {e}")
 
-    # Optional: Test cloud models if USE_CLOUD_MODELS=1
-    if USE_CLOUD_MODELS:
+    # Optional: Test cloud models if available
+    if GEMINI_AVAILABLE:
         print("\n[CLOUD] Testing gemini-3-flash...")
         try:
             res_flash = call_gemini_3_flash(dummy_prompt)
@@ -751,7 +769,10 @@ def smoke_test() -> dict[str, Any]:
         except Exception as e:
             results["gemini-3-flash"] = {"status": "FAILED", "error": str(e)}
             print(f"  [FAILED]: {e}")
+    else:
+        print(f"\n[CLOUD] Gemini skipped: {GEMINI_STATUS}")
 
+    if NVIDIA_AVAILABLE:
         print("\n[CLOUD] Testing nemotron-ultra-3...")
         try:
             res_nemotron = call_nemotron_ultra_3(dummy_prompt)
@@ -760,6 +781,8 @@ def smoke_test() -> dict[str, Any]:
         except Exception as e:
             results["nemotron-ultra-3"] = {"status": "FAILED", "error": str(e)}
             print(f"  [FAILED]: {e}")
+    else:
+        print(f"\n[CLOUD] NVIDIA NIM skipped: {NVIDIA_STATUS}")
 
     print("\n" + "=" * 60)
     print("Smoke Test Complete.")

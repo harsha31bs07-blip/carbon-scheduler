@@ -38,11 +38,41 @@ from data.model_table import (
 )
 from data.region_carbon import normalize_location
 from data.time_curve import get_carbon_intensity_at_hour
+from shared import availability
 from shared.schema import Candidate
 
-DEFAULT_MODELS: Sequence[str] = ("local-qwen3.5", "local-llama3.2")  # LOCAL-ONLY SCOPE
-DEFAULT_LOCATIONS: Sequence[str] = ("local-gpu",)  # Single local deployment
-DEFAULT_OFFSETS: Sequence[int] = (0, 2, 4)  # Reduced offsets for local scope
+# ── Candidate pool ────────────────────────────────────────────────────────────
+# Local models always run on-device; cloud models join when their provider's keys
+# are configured (hybrid mode). Which provider serves each cloud tier is set by
+# MODEL_NAME_MAP in workflow/executor.py.
+LOCAL_MODELS: Sequence[str] = ("local-qwen3.5", "local-llama3.2")
+GEMINI_MODELS: Sequence[str] = ("haiku", "opus")
+NVIDIA_MODELS: Sequence[str] = ("sonnet",)
+
+LOCAL_LOCATIONS: Sequence[str] = ("local-gpu",)
+CLOUD_LOCATIONS: Sequence[str] = ("us-west", "eu-west", "in-south")
+
+DEFAULT_OFFSETS: Sequence[int] = (0, 2, 4)
+
+
+def available_models() -> tuple[str, ...]:
+    """Models usable right now: local always, cloud tiers when their provider is configured."""
+    models = list(LOCAL_MODELS)
+    if availability.gemini_available():
+        models.extend(GEMINI_MODELS)
+    if availability.nvidia_available():
+        models.extend(NVIDIA_MODELS)
+    return tuple(models)
+
+
+def locations_for(model: str) -> Sequence[str]:
+    """Where a model can run: local models on-device only, cloud models in cloud regions only."""
+    return LOCAL_LOCATIONS if normalize_model_name(model) in LOCAL_MODELS else CLOUD_LOCATIONS
+
+
+def candidate_pool() -> list[tuple[str, str]]:
+    """Every valid (model, location) pair in the current mode."""
+    return [(m, loc) for m in available_models() for loc in locations_for(m)]
 
 
 def estimate_candidate(
@@ -92,25 +122,35 @@ def enumerate_candidates(
     step_id: str,
     input_tokens: int = 1000,
     output_tokens: int = 300,
-    models: Iterable[str] = DEFAULT_MODELS,
-    locations: Iterable[str] = DEFAULT_LOCATIONS,
+    models: Optional[Iterable[str]] = None,
+    locations: Optional[Iterable[str]] = None,
     offsets: Iterable[int] = DEFAULT_OFFSETS,
     category: Optional[str] = None,
     base_utc_time: Optional[datetime] = None,
     origin: Optional[str] = None,
     apply_tokenizer_factor: bool = True,
 ) -> List[Candidate]:
-    """Every model x location x time-offset combination for one workflow step.
+    """Candidates for one workflow step, one per (model, location, time offset).
+
+    By default uses candidate_pool(): the models available in the current mode, each
+    only at locations where it can run. Passing `models` and/or `locations` overrides
+    that; explicit `locations` are crossed with every model as given.
 
     All candidates share ONE reference time, so carbon numbers are comparable to each other.
     """
+    if models is None and locations is None:
+        pairs = candidate_pool()
+    else:
+        models = available_models() if models is None else tuple(models)
+        locations = None if locations is None else tuple(locations)
+        pairs = [(m, loc) for m in models for loc in (locations or locations_for(m))]
+
     ref_time = base_utc_time or datetime.now(timezone.utc)
     return [
         estimate_candidate(
             step_id, m, loc, off, input_tokens, output_tokens, category, ref_time, origin,
             apply_tokenizer_factor,
         )
-        for m in models
-        for loc in locations
+        for m, loc in pairs
         for off in offsets
     ]

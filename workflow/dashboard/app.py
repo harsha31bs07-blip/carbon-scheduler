@@ -694,10 +694,37 @@ with st.sidebar:
         st.session_state.otp_sent = False
         st.rerun()
     st.divider()
+    
+    # ── Mode Status Indicator ────────────────────────────────────────────────
+    from workflow.model_clients import GEMINI_AVAILABLE, NVIDIA_AVAILABLE
+    
+    if GEMINI_AVAILABLE and NVIDIA_AVAILABLE:
+        mode_status = "🌐 **Hybrid: Fully Online**"
+        mode_detail = "Local + Gemini + NVIDIA models available"
+    elif GEMINI_AVAILABLE:
+        mode_status = "🌐 **Hybrid: Gemini Connected**"
+        mode_detail = "Local + Gemini models available"
+    elif NVIDIA_AVAILABLE:
+        mode_status = "🌐 **Hybrid: NVIDIA Connected**"
+        mode_detail = "Local + NVIDIA models available"
+    else:
+        mode_status = "🔌 **Offline Only**"
+        mode_detail = "Local models only (no API keys detected)"
+    
+    st.markdown(mode_status)
+    st.caption(mode_detail)
+    st.divider()
+    
     st.header("Controls")
     
     st.caption("🖥️ Local Models: qwen3.5:4b (4B params) · llama3.2:3b (3B params)")
-    st.caption("💰 Cost: $0 (no API charges)")
+    if GEMINI_AVAILABLE or NVIDIA_AVAILABLE:
+        st.caption("☁️ Cloud Models: " + (
+            "gemini-3-flash, gemini-3-pro" if GEMINI_AVAILABLE else ""
+        ) + (", " if GEMINI_AVAILABLE and NVIDIA_AVAILABLE else "") + (
+            "nemotron-ultra-3" if NVIDIA_AVAILABLE else ""
+        ))
+    st.caption("💰 Local Cost: $0 (no API charges)")
     st.divider()
     
     policies = ["eco", "balanced", "speed", "custom"]
@@ -789,8 +816,21 @@ with st.sidebar:
     st.checkbox("Confirm clear", key="confirm_clear")
 
 # ── Main Content Area ────────────────────────────────────────────────────────
+from workflow.model_clients import GEMINI_AVAILABLE, NVIDIA_AVAILABLE
+
+if GEMINI_AVAILABLE or NVIDIA_AVAILABLE:
+    mode_caption = "Hybrid mode: Local (qwen3.5:4b, llama3.2:3b) + Cloud "
+    if GEMINI_AVAILABLE and NVIDIA_AVAILABLE:
+        mode_caption += "(gemini-3-flash, nemotron-ultra-3) · Mixed cost · Measured latency for all"
+    elif GEMINI_AVAILABLE:
+        mode_caption += "(gemini-3-flash) · Mixed cost · Measured latency for all"
+    else:
+        mode_caption += "(nemotron-ultra-3) · Mixed cost · Measured latency for all"
+else:
+    mode_caption = "Offline mode: Local deployment only (qwen3.5:4b, llama3.2:3b) · Zero API cost · Real measured energy & latency"
+
 st.title("Local AI Scheduler")
-st.caption("Local deployment: qwen3.5:4b vs llama3.2:3b · Zero API cost · Real measured energy & latency via hardware sensors")
+st.caption(mode_caption)
 
 run_id = st.session_state.run_id
 
@@ -866,10 +906,25 @@ if run_id:
             for idx, r in enumerate(records):
                 with dec_cols[idx]:
                     st.markdown(f"**{r.get('step_id', '').upper()}**")
-                    st.markdown(
-                        f'<div class="schedule-badge">{r.get("model")}<br/>{r.get("location")}</div>',
-                        unsafe_allow_html=True
-                    )
+                    
+                    # Check if fallback was used for this step
+                    fallback_used = r.get("fallback_used", False)
+                    model_display = r.get("model")
+                    
+                    if fallback_used:
+                        original_model = r.get("original_model", "unknown")
+                        st.markdown(
+                            f'<div class="schedule-badge" style="background-color: {COLOR_WARNING};">'
+                            f'{model_display}<br/>{r.get("location")}<br/>⚠️ Fallback</div>',
+                            unsafe_allow_html=True
+                        )
+                        st.caption(f"Original: {original_model}")
+                    else:
+                        st.markdown(
+                            f'<div class="schedule-badge">{model_display}<br/>{r.get("location")}</div>',
+                            unsafe_allow_html=True
+                        )
+                    
                     if r.get("time_offset", 0) > 0:
                         st.caption(f"+{r.get('time_offset', 0) // 3600}h offset")
             
@@ -888,15 +943,25 @@ if run_id:
             
             metric_cols = st.columns(5)
             
+            # Check if any cloud models were used (cost > 0 means cloud API call)
+            has_cloud_models = any(r.get("model", "").lower() in ["haiku", "opus", "sonnet", "gemini-3-flash", "gemini-3-pro", "nemotron-ultra-3"] for r in records)
+            
             # Check if energy was measured (from benchmark data)
-            energy_measured = records[0].get("energy_measured", False) if records else False
-            energy_help = "✓ MEASURED: Real hardware sensors (CPU + GPU)" if energy_measured else "⚠️ ESTIMATED: TDP-based fallback"
+            energy_measured = any(r.get("energy_measured", False) for r in records)
+            energy_help = "✓ MEASURED: Real hardware sensors (CPU + GPU)" if energy_measured else "⚠️ ESTIMATED: TDP-based fallback for local / datacenter estimate for cloud"
             energy_delta = "✓ Measured" if energy_measured else "⚠️ Estimated"
             
-            metric_cols[0].metric("Carbon", f"{total_carbon:.2f} gCO₂e", help="⚠️ ESTIMATED: Measured energy × grid intensity (400gCO₂e/kWh)")
-            metric_cols[1].metric("Cost", "$0.00", delta="Local execution", help="No API charges")
+            # Cost display - distinguish local vs cloud
+            cost_delta = "✓ Measured" if has_cloud_models and total_cost > 0 else "Local ($0)"
+            cost_help = "✓ MEASURED: Real API charges from cloud providers" if has_cloud_models and total_cost > 0 else "Local execution, no API charges"
+            
+            # Latency - cloud calls are measured, local calls are measured
+            latency_delta = "✓ Measured"
+            
+            metric_cols[0].metric("Carbon", f"{total_carbon:.2f} gCO₂e", help="⚠️ ESTIMATED: Energy × grid intensity (local measured, cloud estimated)")
+            metric_cols[1].metric("Cost", f"${total_cost:.5f}" if total_cost > 0 else "$0.00", delta=cost_delta, delta_color="off", help=cost_help)
             metric_cols[2].metric("Energy", f"{total_energy:.1f} Wh", delta=energy_delta, delta_color="off", help=energy_help)
-            metric_cols[3].metric("Latency", f"{total_latency:.0f} ms", delta="✓ Measured", delta_color="off")
+            metric_cols[3].metric("Latency", f"{total_latency:.0f} ms", delta=latency_delta, delta_color="off", help="✓ MEASURED: Real API response times")
             metric_cols[4].metric("Accuracy", f"{avg_accuracy:.3f}", help="Benchmark-based proxy (not task-specific)")
             
             st.divider()
