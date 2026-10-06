@@ -51,12 +51,15 @@ The system schedules a 4-step support-ticket pipeline (`classify → retrieve �
 - `gemini-3-pro` has a client but no free tier, so it isn't in the pool. To enable it, add it to `GEMINI_MODELS` in `data/candidate_builder.py` with a `model_table` row ($2 / $12 per MTok).
 - Consequence: with Gemini only, the baseline and the scheduler both pick `gemini-3-flash @ us-west`, so the comparison differs only by the time offset. This makes Phase 3 item 1 urgent.
 
-## Phase 3 — Scheduler quality (next, ~1 day)
+## Phase 3 — Scheduler quality (in progress)
 
-1. **Deferral is free.** `est_latency_ms` ignores `time_offset_hr`, so even the **speed** policy picks a 2 h delay (observed: every policy picks `haiku @ us-west +2h` in hybrid mode). Add the deferral to the latency used for scoring (or a separate `w_delay` term), and keep it out of the SLA check if the SLA means compute time only.
-2. **Policies collapse.** In hybrid mode, speed, balanced and eco pick the same candidate for all 4 steps. After fixing item 1, re-check, then consider fixed-range normalization instead of min-max over tiny pools (min-max turns small differences into 0/1 swings).
-3. **Defaults.** In `scorer.py`, `min_accuracy` defaults to 0.7 while every step defines 0.60, and the fallback treats `max_latency_ms == 0` as "no SLA". Make both explicit.
-4. **Explainability.** Return the per-metric score breakdown with the winner so the dashboard can show why it was chosen.
+1. ✅ **Deferral is no longer free.** The scorer now scores `time_offset_hr × 1h + est_latency_ms`; the SLA filter still checks compute latency only. Speed never defers. Offline, eco defers llama by 4 h when the carbon gain is worth it.
+2. **Policies collapse in hybrid mode. This is a data problem, not a scoring bug.** Under the current assumptions, `gemini-3-flash @ us-west` beats every local candidate on latency, energy, carbon *and* accuracy, so every policy correctly picks it. The deciding number is an assumption: a Flash call is assumed to use about ⅓ of the energy of a 15 s local run. → Calibrate cloud energy in Phase 5 before drawing eco conclusions from hybrid runs.
+3. ⏳ **SLAs vs. reality (needs your decision).** Real pipeline runs in `results/` take a median of about 5.5 s for classify on both local models, and 11.5 s / 10.6 s for qwen on retrieve / summarize. The SLAs are 4 / 6 / 8 s, so offline the scheduler is in fallback mode for most steps. The per-step benchmark tables in `data/model_table.py` (`_LOCAL_*_LATENCY_MS`, 2–5 s) are dead code, and they disagree with the pipeline's own measurements. Either:
+   - raise the SLAs to what the pipeline really achieves, or
+   - make local inference faster (shorter outputs, thinking off), re-benchmark, and feed the per-step measurements into the estimator.
+4. **Defaults.** In `scorer.py`, `min_accuracy` defaults to 0.7 while every step defines 0.60, and the fallback treats `max_latency_ms == 0` as "no SLA". Make both explicit.
+5. **Explainability.** Return the per-metric score breakdown with the winner so the dashboard can show why it was chosen.
 
 ## Phase 4 — Workflow and dashboard (~1–2 days)
 

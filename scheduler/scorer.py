@@ -4,6 +4,17 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+MS_PER_HOUR = 3_600_000
+
+
+def effective_latency_ms(c: Candidate) -> float:
+    """Time until the step's result is ready: deliberate deferral + compute latency.
+
+    est_latency_ms excludes the deferral by design (see data/README.md), so it is added
+    here for scoring. Without it, deferring looks free and even the speed policy defers.
+    """
+    return c.time_offset_hr * MS_PER_HOUR + c.est_latency_ms
+
 
 def _normalize(values: list[float]) -> list[float]:
     min_v = min(values)
@@ -35,7 +46,8 @@ def score_candidates(candidates: list[Candidate], weights: dict, step_id: str) -
         )
         filtered = [fallback]
 
-    latencies = [c.est_latency_ms for c in filtered]
+    # SLA filtering above uses compute latency only; scoring charges for the wait as well.
+    latencies = [effective_latency_ms(c) for c in filtered]
     costs = [c.est_cost_usd for c in filtered]
     energies = [c.est_energy_kwh for c in filtered]
     carbons = [c.est_carbon_g for c in filtered]

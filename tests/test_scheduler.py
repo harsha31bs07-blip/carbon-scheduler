@@ -325,6 +325,38 @@ class TestTimeOffsetCarbonSensitivity:
         assert winner.est_carbon_g > 0
 
 
+class TestDeferral:
+    """Deferring a step must cost latency in scoring, but not count against the compute SLA."""
+
+    def same_model_at_offsets(self, carbons):
+        # Identical compute; only the start time (and therefore grid carbon) differs.
+        return [
+            Candidate("classify", "m", "us-east", off, 1500.0, 0.9, 0.001, 0.001, carbon)
+            for off, carbon in zip([0, 2, 4], carbons)
+        ]
+
+    def test_speed_policy_does_not_defer(self):
+        candidates = self.same_model_at_offsets([100.0, 40.0, 30.0])
+        winner = score_candidates(candidates, get_policy_weights("speed"), "classify")[0][0]
+        assert winner.time_offset_hr == 0
+
+    def test_eco_policy_defers_for_large_carbon_gain(self):
+        candidates = self.same_model_at_offsets([100.0, 40.0, 30.0])
+        winner = score_candidates(candidates, get_policy_weights("eco"), "classify")[0][0]
+        assert winner.time_offset_hr > 0
+
+    def test_eco_policy_does_not_defer_for_no_gain(self):
+        candidates = self.same_model_at_offsets([100.0, 100.0, 100.0])
+        winner = score_candidates(candidates, get_policy_weights("eco"), "classify")[0][0]
+        assert winner.time_offset_hr == 0
+
+    def test_deferred_candidates_pass_compute_sla(self, monkeypatch):
+        pin_step_rules(monkeypatch, min_accuracy=0.6, max_latency_ms=2000)
+        candidates = self.same_model_at_offsets([100.0, 40.0, 30.0])
+        scored = score_candidates(candidates, get_policy_weights("eco"), "classify")
+        assert len(scored) == 3
+
+
 class TestEndToEndScheduling:
     """End-to-end tests for schedule_step across all steps and policies."""
 
@@ -437,7 +469,7 @@ class TestTieBreaking:
         # Lexicographically: "haiku" < "sonnet" < "opus"
         candidates = [
             Candidate(step_id, "opus", "in-south", 3, 100.0, 0.85, 0.01, 0.001, 200.0),  # high carbon
-            Candidate(step_id, "sonnet", "us-east", 0, 100.0, 0.85, 0.01, 0.001, 100.0),  # low carbon
+            Candidate(step_id, "sonnet", "us-east", 1, 100.0, 0.85, 0.01, 0.001, 100.0),  # low carbon, same start as haiku
             Candidate(step_id, "haiku", "eu-west", 1, 100.0, 0.85, 0.01, 0.001, 100.0), # same carbon as sonnet
         ]
         weights = get_policy_weights("balanced")
