@@ -15,6 +15,9 @@ from data.region_carbon import normalize_location
 # Default primary coordinator/client origin region
 DEFAULT_ORIGIN: str = "us-east"
 
+# On-device deployment location (see data/region_carbon.py)
+LOCAL_LOCATION: str = "local-gpu"
+
 # Pairwise round-trip network transit times (ms) derived from
 # global cloud backbone telemetry (AWS/GCP network performance benchmarks & WonderNetwork RTT data)
 PAIRWISE_LATENCY_MS: Dict[Tuple[str, str], float] = {
@@ -83,6 +86,10 @@ def get_inter_region_latency_ms(origin: str, destination: str) -> float:
     """
     orig = normalize_location(origin)
     dest = normalize_location(destination)
+
+    # Local deployment runs on the caller's own machine: no network hop.
+    if dest == LOCAL_LOCATION:
+        return 0.0
 
     if orig == dest:
         return PAIRWISE_LATENCY_MS.get((orig, dest), 18.0)

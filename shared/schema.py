@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass, fields
 from typing import Optional
 
 
@@ -8,7 +8,7 @@ from typing import Optional
 class Candidate:
     """A single scheduling decision returned for one pipeline step.
 
-    LOCAL-ONLY SCOPE: Models are local LLMs (qwen3.5:4b, llama3.2:3b).
+    HYBRID MODE: Local models (always) + cloud models (when keys present).
     """
 
     step_id: str
@@ -21,10 +21,20 @@ class Candidate:
     est_energy_kwh: float # ESTIMATED (GPU power × duration)
     est_carbon_g: float   # ESTIMATED (energy × grid intensity)
 
+    def to_dict(self) -> dict:
+        return asdict(self)
 
-# LOCAL-ONLY SCOPE: Adjusted thresholds for local models
-# qwen3.5:4b accuracy: 0.65, llama3.2:3b accuracy: 0.63
-# Relaxed latency constraints to match actual local model performance
+    @classmethod
+    def from_dict(cls, d: dict) -> Candidate:
+        """Build from a dict, ignoring keys that are not Candidate fields (e.g. JSONL extras)."""
+        names = {f.name for f in fields(cls)}
+        return cls(**{k: v for k, v in d.items() if k in names})
+
+
+# HYBRID MODE: Adjusted thresholds accommodate both local and cloud models
+# Local models: qwen3.5:4b accuracy 0.65, llama3.2:3b accuracy 0.63
+# Cloud models: haiku 0.76, sonnet 0.88, opus 0.94 (when API keys present)
+# Latency constraints relaxed to match actual local model performance
 STEP_DEFINITIONS: list[dict] = [
     {"step_id": "classify",  "task_type": "classification", "sla_ms": 4000, "min_accuracy": 0.60, "max_latency_ms": 4000},
     {"step_id": "retrieve",  "task_type": "qa",             "sla_ms": 6000, "min_accuracy": 0.60, "max_latency_ms": 6000},

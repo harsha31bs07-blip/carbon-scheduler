@@ -38,11 +38,16 @@ def test_pricing_order_and_blend():
 def test_region_aliases_and_latency_symmetry():
     assert normalize_location("ap-south-2") == "in-south"
     assert normalize_location("us-east-1") == "us-east"
-    regs = list(REGION_PROFILES)
+    regs = [r for r in REGION_PROFILES if r != "local-gpu"]
     for a in regs:
         for b in regs:
             assert (a, b) in PAIRWISE_LATENCY_MS
             assert get_inter_region_latency_ms(a, b) == get_inter_region_latency_ms(b, a)
+
+
+def test_local_deployment_has_no_network_latency():
+    for origin in list(REGION_PROFILES):
+        assert get_inter_region_latency_ms(origin, "local-gpu") == 0.0
 
 
 def test_carbon_forecast_is_deterministic_and_varies():
@@ -85,7 +90,12 @@ def test_mock_results_are_not_treated_as_measured(tmp_path):
 
 
 def test_candidate_tradeoffs():
-    cands = cb.enumerate_candidates("s1", 1200, 300, base_utc_time=T0)
+    cands = cb.enumerate_candidates(
+        "s1", 1200, 300, base_utc_time=T0,
+        models=("haiku", "sonnet", "opus"),
+        locations=("us-east", "eu-west", "in-south"),
+        offsets=(0, 2, 4, 8, 12),
+    )
     assert len(cands) == 3 * 3 * 5
     at = lambda m, loc, off: next(
         c for c in cands if (c.model, c.location, c.time_offset_hr) == (m, loc, off)

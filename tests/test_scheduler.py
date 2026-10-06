@@ -20,6 +20,7 @@ from scheduler.candidate_gen import (
     REGIONS,
     TIME_OFFSETS,
 )
+from scheduler import optimizer, scorer
 from scheduler.scorer import score_candidates, _normalize
 from scheduler.policies import get_policy_weights, POLICIES
 from scheduler.optimizer import schedule_step
@@ -128,6 +129,15 @@ class TestPolicyWeights:
             get_policy_weights("custom", None)
 
 
+def pin_step_rules(monkeypatch, min_accuracy=0.75, max_latency_ms=None):
+    """Pin a step's constraints so tests don't depend on the production SLAs in STEP_DEFINITIONS."""
+    monkeypatch.setattr(
+        scorer,
+        "get_step",
+        lambda step_id: {"step_id": step_id, "min_accuracy": min_accuracy, "max_latency_ms": max_latency_ms},
+    )
+
+
 class TestHardConstraintsAndFallback:
     """Tests for accuracy floor, latency SLA, and fallback logic."""
 
@@ -150,9 +160,10 @@ class TestHardConstraintsAndFallback:
             candidates.append(c)
         return candidates
 
-    def test_accuracy_floor_filters_low_accuracy(self):
+    def test_accuracy_floor_filters_low_accuracy(self, monkeypatch):
         """Candidates below min_accuracy are filtered out."""
-        step_id = "classify"  # min_accuracy = 0.75
+        step_id = "classify"
+        pin_step_rules(monkeypatch, min_accuracy=0.75)
         candidates = self.create_synthetic_candidates(step_id, [
             {"accuracy": 0.80, "latency": 100},  # passes
             {"accuracy": 0.70, "latency": 100},  # fails (below 0.75)
@@ -164,9 +175,10 @@ class TestHardConstraintsAndFallback:
         assert len(scored) == 2
         assert all(c.est_accuracy >= 0.75 for c, _ in scored)
 
-    def test_latency_sla_filters_high_latency(self):
+    def test_latency_sla_filters_high_latency(self, monkeypatch):
         """Candidates exceeding max_latency_ms are filtered out."""
-        step_id = "summarize"  # max_latency_ms = 1500
+        step_id = "classify"
+        pin_step_rules(monkeypatch, min_accuracy=0.6, max_latency_ms=2000)
         candidates = self.create_synthetic_candidates(step_id, [
             {"latency": 1500, "accuracy": 0.9},   # passes
             {"latency": 2500, "accuracy": 0.9},   # fails (exceeds 2000)
@@ -177,9 +189,10 @@ class TestHardConstraintsAndFallback:
         assert len(scored) == 2
         assert all(c.est_latency_ms <= 2000 for c, _ in scored)
 
-    def test_fallback_when_all_filtered_by_accuracy(self):
+    def test_fallback_when_all_filtered_by_accuracy(self, monkeypatch):
         """When all candidates fail accuracy, fallback picks highest accuracy."""
-        step_id = "classify"  # min_accuracy = 0.75
+        step_id = "classify"
+        pin_step_rules(monkeypatch, min_accuracy=0.75)
         candidates = self.create_synthetic_candidates(step_id, [
             {"accuracy": 0.70, "latency": 100},  # all below floor
             {"accuracy": 0.72, "latency": 100},
@@ -191,9 +204,10 @@ class TestHardConstraintsAndFallback:
         # Fallback should pick highest accuracy (0.74)
         assert scored[0][0].est_accuracy == 0.74
 
-    def test_fallback_when_all_filtered_by_latency(self):
+    def test_fallback_when_all_filtered_by_latency(self, monkeypatch):
         """When all candidates fail latency SLA, fallback picks lowest violation."""
-        step_id = "summarize"  # max_latency_ms = 1500
+        step_id = "classify"
+        pin_step_rules(monkeypatch, min_accuracy=0.6, max_latency_ms=1500)
         candidates = self.create_synthetic_candidates(step_id, [
             {"latency": 3000, "accuracy": 0.9},  # violation = 1000
             {"latency": 2500, "accuracy": 0.9},  # violation = 500
@@ -205,9 +219,10 @@ class TestHardConstraintsAndFallback:
         # Fallback should pick lowest latency violation (2500 -> violation 500)
         assert scored[0][0].est_latency_ms == 2500
 
-    def test_fallback_prefers_highest_accuracy_then_lowest_violation(self):
+    def test_fallback_prefers_highest_accuracy_then_lowest_violation(self, monkeypatch):
         """Fallback: highest accuracy first, then lowest latency violation."""
-        step_id = "draft"  # min_accuracy = 0.80, max_latency_ms = 3000
+        step_id = "classify"
+        pin_step_rules(monkeypatch, min_accuracy=0.80, max_latency_ms=3000)
         candidates = self.create_synthetic_candidates(step_id, [
             {"accuracy": 0.75, "latency": 100},  # fails accuracy
             {"accuracy": 0.85, "latency": 4000},  # fails latency
@@ -219,9 +234,10 @@ class TestHardConstraintsAndFallback:
         # Among failures, highest accuracy (0.85) should win
         assert scored[0][0].est_accuracy == 0.85
 
-    def test_fallback_no_sla_uses_raw_latency(self):
+    def test_fallback_no_sla_uses_raw_latency(self, monkeypatch):
         """When no max_latency_ms defined, use raw latency for fallback."""
-        step_id = "retrieve"  # max_latency_ms = 3000
+        step_id = "classify"
+        pin_step_rules(monkeypatch, min_accuracy=0.95)
         candidates = self.create_synthetic_candidates(step_id, [
             {"accuracy": 0.90, "latency": 4000},
             {"accuracy": 0.90, "latency": 3500},   # same accuracy, lower latency
@@ -230,7 +246,7 @@ class TestHardConstraintsAndFallback:
         weights = get_policy_weights("balanced")
         scored = score_candidates(candidates, weights, step_id)
         assert len(scored) == 1
-        # Should pick lowest latency violation (3500 -> violation 500)
+        # All fail the accuracy floor; with no SLA the fallback ranks by raw latency
         assert scored[0][0].est_latency_ms == 3500
 
 
@@ -350,18 +366,22 @@ class TestEndToEndScheduling:
             assert isinstance(candidate, Candidate)
             assert candidate.step_id == step_id
 
-    def test_different_policies_produce_different_results(self):
-        """Different policies should generally produce different choices."""
-        step_id = "classify"
-        speed_choice = schedule_step(step_id, "speed")
-        eco_choice = schedule_step(step_id, "eco")
-        balanced_choice = schedule_step(step_id, "balanced")
-        # At least some should differ (not guaranteed for all steps, but likely)
-        choices = [(speed_choice.model, speed_choice.location, speed_choice.time_offset_hr),
-                   (eco_choice.model, eco_choice.location, eco_choice.time_offset_hr),
-                   (balanced_choice.model, balanced_choice.location, balanced_choice.time_offset_hr)]
-        # Allow for some overlap but not all identical
-        assert len(set(choices)) >= 2
+    def test_different_policies_produce_different_results(self, monkeypatch):
+        """Given a pool with real trade-offs, speed and eco pick different candidates.
+
+        Uses a fixed pool: the live pool depends on the wall-clock carbon curve and on
+        which API keys are configured, so it can't guarantee a trade-off exists.
+        """
+        pool = [
+            Candidate("classify", "fast", "us-east", 0, 100.0, 0.90, 0.030, 0.0030, 300.0),
+            Candidate("classify", "mid", "eu-west", 2, 400.0, 0.85, 0.015, 0.0015, 120.0),
+            Candidate("classify", "green", "eu-north", 4, 900.0, 0.80, 0.005, 0.0005, 20.0),
+        ]
+        monkeypatch.setattr(optimizer, "generate_candidates", lambda step_id: pool)
+        pin_step_rules(monkeypatch, min_accuracy=0.6, max_latency_ms=4000)
+
+        assert schedule_step("classify", "speed").model == "fast"
+        assert schedule_step("classify", "eco").model == "green"
 
 
 class TestCandidateGeneration:
@@ -387,7 +407,7 @@ class TestCandidateGeneration:
         for c in candidates:
             assert c.est_latency_ms > 0
             assert 0 < c.est_accuracy <= 1.0
-            assert c.est_cost_usd > 0
+            assert c.est_cost_usd >= 0  # local models are free
             assert c.est_energy_kwh > 0
             assert c.est_carbon_g > 0
 
