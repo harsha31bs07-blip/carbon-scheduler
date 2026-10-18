@@ -12,7 +12,6 @@ Scheduler scoring/constraint logic is tested in tests/test_scheduler.py.
 """
 
 import json
-import os
 
 import pytest
 
@@ -175,32 +174,29 @@ class TestReplay:
     def test_returns_none_without_recording(self, results_dir):
         assert _get_replay_data("classify", "local-qwen3.5") is None
 
-    def test_newest_matching_file_wins(self, results_dir):
-        old, new = results_dir / "old.jsonl", results_dir / "new.jsonl"
-        self._record(old, "classify", "local-qwen3.5", 111)
-        self._record(new, "classify", "local-qwen3.5", 222)
-        os.utime(old, (1_000_000, 1_000_000))
-        os.utime(new, (2_000_000, 2_000_000))
-        assert _get_replay_data("classify", "local-qwen3.5")["latency_ms"] == 222
+    def test_legacy_recordings_are_not_replay_fixtures(self, results_dir):
+        self._record(results_dir / "recording.jsonl", "classify", "local-qwen3.5", 111)
+        assert _get_replay_data("classify", "local-qwen3.5", replay_dir=results_dir) is None
 
-    def test_replay_mode_skips_model_call(self, results_dir, dispatch_calls):
+    def test_replay_miss_never_makes_model_call(self, results_dir, dispatch_calls):
         model = schedule_step("classify", "balanced").model
         self._record(results_dir / "rec.jsonl", "classify", model, 4321)
 
-        out = execute_step("classify", "run2", "balanced", replay_mode=True)
+        with pytest.raises(executor.ReplayError):
+            execute_step("classify", "run2", "balanced", replay_mode=True, replay_dir=results_dir)
         assert dispatch_calls == []
-        assert out["model_result"]["latency_ms"] == 4321
-        assert read_records(results_dir / "run2.jsonl")[0]["replay_used"] is True
+        assert not (results_dir / "run2.jsonl").exists()
 
 
 class TestFallback:
-    def test_failed_call_falls_back_to_other_local_model(self, results_dir, monkeypatch):
+    @pytest.mark.parametrize("error", [RuntimeError, ConnectionError, TimeoutError])
+    def test_failed_call_falls_back_to_other_local_model(self, results_dir, monkeypatch, error):
         calls = []
 
         def flaky_dispatch(candidate, prompt, step_context):
             calls.append(candidate.model)
             if len(calls) == 1:
-                raise RuntimeError("ollama timed out")
+                raise error("ollama unavailable")
             return fake_model_result()
 
         monkeypatch.setattr(executor, "_dispatch", flaky_dispatch)

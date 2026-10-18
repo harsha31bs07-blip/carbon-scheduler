@@ -407,7 +407,10 @@ class TestEndToEndScheduling:
             Candidate("classify", "mid", "eu-west", 2, 400.0, 0.85, 0.015, 0.0015, 120.0),
             Candidate("classify", "green", "eu-north", 4, 900.0, 0.80, 0.005, 0.0005, 20.0),
         ]
-        monkeypatch.setattr(optimizer, "generate_candidates", lambda step_id: pool)
+        monkeypatch.setattr(
+            optimizer, "generate_candidates",
+            lambda step_id, base_utc_time=None, *, execution_only=False: pool,
+        )
         pin_step_rules(monkeypatch, min_accuracy=0.6, max_latency_ms=4000)
 
         assert schedule_step("classify", "speed").model == "fast"

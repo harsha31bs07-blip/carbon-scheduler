@@ -1,13 +1,9 @@
 import sys
-import json
-import os
 import time
 from pathlib import Path
-from datetime import datetime
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
 from dotenv import load_dotenv
 
 # ── Load environment variables from .env file ─────────────────────────────────
@@ -18,12 +14,14 @@ load_dotenv(root_dir / ".env")  # Load .env file before any other imports
 if str(root_dir) not in sys.path:
     sys.path.insert(0, str(root_dir))
 
-from workflow.executor import run_pipeline, schedule_step
+from workflow.executor import run_pipeline, run_comparison, schedule_step
+from workflow.dashboard.data_loading import load_runs, select_comparison, provenance_label
+from shared import availability
 from shared.schema import STEP_DEFINITIONS
 from workflow.auth import create_otp, verify_otp, send_otp_email, check_rate_limit
 
 # ── Configuration ────────────────────────────────────────────────────────────
-RESULTS_DIR = root_dir / "results"
+RESULTS_DIR = root_dir / "results" / "runs"
 
 # ── MONOCHROME PALETTE + ONE ACCENT COLOR ───────────────────────────────────
 # Base palette (grayscale only)
@@ -404,103 +402,16 @@ st.markdown(f"""
 
 # ── Helper to find the most recent run ───────────────────────────────────────
 def get_latest_run_id():
-    if not RESULTS_DIR.exists():
-        return None
-    files = list(RESULTS_DIR.glob("*.jsonl"))
-    if not files:
-        return None
-    latest_file = max(files, key=lambda f: f.stat().st_mtime)
-    return latest_file.stem
+    runs = load_runs(RESULTS_DIR)
+    return runs[0]["run_id"] if runs else None
 
 
-# ── Helper: Load & aggregate all runs by policy ────────────────────────────────
-def load_all_runs():
-    if not RESULTS_DIR.exists():
-        return {}
-    runs_by_policy = {}
-    for file_path in RESULTS_DIR.glob("*.jsonl"):
-        records = []
-        try:
-            with open(file_path, "r", encoding="utf-8") as f:
-                for line in f:
-                    line_str = line.strip()
-                    if not line_str:
-                        continue
-                    try:
-                        data = json.loads(line_str)
-                    except json.JSONDecodeError:
-                        continue
-                    
-                    if "policy" not in data or not data["policy"]:
-                        if "baseline" in file_path.stem:
-                            data["policy"] = "baseline"
-                        else:
-                            data["policy"] = "unknown"
-                            
-                    if "run_id" not in data or not data["run_id"]:
-                        data["run_id"] = file_path.stem
-                        
-                    records.append(data)
-        except Exception:
-            continue
-            
-        if not records:
-            continue
-            
-        policy = records[0].get("policy") or "unknown"
-        run_entry = {
-            "run_id": file_path.stem,
-            "policy": policy,
-            "mtime": file_path.stat().st_mtime,
-            "records": records,
-        }
-        runs_by_policy.setdefault(policy, []).append(run_entry)
-        
-    return runs_by_policy
-
-
-def aggregate_run_totals(records):
-    if not records:
-        return {"cost": 0, "energy": 0, "carbon": 0, "latency": 0, "accuracy": 0}
-    return {
-        "cost": sum(r.get("cost", 0) for r in records),
-        "energy": sum(r.get("energy", 0) for r in records),
-        "carbon": sum(r.get("carbon", 0) for r in records),
-        "latency": sum(r.get("actual_latency_ms", 0) for r in records),
-        "accuracy": sum(r.get("accuracy_estimate", 0) for r in records) / len(records),
-    }
-
-
-def get_comparison_data():
-    runs_by_policy = load_all_runs()
-    if not runs_by_policy:
+def get_comparison_data(scheduled_run_id):
+    pair = select_comparison(load_runs(RESULTS_DIR), scheduled_run_id)
+    if pair is None:
         return None, None, None, None, None
-
-    baseline_runs = runs_by_policy.get("baseline", [])
-    baseline_totals = None
-    baseline_run_id = None
-    if baseline_runs:
-        most_recent_baseline = max(baseline_runs, key=lambda r: r["mtime"])
-        baseline_records = most_recent_baseline["records"]
-        baseline_run_id = most_recent_baseline["run_id"]
-        baseline_totals = aggregate_run_totals(baseline_records)
-
-    scheduled_policies = ["eco", "balanced", "speed", "custom"]
-    all_scheduled_runs = []
-    for pol in scheduled_policies:
-        all_scheduled_runs.extend(runs_by_policy.get(pol, []))
-
-    scheduled_totals = None
-    scheduled_run_id = None
-    scheduled_policy = None
-    if all_scheduled_runs:
-        most_recent_scheduled = max(all_scheduled_runs, key=lambda r: r["mtime"])
-        scheduled_records = most_recent_scheduled["records"]
-        scheduled_run_id = most_recent_scheduled["run_id"]
-        scheduled_policy = most_recent_scheduled["policy"]
-        scheduled_totals = aggregate_run_totals(scheduled_records)
-
-    return baseline_totals, scheduled_totals, baseline_run_id, scheduled_run_id, scheduled_policy
+    baseline, scheduled = pair["baseline"], pair["scheduled"]
+    return baseline["totals"], scheduled["totals"], baseline["run_id"], scheduled["run_id"], scheduled["policy"]
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -696,20 +607,21 @@ with st.sidebar:
     st.divider()
     
     # ── Mode Status Indicator ────────────────────────────────────────────────
-    from workflow.model_clients import GEMINI_AVAILABLE, NVIDIA_AVAILABLE
+    GEMINI_AVAILABLE, gemini_detail = availability.gemini_status()
+    NVIDIA_AVAILABLE, nvidia_detail = availability.nvidia_status()
     
     if GEMINI_AVAILABLE and NVIDIA_AVAILABLE:
-        mode_status = "🌐 **Hybrid: Fully Online**"
-        mode_detail = "Local + Gemini + NVIDIA models available"
+        mode_status = "🌐 **Hybrid: Gemini + NVIDIA configured**"
+        mode_detail = "Provider configuration present; connectivity is checked when run"
     elif GEMINI_AVAILABLE:
-        mode_status = "🌐 **Hybrid: Gemini Connected**"
-        mode_detail = "Local + Gemini models available"
+        mode_status = "🌐 **Hybrid: Gemini configured**"
+        mode_detail = gemini_detail
     elif NVIDIA_AVAILABLE:
-        mode_status = "🌐 **Hybrid: NVIDIA Connected**"
-        mode_detail = "Local + NVIDIA models available"
+        mode_status = "🌐 **Hybrid: NVIDIA configured**"
+        mode_detail = nvidia_detail
     else:
         mode_status = "🔌 **Offline Only**"
-        mode_detail = "Local models only (no API keys detected)"
+        mode_detail = "Local models only; Ollama must be running for live execution"
     
     st.markdown(mode_status)
     st.caption(mode_detail)
@@ -736,7 +648,7 @@ with st.sidebar:
     )
     
     # Replay mode toggle for demo
-    replay_mode = st.checkbox("Replay Mode", value=True, help="Use recorded data (skip real inference)")
+    replay_mode = st.checkbox("Replay Mode", value=True, help="Use curated recordings. Missing matches stop the run without live inference.")
     
     # ── Custom Weight Sliders ────────────────
     if selected_policy == "custom":
@@ -781,20 +693,30 @@ with st.sidebar:
     
     # ── Action Buttons ───────────────────────────────────────────────────────
     st.divider()
-    if st.button("Run Pipeline", type="primary", use_container_width=True, key="btn_run_pipeline"):
+    if st.button("Run Comparison", type="primary", use_container_width=True, key="btn_run_comparison"):
         custom_w = st.session_state.get("custom_weights") if selected_policy == "custom" else None
-        with st.spinner(f"Running {selected_policy.upper()} policy..."):
-            new_run_id = run_pipeline(policy=selected_policy, custom_weights=custom_w, replay_mode=replay_mode)
-            st.session_state.run_id = new_run_id
-            st.rerun()
+        with st.spinner(f"Running baseline and {selected_policy.upper()} with shared settings..."):
+            try:
+                comparison = run_comparison(policy=selected_policy, custom_weights=custom_w, replay_mode=replay_mode)
+            except Exception as exc:
+                st.error(f"Comparison stopped: {exc}")
+            else:
+                st.session_state.run_id = comparison["scheduled_run_id"]
+                st.rerun()
+    st.caption("Runs a baseline and selected policy on the same workload and reference time.")
     
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("Baseline", type="secondary", use_container_width=True, key="btn_run_baseline"):
-            with st.spinner("Running baseline..."):
-                new_run_id = run_pipeline(policy="baseline", replay_mode=replay_mode)
-                st.session_state.run_id = new_run_id
-                st.rerun()
+        if st.button("Single Run", type="secondary", use_container_width=True, key="btn_run_pipeline"):
+            with st.spinner(f"Running {selected_policy}..."):
+                try:
+                    custom_w = st.session_state.get("custom_weights") if selected_policy == "custom" else None
+                    new_run_id = run_pipeline(policy=selected_policy, custom_weights=custom_w, replay_mode=replay_mode)
+                except Exception as exc:
+                    st.error(f"Run stopped: {exc}")
+                else:
+                    st.session_state.run_id = new_run_id
+                    st.rerun()
     
     with col2:
         confirm_clear = st.session_state.get("confirm_clear", False)
@@ -804,6 +726,7 @@ with st.sidebar:
                 for f in RESULTS_DIR.glob("*.jsonl"):
                     try:
                         f.unlink()
+                        f.with_suffix(".manifest.json").unlink(missing_ok=True)
                         deleted_count += 1
                     except Exception:
                         pass
@@ -816,30 +739,28 @@ with st.sidebar:
     st.checkbox("Confirm clear", key="confirm_clear")
 
 # ── Main Content Area ────────────────────────────────────────────────────────
-from workflow.model_clients import GEMINI_AVAILABLE, NVIDIA_AVAILABLE
-
-if GEMINI_AVAILABLE or NVIDIA_AVAILABLE:
-    mode_caption = "Hybrid mode: Local (qwen3.5:4b, llama3.2:3b) + Cloud "
-    if GEMINI_AVAILABLE and NVIDIA_AVAILABLE:
-        mode_caption += "(gemini-3-flash, nemotron-ultra-3) · Mixed cost · Measured latency for all"
-    elif GEMINI_AVAILABLE:
-        mode_caption += "(gemini-3-flash) · Mixed cost · Measured latency for all"
-    else:
-        mode_caption += "(nemotron-ultra-3) · Mixed cost · Measured latency for all"
-else:
-    mode_caption = "Offline mode: Local deployment only (qwen3.5:4b, llama3.2:3b) · Zero API cost · Real measured energy & latency"
+mode_caption = availability.mode_label() + " · Latency from execution or replay · Cost, energy, carbon and quality proxy use estimates"
 
 st.title("Local AI Scheduler")
 st.caption(mode_caption)
 
+available_runs = load_runs(RESULTS_DIR)
+if st.checkbox("Show legacy runs", help="Browse older complete runs with unknown metadata; these cannot be used for comparisons."):
+    known_ids = {run["run_id"] for run in available_runs}
+    available_runs.extend(run for run in load_runs(root_dir / "results")
+                          if run["schema_version"] == 1 and run["run_id"] not in known_ids)
+run_ids = [run["run_id"] for run in available_runs]
+if run_ids:
+    current_index = run_ids.index(st.session_state.run_id) if st.session_state.run_id in run_ids else 0
+    st.session_state.run_id = st.selectbox("Completed run", run_ids, index=current_index)
 run_id = st.session_state.run_id
 
 # ══════════════════════════════════════════════════════════════════════════════
 # LIVE CUSTOM SCHEDULE PREVIEW (for custom policy)
 # ══════════════════════════════════════════════════════════════════════════════
 if selected_policy == "custom" and "live_schedule" in st.session_state and st.session_state.live_schedule:
-    st.markdown('<p class="section-header">Live Schedule Preview</p>', unsafe_allow_html=True)
-    st.caption("Drag sliders in sidebar to watch decisions change in real-time")
+    st.markdown('<p class="section-header">Scenario Preview</p>', unsafe_allow_html=True)
+    st.caption("Projected regions and time windows. Live execution uses configured endpoints and runs immediately.")
     
     live_schedule = st.session_state.live_schedule
     
@@ -856,7 +777,7 @@ if selected_policy == "custom" and "live_schedule" in st.session_state and st.se
                     unsafe_allow_html=True
                 )
                 if cand.time_offset_hr > 0:
-                    st.caption(f"+{cand.time_offset_hr}h offset")
+                    st.caption(f"Projected +{cand.time_offset_hr}h wait")
     
     st.divider()
     
@@ -869,9 +790,9 @@ if selected_policy == "custom" and "live_schedule" in st.session_state and st.se
     
     cols = st.columns(5)
     cols[0].metric("Carbon", f"{total_carbon:.2f} gCO₂e", help="ESTIMATED: energy × grid factor")
-    cols[1].metric("Cost", "$0.00", help="Local execution, no API charges")
-    cols[2].metric("Energy", f"{total_energy:.1f} Wh", help="Real-time preview (will be measured on run)")
-    cols[3].metric("Latency", f"{total_latency:.0f} ms", help="Estimated from benchmarks")
+    cols[1].metric("Cost", f"${total_cost:.5f}", help="Estimated from configured pricing and token assumptions")
+    cols[2].metric("Energy", f"{total_energy:.1f} Wh", help="Estimated model energy")
+    cols[3].metric("Inference latency", f"{total_latency:.0f} ms", help="Estimated from benchmarks; projected waiting is shown separately per step")
     cols[4].metric("Accuracy*", f"{avg_accuracy:.3f}", help="Benchmark-based proxy scores")
     
     st.divider()
@@ -880,16 +801,21 @@ if selected_policy == "custom" and "live_schedule" in st.session_state and st.se
 # MAIN RESULTS DISPLAY
 # ══════════════════════════════════════════════════════════════════════════════
 if run_id:
-    file_path = RESULTS_DIR / f"{run_id}.jsonl"
-    if file_path.exists():
-        records = []
-        with open(file_path, "r", encoding="utf-8") as f:
-            for line in f:
-                if line.strip():
-                    records.append(json.loads(line))
+    selected_run = next((run for run in available_runs if run["run_id"] == run_id), None)
+    if selected_run:
+        records = selected_run["records"]
         
         if records:
             policy_used = records[0].get("policy", "unknown")
+            execution_mode = selected_run.get("execution_mode") or "unknown (legacy)"
+            st.caption(
+                f"Mode: {execution_mode} · Policy: {policy_used} · "
+                f"Workload: {selected_run.get('workload_id') or 'unknown'} · "
+                f"Calibration: {selected_run.get('calibration_id') or 'unknown'}"
+            )
+            if execution_mode == "replay":
+                st.info("Replay: latency and outputs come from recorded execution. This run does not measure current hardware.")
+            st.caption("Cloud execution regions are provider-managed and unknown; displayed cloud locations are reference assumptions for projected carbon.")
             
             # ──────────────────────────────────────────────────────────────────
             # SCHEDULING DECISIONS
@@ -926,7 +852,7 @@ if run_id:
                         )
                     
                     if r.get("time_offset", 0) > 0:
-                        st.caption(f"+{r.get('time_offset', 0) // 3600}h offset")
+                        st.caption(f"Projected +{r.get('time_offset', 0) / 3600:g}h wait")
             
             st.divider()
             
@@ -935,34 +861,17 @@ if run_id:
             # ──────────────────────────────────────────────────────────────────
             st.markdown('<p class="section-header">Total Metrics</p>', unsafe_allow_html=True)
             
-            total_cost = sum(r.get("cost", 0) for r in records)
-            total_energy = sum(r.get("energy", 0) for r in records)
-            total_carbon = sum(r.get("carbon", 0) for r in records)
-            total_latency = sum(r.get("actual_latency_ms", 0) for r in records)
-            avg_accuracy = sum(r.get("accuracy_estimate", 0) for r in records) / len(records)
+            totals = selected_run["totals"]
+            total_cost, total_energy, total_carbon = totals["cost"], totals["energy"], totals["carbon"]
+            total_latency, avg_accuracy = totals["latency"], totals["accuracy"]
             
             metric_cols = st.columns(5)
             
-            # Check if any cloud models were used (cost > 0 means cloud API call)
-            has_cloud_models = any(r.get("model", "").lower() in ["haiku", "opus", "sonnet", "gemini-3-flash", "gemini-3-pro", "nemotron-ultra-3"] for r in records)
-            
-            # Check if energy was measured (from benchmark data)
-            energy_measured = any(r.get("energy_measured", False) for r in records)
-            energy_help = "✓ MEASURED: Real hardware sensors (CPU + GPU)" if energy_measured else "⚠️ ESTIMATED: TDP-based fallback for local / datacenter estimate for cloud"
-            energy_delta = "✓ Measured" if energy_measured else "⚠️ Estimated"
-            
-            # Cost display - distinguish local vs cloud
-            cost_delta = "✓ Measured" if has_cloud_models and total_cost > 0 else "Local ($0)"
-            cost_help = "✓ MEASURED: Real API charges from cloud providers" if has_cloud_models and total_cost > 0 else "Local execution, no API charges"
-            
-            # Latency - cloud calls are measured, local calls are measured
-            latency_delta = "✓ Measured"
-            
-            metric_cols[0].metric("Carbon", f"{total_carbon:.2f} gCO₂e", help="⚠️ ESTIMATED: Energy × grid intensity (local measured, cloud estimated)")
-            metric_cols[1].metric("Cost", f"${total_cost:.5f}" if total_cost > 0 else "$0.00", delta=cost_delta, delta_color="off", help=cost_help)
-            metric_cols[2].metric("Energy", f"{total_energy:.1f} Wh", delta=energy_delta, delta_color="off", help=energy_help)
-            metric_cols[3].metric("Latency", f"{total_latency:.0f} ms", delta=latency_delta, delta_color="off", help="✓ MEASURED: Real API response times")
-            metric_cols[4].metric("Accuracy", f"{avg_accuracy:.3f}", help="Benchmark-based proxy (not task-specific)")
+            metric_cols[0].metric("Carbon", f"{total_carbon:.2f} gCO₂e", delta=provenance_label(records, "carbon"), delta_color="off", help="Modeled energy × reference grid intensity; region/time scenarios are projections")
+            metric_cols[1].metric("Cost", f"${total_cost:.5f}", delta=provenance_label(records, "cost"), delta_color="off", help="Configured pricing and token assumptions; not an invoice")
+            metric_cols[2].metric("Energy", f"{total_energy:.1f} Wh", delta=provenance_label(records, "energy"), delta_color="off", help="Model estimate. Any client-reported observations are retained separately in run records.")
+            metric_cols[3].metric("Latency", f"{total_latency:.0f} ms", delta=provenance_label(records, "latency"), delta_color="off", help="Dispatch duration including failed attempts when recorded; legacy runs use successful response duration")
+            metric_cols[4].metric("Quality proxy", f"{avg_accuracy:.3f}", delta=provenance_label(records, "accuracy"), delta_color="off", help="Benchmark-based estimate; not a task-specific quality assessment")
             
             st.divider()
             
@@ -971,20 +880,29 @@ if run_id:
             # ──────────────────────────────────────────────────────────────────
             st.markdown('<p class="section-header">Savings vs Baseline</p>', unsafe_allow_html=True)
             
-            baseline_totals, scheduled_totals, baseline_run_id, scheduled_run_id, scheduled_policy = get_comparison_data()
+            baseline_totals, scheduled_totals, baseline_run_id, scheduled_run_id, scheduled_policy = get_comparison_data(run_id)
             
             if baseline_totals and scheduled_totals and policy_used != "baseline":
-                # Calculate savings (focus on carbon and latency, cost is always $0)
+                st.caption(
+                    f"Matched comparison: {selected_run['comparison_id']} · "
+                    f"Provider mode: {selected_run['provider_mode']} · Reference: {selected_run['reference_utc_time']}"
+                )
+                st.caption(f"Baseline: {baseline_run_id} · Scheduled: {scheduled_run_id}")
                 base_carb = baseline_totals.get("carbon", 0)
                 base_lat = baseline_totals.get("latency", 0)
-                carb_saved_pct = ((base_carb - total_carbon) / base_carb * 100) if base_carb != 0 else 0
-                lat_saved_pct = ((base_lat - total_latency) / base_lat * 100) if base_lat != 0 else 0
+                carb_saved_pct = ((base_carb - scheduled_totals["carbon"]) / base_carb * 100) if base_carb != 0 else None
+                lat_saved_pct = ((base_lat - scheduled_totals["latency"]) / base_lat * 100) if base_lat != 0 else None
+                carbon_change = "Carbon percentage unavailable (zero baseline)" if carb_saved_pct is None else (
+                    "Carbon unchanged" if carb_saved_pct == 0 else f'{abs(carb_saved_pct):.0f}% modeled carbon {"lower" if carb_saved_pct > 0 else "higher"}'
+                )
+                latency_change = "Latency percentage unavailable (zero baseline)" if lat_saved_pct is None else (
+                    "Latency unchanged" if lat_saved_pct == 0 else f'{abs(lat_saved_pct):.0f}% {"faster" if lat_saved_pct > 0 else "slower"}'
+                )
                 
                 # Savings callout (local-only scope: carbon and latency)
                 st.markdown(
                     f'<div class="savings-callout">'
-                    f'vs. Baseline (always qwen3.5:4b): {abs(carb_saved_pct):.0f}% Carbon {"Saved" if carb_saved_pct > 0 else "Higher"} · '
-                    f'{abs(lat_saved_pct):.0f}% {"Faster" if lat_saved_pct > 0 else "Slower"}'
+                    f'{carbon_change} · {latency_change}'
                     f'</div>',
                     unsafe_allow_html=True
                 )
@@ -995,7 +913,7 @@ if run_id:
                     ("cost", "Cost", "USD", True),
                     ("energy", "Energy", "Wh", True),
                     ("latency", "Latency", "ms", True),
-                    ("accuracy", "Accuracy", "", False),
+                    ("accuracy", "Quality proxy", "", False),
                 ]
                 
                 plot_data = []
@@ -1004,25 +922,28 @@ if run_id:
                     baseline_val = baseline_totals[key]
                     scheduled_val = scheduled_totals[key]
                     
-                    plot_data.append({"Metric": label, "Value": baseline_val, "Type": "Baseline"})
-                    plot_data.append({"Metric": label, "Value": scheduled_val, "Type": "Scheduled"})
+                    metric_label = f"{label} ({unit})" if unit else label
+                    plot_data.append({"Metric": metric_label, "Value": baseline_val, "Type": "Baseline"})
+                    plot_data.append({"Metric": metric_label, "Value": scheduled_val, "Type": "Scheduled"})
                 
                 plot_df = pd.DataFrame(plot_data)
                 
                 # Create figure with explicit monochrome colors
                 fig = px.bar(
                     plot_df,
-                    x="Metric",
+                    x="Type",
                     y="Value",
                     color="Type",
                     barmode="group",
+                    facet_col="Metric",
+                    facet_col_wrap=3,
                     color_discrete_map={"Baseline": COLOR_BASELINE, "Scheduled": COLOR_ACCENT},
                     text_auto='.3s',
                 )
                 
                 # Style chart to match monochrome theme
                 fig.update_layout(
-                    height=350,
+                    height=600,
                     paper_bgcolor='white',
                     plot_bgcolor='white',
                     font=dict(family="Inter, sans-serif", size=13, color=COLOR_TEXT_PRIMARY),
@@ -1049,6 +970,7 @@ if run_id:
                     tickfont=dict(color=COLOR_TEXT_PRIMARY)
                 )
                 fig.update_yaxes(
+                    matches=None,
                     showgrid=True,
                     gridwidth=1,
                     gridcolor=COLOR_BORDER,
@@ -1062,17 +984,19 @@ if run_id:
                 
                 st.plotly_chart(fig, use_container_width=True)
                 
-                # Dynamic caption based on whether energy was measured
-                energy_measured = records[0].get("energy_measured", False) if records else False
-                energy_status = "MEASURED (hardware sensors)" if energy_measured else "ESTIMATED (TDP fallback)"
-                st.caption(f"Lower is better (except Accuracy) · Energy: {energy_status} · Carbon: ESTIMATED (from energy) · Latency: MEASURED · Baseline = always qwen3.5:4b")
+                st.caption(f"Energy and cost: estimates · Carbon: model projection · Latency: {provenance_label(records, 'latency')} · Quality: estimated proxy")
                 
             elif policy_used == "baseline":
                 st.info("📊 Baseline reference: Always qwen3.5:4b (larger local model), no time-of-day optimization")
-            elif not baseline_totals:
-                st.info("💡 Tip: Run a baseline first to compare smart scheduling vs. always using the larger model")
+            else:
+                st.info("No compatible complete comparison for this run. Use Run Comparison to create a baseline and policy pair with shared settings. Legacy and partial runs are excluded.")
+            with st.expander("Step outputs and metric sources"):
+                for record in records:
+                    st.markdown(f"**{record['step_id'].upper()}**")
+                    st.text(record.get("output_text") or "Output unavailable in this recording")
+                st.json(records)
             
     else:
-        st.warning(f"Results file not found.")
+        st.warning("This run is incomplete, malformed, or missing a completed manifest. Select a complete run or run a new comparison.")
 else:
-    st.info("Select a policy and click Run Pipeline to begin")
+    st.info("No complete runs yet. Select a policy and click Run Comparison to begin. Replay requires curated recordings; missing or invalid records never count as results.")

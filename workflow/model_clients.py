@@ -31,7 +31,7 @@ from __future__ import annotations
 import os
 import time
 import random
-from typing import Any, Callable, Dict, Optional, Type
+from typing import Any, Callable, Dict, Optional
 from functools import wraps
 
 # Attempt to load .env if available
@@ -44,6 +44,12 @@ except ImportError:
 import requests
 
 from shared import availability
+
+try:
+    import httpx
+    _SDK_TRANSPORT_ERRORS = (httpx.TimeoutException, httpx.NetworkError)
+except ImportError:
+    _SDK_TRANSPORT_ERRORS = ()
 
 try:
     from google import genai
@@ -78,83 +84,27 @@ class AuthError(Exception):
     pass
 
 
+def _http_status(exc: Exception) -> Optional[int]:
+    """Read provider status metadata without interpreting arbitrary error text."""
+    if isinstance(exc, requests.exceptions.HTTPError) and exc.response is not None:
+        return exc.response.status_code
+    if genai_errors is not None and isinstance(exc, genai_errors.APIError):
+        code = getattr(exc, "code", None)
+        return code if isinstance(code, int) else None
+    return None
+
+
 def _is_transient_error(exc: Exception) -> bool:
-    """Determine if an exception represents a transient error worth retrying."""
-    err_msg = str(exc).lower()
-    
-    # Check for specific HTTP status codes in error message
-    transient_indicators = [
-        "timeout",
-        "timed out",
-        "429",
-        "rate limit",
-        "rate_limit",
-        "too many requests",
-        "500",
-        "502",
-        "503",
-        "504",
-        "internal server error",
-        "bad gateway",
-        "service unavailable",
-        "gateway timeout",
-        "connection reset",
-        "connection refused",
-        "temporary failure",
-    ]
-    
-    # Check for auth errors (should NOT retry)
-    auth_indicators = [
-        "401",
-        "403",
-        "unauthorized",
-        "forbidden",
-        "invalid api key",
-        "invalid_api_key",
-        "missing api key",
-        "missing_api_key",
-        "authentication failed",
-        "permission denied",
-        "api key not valid",
-    ]
-    
-    # Auth errors take precedence - fail fast
-    for indicator in auth_indicators:
-        if indicator in err_msg:
-            return False
-    
-    # Check for transient errors
-    for indicator in transient_indicators:
-        if indicator in err_msg:
-            return True
-    
-    # Also check for specific exception types
-    if isinstance(exc, (TimeoutError, ConnectionError)):
-        return True
-    
-    # Check for requests library specific exceptions
-    if isinstance(exc, requests.exceptions.Timeout):
-        return True
-    if isinstance(exc, requests.exceptions.ConnectionError):
-        return True
-    if isinstance(exc, requests.exceptions.HTTPError):
-        if hasattr(exc, 'response') and exc.response is not None:
-            status = exc.response.status_code
-            if status == 429 or 500 <= status < 600:
-                return True
-            if status in (401, 403):
-                return False
-    
-    # Check for google-genai specific errors
-    if genai_errors is not None:
-        if isinstance(exc, genai_errors.APIError):
-            if hasattr(exc, 'code'):
-                if exc.code == 429 or 500 <= exc.code < 600:
-                    return True
-                if exc.code in (401, 403):
-                    return False
-    
-    return False
+    """Retry only transport failures, explicit transient errors, 429, and 5xx."""
+    if isinstance(exc, AuthError):
+        return False
+    status = _http_status(exc)
+    if status is not None:
+        return status == 429 or 500 <= status < 600
+    return isinstance(exc, (
+        TransientError, TimeoutError, ConnectionError,
+        requests.exceptions.Timeout, requests.exceptions.ConnectionError,
+    ) + _SDK_TRANSPORT_ERRORS)
 
 
 def with_retry(func: Callable) -> Callable:
@@ -166,40 +116,50 @@ def with_retry(func: Callable) -> Callable:
     """
     @wraps(func)
     def wrapper(*args, **kwargs):
-        last_exception = None
-        
         for attempt in range(MAX_RETRIES + 1):  # +1 for initial attempt
             try:
                 return func(*args, **kwargs)
             except Exception as exc:
-                last_exception = exc
-                
-                # Don't retry on auth errors - fail fast
-                if isinstance(exc, AuthError) or (not _is_transient_error(exc) and attempt == 0):
-                    if not _is_transient_error(exc):
-                        raise AuthError(f"Authentication/authorization error: {exc}") from exc
+                if isinstance(exc, AuthError):
                     raise
-                
-                # If this was the last attempt, re-raise
+                if _http_status(exc) in (401, 403):
+                    raise AuthError(
+                        f"{func.__name__} authentication failed (HTTP {_http_status(exc)})."
+                    ) from exc
+                # A permanent error must fail immediately, even after a transient one.
+                # Keep configuration and programming errors in their original category.
+                if not _is_transient_error(exc):
+                    raise
                 if attempt >= MAX_RETRIES:
-                    break
+                    raise RuntimeError(
+                        f"{func.__name__} failed after {MAX_RETRIES} retries "
+                        f"({type(exc).__name__})."
+                    ) from exc
                 
                 # Calculate delay with exponential backoff and jitter
                 delay = min(BASE_DELAY_SECONDS * (2 ** attempt), MAX_DELAY_SECONDS)
                 jitter = random.uniform(0, delay * 0.1)
-                total_delay = delay + jitter
+                total_delay = min(delay + jitter, MAX_DELAY_SECONDS)
                 
-                print(f"  [RETRY {attempt + 1}/{MAX_RETRIES}] {func.__name__} failed: {exc}. "
+                # Provider messages can echo request headers/keys; log only the type.
+                print(f"  [RETRY {attempt + 1}/{MAX_RETRIES}] {func.__name__} failed "
+                      f"({type(exc).__name__}). "
                       f"Retrying in {total_delay:.1f}s...")
                 time.sleep(total_delay)
-        
-        # All retries exhausted
-        raise RuntimeError(
-            f"{func.__name__} failed after {MAX_RETRIES} retries. "
-            f"Last error: {last_exception}"
-        ) from last_exception
     
     return wrapper
+
+
+def _token_usage(input_tokens: Optional[int], output_tokens: Optional[int]) -> dict:
+    """Retain unavailable usage as unknown, never call default zeroes measurements."""
+    for value in (input_tokens, output_tokens):
+        if value is not None and (type(value) is not int or value < 0):
+            raise ValueError("Provider token counts must be non-negative integers")
+    reported = sum(value is not None for value in (input_tokens, output_tokens))
+    source = {0: "unknown", 1: "partially_provider_reported", 2: "provider_reported"}[reported]
+    return {"input_tokens": input_tokens if input_tokens is not None else 0,
+            "output_tokens": output_tokens if output_tokens is not None else 0,
+            "token_source": source}
 
 
 # ── Model Endpoints Configuration ───────────────────────────────────────────
@@ -241,14 +201,6 @@ def _call_gemini_model(
     
     HYBRID MODE: Available when GOOGLE_API_KEY is present, alongside local models.
     """
-    gemini_ok, gemini_reason = availability.gemini_status()
-    if not gemini_ok:
-        raise RuntimeError(
-            f"Gemini model '{model_name_label}' is not available. Reason: {gemini_reason}. "
-            f"Set GOOGLE_API_KEY environment variable to enable cloud models. "
-            f"Available local models: qwen3.5:4b, llama3.2:3b"
-        )
-    
     if genai is None:
         raise ImportError(
             "The 'google-genai' package is not installed. "
@@ -257,9 +209,15 @@ def _call_gemini_model(
 
     api_key = os.environ.get("GOOGLE_API_KEY")
     if not api_key:
-        raise ValueError(
+        raise AuthError(
             f"Missing GOOGLE_API_KEY environment variable. "
             f"Required to call {model_name_label}."
+        )
+
+    gemini_ok, gemini_reason = availability.gemini_status()
+    if not gemini_ok:
+        raise RuntimeError(
+            f"Gemini model '{model_name_label}' is not available. Reason: {gemini_reason}."
         )
 
     client = genai.Client(api_key=api_key)
@@ -271,43 +229,33 @@ def _call_gemini_model(
             contents=prompt,
         )
     except Exception as exc:
-        latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
-        err_msg = str(exc)
-        if "NOT_FOUND" in err_msg or "404" in err_msg:
-            # Fallback to gemini-3-flash-preview (free tier available)
-            fallback_id = "gemini-3-flash-preview"
-            try:
-                fallback_start = time.perf_counter()
-                response = client.models.generate_content(
-                    model=fallback_id,
-                    contents=prompt,
-                )
-                latency_ms = round((time.perf_counter() - fallback_start) * 1000, 2)
-            except Exception as fallback_exc:
-                raise RuntimeError(
-                    f"Failed to call {model_name_label} (endpoint: {target_model_id}) "
-                    f"and fallback ({fallback_id}) also failed: {fallback_exc}"
-                ) from fallback_exc
-        else:
-            raise RuntimeError(
-                f"Error calling {model_name_label} (endpoint: {target_model_id}) "
-                f"after {latency_ms}ms: {exc}"
-            ) from exc
+        # Let the retry wrapper inspect structured SDK status/transport types.
+        # Substituting a different model here would hide its identity from logs.
+        if _is_transient_error(exc) or _http_status(exc) in (401, 403):
+            raise
+        if isinstance(exc, (ValueError, ImportError)):
+            raise
+        status = _http_status(exc)
+        detail = f"HTTP {status}" if status is not None else type(exc).__name__
+        raise RuntimeError(
+            f"Error calling {model_name_label} (endpoint: {target_model_id}; {detail})."
+        ) from exc
 
     latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
-    text = response.text or ""
-
-    input_tokens = 0
-    output_tokens = 0
-    if hasattr(response, "usage_metadata") and response.usage_metadata:
-        input_tokens = getattr(response.usage_metadata, "prompt_token_count", 0) or 0
-        output_tokens = getattr(response.usage_metadata, "candidates_token_count", 0) or 0
+    try:
+        text = response.text or ""
+        usage = getattr(response, "usage_metadata", None)
+        tokens = _token_usage(getattr(usage, "prompt_token_count", None),
+                              getattr(usage, "candidates_token_count", None))
+    except (AttributeError, TypeError, ValueError) as exc:
+        raise RuntimeError(
+            f"Failed to parse {model_name_label} response ({type(exc).__name__})."
+        ) from exc
 
     return {
         "text": text,
         "latency_ms": latency_ms,
-        "input_tokens": input_tokens,
-        "output_tokens": output_tokens,
+        **tokens,
         "model": model_name_label,
     }
 
@@ -367,14 +315,6 @@ def call_nemotron_ultra_3(prompt: str, step_context: Optional[dict] = None) -> d
       - NVIDIA_NIM_URL: Full endpoint URL (from build.nvidia.com)
       - NVIDIA_NIM_MODEL: Model identifier (from build.nvidia.com)
     """
-    nvidia_ok, nvidia_reason = availability.nvidia_status()
-    if not nvidia_ok:
-        raise RuntimeError(
-            f"NVIDIA NIM model 'nemotron-ultra-3' is not available. Reason: {nvidia_reason}. "
-            f"Set NVIDIA_API_KEY, NVIDIA_NIM_URL, and NVIDIA_NIM_MODEL environment variables. "
-            f"Available local models: qwen3.5:4b, llama3.2:3b"
-        )
-    
     # Check for missing configuration before attempting call (fail fast)
     if not os.environ.get("NVIDIA_API_KEY"):
         raise AuthError(
@@ -382,18 +322,26 @@ def call_nemotron_ultra_3(prompt: str, step_context: Optional[dict] = None) -> d
             "Required to call nemotron-ultra-3 via NVIDIA NIM API."
         )
     
-    if not NVIDIA_NIM_URL:
+    nvidia_nim_url = os.environ.get("NVIDIA_NIM_URL")
+    nvidia_nim_model = os.environ.get("NVIDIA_NIM_MODEL")
+    if not nvidia_nim_url:
         raise ValueError(
             "Missing NVIDIA_NIM_URL environment variable. "
             "Set this to your NVIDIA NIM endpoint URL from build.nvidia.com. "
             "Example: https://integrate.api.nvidia.com/v1/chat/completions"
         )
     
-    if not NVIDIA_NIM_MODEL:
+    if not nvidia_nim_model:
         raise ValueError(
             "Missing NVIDIA_NIM_MODEL environment variable. "
             "Set this to your NVIDIA model identifier from build.nvidia.com. "
             "Example: nvidia/llama-3.1-nemotron-70b-instruct or meta/llama-3.1-8b-instruct"
+        )
+
+    nvidia_ok, nvidia_reason = availability.nvidia_status()
+    if not nvidia_ok:
+        raise RuntimeError(
+            f"NVIDIA NIM model 'nemotron-ultra-3' is not available. Reason: {nvidia_reason}."
         )
 
     headers = {
@@ -402,7 +350,7 @@ def call_nemotron_ultra_3(prompt: str, step_context: Optional[dict] = None) -> d
         "Accept": "application/json",
     }
     payload = {
-        "model": NVIDIA_NIM_MODEL,
+        "model": nvidia_nim_model,
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.2,
         "max_tokens": 1024,
@@ -411,77 +359,68 @@ def call_nemotron_ultra_3(prompt: str, step_context: Optional[dict] = None) -> d
     start_time = time.perf_counter()
     try:
         resp = requests.post(
-            NVIDIA_NIM_URL,
+            nvidia_nim_url,
             json=payload,
             headers=headers,
             timeout=REQUEST_TIMEOUT_SECONDS,
         )
+    except (requests.exceptions.InvalidURL, requests.exceptions.InvalidSchema,
+            requests.exceptions.MissingSchema) as exc:
+        raise ValueError("Invalid NVIDIA_NIM_URL configuration.") from exc
     except requests.RequestException as e:
         latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
         # Classify network errors for retry logic
         if isinstance(e, requests.exceptions.Timeout):
-            raise TransientError(f"Request timeout after {latency_ms}ms: {e}") from e
+            raise TransientError(f"NVIDIA NIM request timed out after {latency_ms}ms.") from e
         elif isinstance(e, requests.exceptions.ConnectionError):
-            raise TransientError(f"Connection error: {e}") from e
+            raise TransientError("NVIDIA NIM connection failed.") from e
         raise RuntimeError(
-            f"Network request to NVIDIA NIM failed after {latency_ms}ms: {e}"
+            f"Network request to NVIDIA NIM failed after {latency_ms}ms ({type(e).__name__})."
         ) from e
 
     latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
 
     if resp.status_code != 200:
-        # Parse error response for detailed message
-        try:
-            error_data = resp.json()
-            error_detail = error_data.get("detail", resp.text)
-        except Exception:
-            error_detail = resp.text
-        
         # Classify HTTP errors for retry logic
         if resp.status_code == 404:
             # 404 often means wrong model/function ID for this account
             raise RuntimeError(
                 f"NVIDIA NIM API returned 404 Not Found ({latency_ms}ms).\n"
-                f"Error detail: {error_detail}\n"
                 f"This usually means the model/function is not available for your account.\n"
-                f"Current settings:\n"
-                f"  NVIDIA_NIM_URL={NVIDIA_NIM_URL}\n"
-                f"  NVIDIA_NIM_MODEL={NVIDIA_NIM_MODEL}\n"
+                f"Check NVIDIA_NIM_URL and NVIDIA_NIM_MODEL.\n"
                 f"Find the correct values at: https://build.nvidia.com/explore/discover"
             )
         elif resp.status_code == 429 or 500 <= resp.status_code < 600:
             raise TransientError(
                 f"NVIDIA NIM API returned HTTP status {resp.status_code} "
-                f"({latency_ms}ms): {error_detail}"
+                f"({latency_ms}ms)."
             )
         elif resp.status_code in (401, 403):
             raise AuthError(
-                f"NVIDIA NIM API authentication failed (HTTP {resp.status_code}): {error_detail}"
+                f"NVIDIA NIM API authentication failed (HTTP {resp.status_code})."
             )
         raise RuntimeError(
             f"NVIDIA NIM API returned HTTP status {resp.status_code} "
-            f"({latency_ms}ms): {error_detail}"
+            f"({latency_ms}ms)."
         )
 
     try:
         data = resp.json()
         choices = data.get("choices", [])
         if not choices:
-            raise ValueError(f"No choices returned from NVIDIA NIM: {data}")
+            raise ValueError("No choices returned from NVIDIA NIM.")
         text = choices[0].get("message", {}).get("content", "")
-        usage = data.get("usage", {})
-        input_tokens = usage.get("prompt_tokens", 0)
-        output_tokens = usage.get("completion_tokens", 0)
+        usage = data.get("usage") or {}
+        tokens = _token_usage(usage.get("prompt_tokens"), usage.get("completion_tokens"))
     except Exception as parse_err:
         raise RuntimeError(
-            f"Failed to parse NVIDIA NIM JSON response: {parse_err}"
+            f"Failed to parse NVIDIA NIM JSON response ({type(parse_err).__name__})."
         ) from parse_err
 
     return {
         "text": text,
         "latency_ms": latency_ms,
-        "input_tokens": input_tokens,
-        "output_tokens": output_tokens,
+        **tokens,
         "model": "nemotron-ultra-3",
     }
 
@@ -522,6 +461,8 @@ def call_local_llm(
     
     Raises:
       - ConnectionError if Ollama is not reachable
+      - TimeoutError if the request times out
+      - AuthError if a configured endpoint requires authentication
       - RuntimeError for other failures
     """
     payload = {
@@ -566,6 +507,25 @@ def call_local_llm(
             json=payload,
             timeout=REQUEST_TIMEOUT_SECONDS,
         )
+    except (requests.exceptions.InvalidURL, requests.exceptions.InvalidSchema,
+            requests.exceptions.MissingSchema) as exc:
+        if tracker:
+            try:
+                tracker.stop()
+            except Exception:
+                pass
+        raise ValueError("Invalid OLLAMA_BASE_URL configuration.") from exc
+    except requests.exceptions.Timeout as e:
+        latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
+        if tracker:
+            try:
+                tracker.stop()
+            except:
+                pass
+        raise TimeoutError(
+            f"Ollama request timed out after {latency_ms}ms. "
+            f"The model may be loading or the prompt is too complex."
+        ) from e
     except requests.exceptions.ConnectionError as e:
         latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
         if tracker:
@@ -577,17 +537,6 @@ def call_local_llm(
             f"Cannot connect to Ollama at {OLLAMA_BASE_URL}. "
             f"Ensure Ollama is running and the model '{model_name}' is installed. "
             f"Install with: ollama pull {model_name}"
-        ) from e
-    except requests.exceptions.Timeout as e:
-        latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
-        if tracker:
-            try:
-                tracker.stop()
-            except:
-                pass
-        raise TimeoutError(
-            f"Ollama request timed out after {latency_ms}ms. "
-            f"The model may be loading or the prompt is too complex."
         ) from e
     except requests.RequestException as e:
         latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
@@ -623,6 +572,8 @@ def call_local_llm(
         energy_method = "TDP estimate (48W × duration)"
     
     if resp.status_code != 200:
+        if resp.status_code in (401, 403):
+            raise AuthError(f"Ollama endpoint authentication failed (HTTP {resp.status_code}).")
         try:
             error_data = resp.json()
             error_detail = error_data.get("error", resp.text)
@@ -641,8 +592,7 @@ def call_local_llm(
         # Ollama returns token counts in metadata
         # prompt_eval_count = input tokens processed
         # eval_count = output tokens generated
-        input_tokens = data.get("prompt_eval_count", 0)
-        output_tokens = data.get("eval_count", 0)
+        tokens = _token_usage(data.get("prompt_eval_count"), data.get("eval_count"))
         
         # Note: Ollama also provides eval_duration (nanoseconds) for throughput calculation
         # but we only need wall-clock latency here (already measured)
@@ -655,8 +605,7 @@ def call_local_llm(
     return {
         "text": text,
         "latency_ms": latency_ms,
-        "input_tokens": input_tokens,
-        "output_tokens": output_tokens,
+        **tokens,
         "model": f"local-{model_name}",  # Prefix to distinguish from cloud models
         "energy_wh": energy_wh,
         "energy_measured": energy_measured,
