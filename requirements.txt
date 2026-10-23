@@ -4,7 +4,8 @@ python-dotenv>=1.0,<2
 google-genai>=2.0,<3        # optional: only needed for Gemini cloud models
 
 # Dashboard
-streamlit>=1.63,<2
+streamlit>=1.66.1,<2       # 1.66.1 is the first release that allows pillow 13
+pillow>=13.0,<14            # transitive via streamlit; 13.0.0 fixes the Oct 2026 Pillow CVE batch
 pandas>=3.0,<4
 plotly>=7.0,<8
 
