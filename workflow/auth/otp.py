@@ -16,9 +16,11 @@ Security features:
 import secrets
 import hashlib
 import time
+import math
+import threading
+from functools import wraps
 from typing import Optional, Dict, Tuple
 from dataclasses import dataclass
-from datetime import datetime, timedelta
 
 # ── Constants ─────────────────────────────────────────────────────────────────
 OTP_LENGTH = 6
@@ -32,6 +34,16 @@ RESEND_COOLDOWN_SECONDS = 60
 # NOTE: This is cleared on server restart, which is acceptable for demo/dev use.
 # For production, replace with Redis, database, or encrypted file storage.
 OTP_STORE: Dict[str, dict] = {}
+_STORE_LOCK = threading.RLock()
+
+
+def _locked(operation):
+    """Serialize local sessions; nested checks share the same process lock."""
+    @wraps(operation)
+    def synchronized(*args, **kwargs):
+        with _STORE_LOCK:
+            return operation(*args, **kwargs)
+    return synchronized
 
 
 @dataclass
@@ -75,15 +87,17 @@ def hash_otp(otp: str, email: str) -> str:
     return hashlib.sha256(combined.encode('utf-8')).hexdigest()
 
 
+@_locked
 def _cleanup_expired_entries():
-    """Remove expired OTP entries from storage."""
+    """Retain request history independently of the shorter code lifetime."""
     now = time.time()
-    expired_emails = [
-        email for email, data in OTP_STORE.items()
-        if data.get("expires_at", 0) < now
-    ]
-    for email in expired_emails:
-        del OTP_STORE[email]
+    for email, data in list(OTP_STORE.items()):
+        data["rate_limit_requests"] = [
+            stamp for stamp in data.get("rate_limit_requests", [])
+            if now - stamp < RATE_LIMIT_WINDOW_SECONDS
+        ]
+        if data.get("expires_at", 0) <= now and not data["rate_limit_requests"]:
+            del OTP_STORE[email]
 
 
 def _normalize_email(email: str) -> str:
@@ -91,6 +105,7 @@ def _normalize_email(email: str) -> str:
     return email.lower().strip()
 
 
+@_locked
 def check_rate_limit(email: str) -> OTPResult:
     """
     Check if email has exceeded OTP request rate limit.
@@ -118,7 +133,7 @@ def check_rate_limit(email: str) -> OTPResult:
     if len(recent_requests) >= MAX_OTP_REQUESTS:
         # Calculate wait time until oldest request exits the window
         oldest_request = min(recent_requests)
-        wait_seconds = int(RATE_LIMIT_WINDOW_SECONDS - (now - oldest_request))
+        wait_seconds = math.ceil(RATE_LIMIT_WINDOW_SECONDS - (now - oldest_request))
         wait_minutes = (wait_seconds + 59) // 60  # Round up
         
         return OTPResult(
@@ -130,6 +145,7 @@ def check_rate_limit(email: str) -> OTPResult:
     return OTPResult(success=True, message="Rate limit OK")
 
 
+@_locked
 def create_otp(email: str) -> Tuple[str, OTPResult]:
     """
     Generate and store a new OTP for the given email.
@@ -156,6 +172,14 @@ def create_otp(email: str) -> Tuple[str, OTPResult]:
         return ("", rate_check)
     
     email_normalized = _normalize_email(email)
+    now = time.time()
+    history = OTP_STORE.get(email_normalized, {}).get("rate_limit_requests", [])
+    if history:
+        remaining = RESEND_COOLDOWN_SECONDS - (now - history[-1])
+        if remaining > 0:
+            wait = math.ceil(remaining)
+            return ("", OTPResult(False, f"Please wait {wait} second(s) before requesting another code.",
+                                  wait_seconds=wait))
     
     # Generate OTP
     otp = generate_otp()
@@ -189,6 +213,7 @@ def create_otp(email: str) -> Tuple[str, OTPResult]:
     ))
 
 
+@_locked
 def verify_otp(email: str, otp: str) -> OTPResult:
     """
     Verify the provided OTP against stored hash.
@@ -234,7 +259,7 @@ def verify_otp(email: str, otp: str) -> OTPResult:
         )
     
     # Check if expired
-    if now > stored.get("expires_at", 0):
+    if now >= stored.get("expires_at", 0):
         stored["invalidated"] = True
         return OTPResult(
             success=False,
@@ -254,7 +279,7 @@ def verify_otp(email: str, otp: str) -> OTPResult:
     provided_hash = hash_otp(otp, email_normalized)
     stored_hash = stored.get("otp_hash", "")
     
-    if provided_hash == stored_hash:
+    if secrets.compare_digest(provided_hash, stored_hash):
         # SUCCESS - invalidate OTP (single-use)
         stored["invalidated"] = True
         return OTPResult(
@@ -282,6 +307,7 @@ def verify_otp(email: str, otp: str) -> OTPResult:
             )
 
 
+@_locked
 def invalidate_otp(email: str):
     """
     Manually invalidate an OTP (e.g., for resend flow).
@@ -294,6 +320,7 @@ def invalidate_otp(email: str):
         OTP_STORE[email_normalized]["invalidated"] = True
 
 
+@_locked
 def get_otp_info(email: str) -> Optional[dict]:
     """
     Get OTP metadata for debugging/testing (never returns plaintext OTP).
@@ -315,7 +342,7 @@ def get_otp_info(email: str) -> Optional[dict]:
     
     return {
         "exists": True,
-        "expired": now > stored.get("expires_at", 0),
+        "expired": now >= stored.get("expires_at", 0),
         "invalidated": stored.get("invalidated", False),
         "attempts": stored.get("attempts", 0),
         "remaining_attempts": MAX_VERIFICATION_ATTEMPTS - stored.get("attempts", 0),

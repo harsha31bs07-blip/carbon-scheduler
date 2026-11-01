@@ -1,8 +1,8 @@
 # App analysis and implementation plan
 
 Reviewed: 2026-11-01. Scope: improve the existing local Carbon Scheduler app.
-This is a proposed implementation backlog, not a claim that these changes are
-implemented. It complements the [A2 completion plan](COMPLETION_PLAN-2026-10-26.md)
+Milestone 1 is implemented; milestones 2-7 remain proposed work. This complements
+the [A2 completion plan](COMPLETION_PLAN-2026-10-26.md)
 and [release readiness record](../release-readiness.md).
 
 ## Recommendation
@@ -17,6 +17,25 @@ Prioritize correctness and operator experience before adding providers, replacin
 the frontend or expanding to arbitrary workflows. Assume a local, single-operator
 application for this iteration. Shared hosting requires a separate identity,
 authorization and storage design; email OTP alone does not provide tenant isolation.
+
+## Implementation checkpoint — 2026-11-01
+
+- Published the complete existing app on GitHub branch `feat/a2-foundations`,
+  commit `b9dfe91`, after **1,918 tests passed in 241.21 seconds**. Private local
+  configuration was excluded; checksummed results retain exact bytes in Git.
+- Completed milestone 1: request history survives code expiry, backend cooldown
+  applies across UI sessions, a process lock serializes authentication operations,
+  expiry is enforced at the exact boundary, and hash comparison uses constant time.
+- Both workspaces share logout cleanup; login removes the displayed development
+  code. Logout clears current-session evidence and draft fields without modifying
+  other sessions or shared request-limit history.
+- Added 12 regression cases, including concurrent create/verify and both actual
+  workspace logout flows. **89 focused tests passed in 9.32 seconds** across
+  `test_otp_lifecycle`, `test_development_login`, `test_queue_dashboard` and
+  `workflow/tests/test_data_loading.py`. The new total is 1,930 tests; a full local
+  suite including the added tests has not been rerun at this checkpoint.
+- The OTP store and lock are process-local and reset on server restart; shared
+  hosting still needs its own durable identity/rate-limit design. Next: milestone 2.
 
 ## Current architecture and strengths
 

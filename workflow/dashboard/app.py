@@ -19,6 +19,7 @@ from workflow.dashboard.data_loading import load_runs, select_comparison, proven
 from shared import availability
 from shared.schema import STEP_DEFINITIONS
 from workflow.auth import create_otp, verify_otp, send_otp_email, check_rate_limit
+from workflow.dashboard.session import finish_login, logout
 
 # ── Configuration ────────────────────────────────────────────────────────────
 RESULTS_DIR = root_dir / "results" / "runs"
@@ -515,7 +516,7 @@ def render_login_screen():
                     
                     if result.success:
                         # Authentication successful!
-                        st.session_state.authenticated = True
+                        finish_login(st.session_state)
                         st.success("✓ Verification successful! Loading dashboard...")
                         time.sleep(1)
                         st.rerun()
@@ -564,6 +565,7 @@ def render_login_screen():
         st.divider()
         
         if st.button("← Back to email input", use_container_width=True):
+            st.session_state.pop("dev_otp", None)
             st.session_state.otp_sent = False
             st.session_state.user_email = None
             st.rerun()
@@ -597,9 +599,7 @@ if workspace == "Ticket workflows":
     from workflow.dashboard.queue_view import render_queue_view
     st.sidebar.caption(f"Logged in: {st.session_state.user_email}")
     if st.sidebar.button("Logout"):
-        st.session_state.authenticated = False
-        st.session_state.user_email = None
-        st.session_state.otp_sent = False
+        logout(st.session_state)
         st.rerun()
     render_queue_view(root_dir)
     st.stop()
@@ -612,9 +612,7 @@ with st.sidebar:
     # Show logged in user
     st.caption(f"✓ Logged in: {st.session_state.user_email}")
     if st.button("Logout", use_container_width=True):
-        st.session_state.authenticated = False
-        st.session_state.user_email = None
-        st.session_state.otp_sent = False
+        logout(st.session_state)
         st.rerun()
     st.divider()
     

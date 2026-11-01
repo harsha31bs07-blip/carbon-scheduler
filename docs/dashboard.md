@@ -1,5 +1,13 @@
 # Integrated local dashboard
 
+Login requests enforce a backend 60-second resend cooldown and at most three
+codes per normalized email in ten minutes. Expiring or consuming a code does not
+erase that request history. Codes expire at five minutes and verification is
+single-use. Authentication mutations are serialized within the server process;
+the in-memory store resets on restart and is intended for this local application.
+Successful login removes the displayed development code. Logout from either
+workspace clears current-session codes, evidence and unfinished review fields.
+
 The default authenticated workspace is **Ticket workflows**. **Activity** selects
 workflow submission/inspection or offline comparison evidence. The legacy policy
 workspace remains separate and retains its original scenario semantics.
