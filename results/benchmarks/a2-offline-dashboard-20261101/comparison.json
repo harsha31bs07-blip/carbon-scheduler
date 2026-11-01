@@ -1,0 +1,2629 @@
+{
+  "schema_version": 1,
+  "record_type": "MatchedPolicyComparison",
+  "protocol_id": "offline-dashboard-demonstration.v1",
+  "protocol_fingerprint": "6d8ed6fa619a6b61e09ce93fdf63af9e8c5912b768ec37a357ad9d32d842d758",
+  "experiment_mode": "simulation",
+  "dataset_id": "scripted-demo.v1",
+  "dataset_split": "pilot",
+  "source_fingerprint": "ef6e130b860ae5f0b20ac476c949d9db740e0f0d0d3459e101ecdd0b47f61bfa",
+  "scheduled_trials": 4,
+  "finished_trials": 4,
+  "baseline_arm_id": "fixed-1",
+  "arms": [
+    {
+      "arm_id": "fixed-1",
+      "strategy": {
+        "arm_id": "fixed-1",
+        "kind": "fixed",
+        "policy": "fixed",
+        "custom_weights": null,
+        "allowed_pairs": {
+          "classify": [
+            {
+              "deployment_id": "scripted-fixture",
+              "model_id": "large"
+            }
+          ],
+          "retrieve": [
+            {
+              "deployment_id": "scripted-fixture",
+              "model_id": "large"
+            }
+          ],
+          "draft": [
+            {
+              "deployment_id": "scripted-fixture",
+              "model_id": "large"
+            }
+          ],
+          "summarize": [
+            {
+              "deployment_id": "scripted-fixture",
+              "model_id": "large"
+            }
+          ]
+        },
+        "allow_summary_deferral": false,
+        "start_offsets_seconds": [
+          0
+        ],
+        "selection_source": "explicit-inventory-baseline"
+      },
+      "scheduled_trials": 2,
+      "finished_trials": 2,
+      "status_counts": {
+        "completed": 2
+      },
+      "attempt_count": 8,
+      "accounted_attempt_count": 8,
+      "response_deadline_met": 2,
+      "completion_deadline_met": 2,
+      "timing": {
+        "response_seconds": {
+          "count": 2,
+          "mean": 6.0,
+          "sample_standard_deviation": 0.0,
+          "minimum": 6.0,
+          "maximum": 6.0,
+          "p50": 6.0,
+          "p90": 6.0,
+          "unknown_trials": 0
+        },
+        "completion_seconds": {
+          "count": 2,
+          "mean": 8.0,
+          "sample_standard_deviation": 0.0,
+          "minimum": 8.0,
+          "maximum": 8.0,
+          "p50": 8.0,
+          "p90": 8.0,
+          "unknown_trials": 0
+        }
+      },
+      "resources": {
+        "cost": {
+          "total": 0.0,
+          "complete": true,
+          "unit": "USD",
+          "known_subtotals": {
+            "USD": 0.0
+          },
+          "known_trials": 2,
+          "unknown_trials": 0,
+          "provenance_counts": {
+            "estimated": 8
+          },
+          "statistics_by_unit": {
+            "USD": {
+              "count": 2,
+              "mean": 0.0,
+              "sample_standard_deviation": 0.0,
+              "minimum": 0.0,
+              "maximum": 0.0,
+              "p50": 0.0,
+              "p90": 0.0
+            }
+          }
+        },
+        "energy": {
+          "total": null,
+          "complete": false,
+          "unit": null,
+          "known_subtotals": {},
+          "known_trials": 0,
+          "unknown_trials": 2,
+          "provenance_counts": {
+            "unknown": 8
+          },
+          "statistics_by_unit": {}
+        },
+        "carbon": {
+          "total": null,
+          "complete": false,
+          "unit": null,
+          "known_subtotals": {},
+          "known_trials": 0,
+          "unknown_trials": 2,
+          "provenance_counts": {
+            "unknown": 8
+          },
+          "statistics_by_unit": {}
+        }
+      },
+      "quality": {
+        "value": null,
+        "provenance": "unknown",
+        "reviewed_trials": 0,
+        "unknown_trials": 2,
+        "passed_trials": 0,
+        "failed_trials": 0,
+        "statistics": {
+          "count": 0,
+          "mean": null,
+          "sample_standard_deviation": null,
+          "minimum": null,
+          "maximum": null,
+          "p50": null,
+          "p90": null
+        }
+      }
+    },
+    {
+      "arm_id": "fixed-2",
+      "strategy": {
+        "arm_id": "fixed-2",
+        "kind": "fixed",
+        "policy": "fixed",
+        "custom_weights": null,
+        "allowed_pairs": {
+          "classify": [
+            {
+              "deployment_id": "scripted-fixture",
+              "model_id": "small"
+            }
+          ],
+          "retrieve": [
+            {
+              "deployment_id": "scripted-fixture",
+              "model_id": "small"
+            }
+          ],
+          "draft": [
+            {
+              "deployment_id": "scripted-fixture",
+              "model_id": "small"
+            }
+          ],
+          "summarize": [
+            {
+              "deployment_id": "scripted-fixture",
+              "model_id": "small"
+            }
+          ]
+        },
+        "allow_summary_deferral": false,
+        "start_offsets_seconds": [
+          0
+        ],
+        "selection_source": "explicit-inventory-baseline"
+      },
+      "scheduled_trials": 2,
+      "finished_trials": 2,
+      "status_counts": {
+        "completed": 2
+      },
+      "attempt_count": 8,
+      "accounted_attempt_count": 8,
+      "response_deadline_met": 2,
+      "completion_deadline_met": 2,
+      "timing": {
+        "response_seconds": {
+          "count": 2,
+          "mean": 3.0,
+          "sample_standard_deviation": 0.0,
+          "minimum": 3.0,
+          "maximum": 3.0,
+          "p50": 3.0,
+          "p90": 3.0,
+          "unknown_trials": 0
+        },
+        "completion_seconds": {
+          "count": 2,
+          "mean": 4.0,
+          "sample_standard_deviation": 0.0,
+          "minimum": 4.0,
+          "maximum": 4.0,
+          "p50": 4.0,
+          "p90": 4.0,
+          "unknown_trials": 0
+        }
+      },
+      "resources": {
+        "cost": {
+          "total": 0.0,
+          "complete": true,
+          "unit": "USD",
+          "known_subtotals": {
+            "USD": 0.0
+          },
+          "known_trials": 2,
+          "unknown_trials": 0,
+          "provenance_counts": {
+            "estimated": 8
+          },
+          "statistics_by_unit": {
+            "USD": {
+              "count": 2,
+              "mean": 0.0,
+              "sample_standard_deviation": 0.0,
+              "minimum": 0.0,
+              "maximum": 0.0,
+              "p50": 0.0,
+              "p90": 0.0
+            }
+          }
+        },
+        "energy": {
+          "total": null,
+          "complete": false,
+          "unit": null,
+          "known_subtotals": {},
+          "known_trials": 0,
+          "unknown_trials": 2,
+          "provenance_counts": {
+            "unknown": 8
+          },
+          "statistics_by_unit": {}
+        },
+        "carbon": {
+          "total": null,
+          "complete": false,
+          "unit": null,
+          "known_subtotals": {},
+          "known_trials": 0,
+          "unknown_trials": 2,
+          "provenance_counts": {
+            "unknown": 8
+          },
+          "statistics_by_unit": {}
+        }
+      },
+      "quality": {
+        "value": null,
+        "provenance": "unknown",
+        "reviewed_trials": 0,
+        "unknown_trials": 2,
+        "passed_trials": 0,
+        "failed_trials": 0,
+        "statistics": {
+          "count": 0,
+          "mean": null,
+          "sample_standard_deviation": null,
+          "minimum": null,
+          "maximum": null,
+          "p50": null,
+          "p90": null
+        }
+      }
+    }
+  ],
+  "paired_comparisons": [
+    {
+      "baseline_arm_id": "fixed-1",
+      "treatment_arm_id": "fixed-2",
+      "scheduled_pairs": 2,
+      "metrics": {
+        "response_seconds": {
+          "matched_pairs": 2,
+          "unmatched_pairs": 0,
+          "reason_counts": {},
+          "units": [
+            "s"
+          ],
+          "aggregate_reason": null,
+          "absolute_delta": {
+            "count": 2,
+            "mean": -3.0,
+            "sample_standard_deviation": 0.0,
+            "minimum": -3.0,
+            "maximum": -3.0,
+            "p50": -3.0,
+            "p90": -3.0
+          },
+          "reduction_percent": {
+            "count": 2,
+            "mean": 50.0,
+            "sample_standard_deviation": 0.0,
+            "minimum": 50.0,
+            "maximum": 50.0,
+            "p50": 50.0,
+            "p90": 50.0
+          },
+          "statistics_by_unit": {
+            "s": {
+              "absolute_delta": {
+                "count": 2,
+                "mean": -3.0,
+                "sample_standard_deviation": 0.0,
+                "minimum": -3.0,
+                "maximum": -3.0,
+                "p50": -3.0,
+                "p90": -3.0
+              },
+              "reduction_percent": {
+                "count": 2,
+                "mean": 50.0,
+                "sample_standard_deviation": 0.0,
+                "minimum": 50.0,
+                "maximum": 50.0,
+                "p50": 50.0,
+                "p90": 50.0
+              }
+            }
+          }
+        },
+        "completion_seconds": {
+          "matched_pairs": 2,
+          "unmatched_pairs": 0,
+          "reason_counts": {},
+          "units": [
+            "s"
+          ],
+          "aggregate_reason": null,
+          "absolute_delta": {
+            "count": 2,
+            "mean": -4.0,
+            "sample_standard_deviation": 0.0,
+            "minimum": -4.0,
+            "maximum": -4.0,
+            "p50": -4.0,
+            "p90": -4.0
+          },
+          "reduction_percent": {
+            "count": 2,
+            "mean": 50.0,
+            "sample_standard_deviation": 0.0,
+            "minimum": 50.0,
+            "maximum": 50.0,
+            "p50": 50.0,
+            "p90": 50.0
+          },
+          "statistics_by_unit": {
+            "s": {
+              "absolute_delta": {
+                "count": 2,
+                "mean": -4.0,
+                "sample_standard_deviation": 0.0,
+                "minimum": -4.0,
+                "maximum": -4.0,
+                "p50": -4.0,
+                "p90": -4.0
+              },
+              "reduction_percent": {
+                "count": 2,
+                "mean": 50.0,
+                "sample_standard_deviation": 0.0,
+                "minimum": 50.0,
+                "maximum": 50.0,
+                "p50": 50.0,
+                "p90": 50.0
+              }
+            }
+          }
+        },
+        "cost": {
+          "matched_pairs": 2,
+          "unmatched_pairs": 0,
+          "reason_counts": {},
+          "units": [
+            "USD"
+          ],
+          "aggregate_reason": null,
+          "absolute_delta": {
+            "count": 2,
+            "mean": 0.0,
+            "sample_standard_deviation": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "p50": 0.0,
+            "p90": 0.0
+          },
+          "reduction_percent": {
+            "count": 0,
+            "mean": null,
+            "sample_standard_deviation": null,
+            "minimum": null,
+            "maximum": null,
+            "p50": null,
+            "p90": null
+          },
+          "statistics_by_unit": {
+            "USD": {
+              "absolute_delta": {
+                "count": 2,
+                "mean": 0.0,
+                "sample_standard_deviation": 0.0,
+                "minimum": 0.0,
+                "maximum": 0.0,
+                "p50": 0.0,
+                "p90": 0.0
+              },
+              "reduction_percent": {
+                "count": 0,
+                "mean": null,
+                "sample_standard_deviation": null,
+                "minimum": null,
+                "maximum": null,
+                "p50": null,
+                "p90": null
+              }
+            }
+          }
+        },
+        "energy": {
+          "matched_pairs": 0,
+          "unmatched_pairs": 2,
+          "reason_counts": {
+            "metric-unknown": 2
+          },
+          "units": [],
+          "aggregate_reason": null,
+          "absolute_delta": {
+            "count": 0,
+            "mean": null,
+            "sample_standard_deviation": null,
+            "minimum": null,
+            "maximum": null,
+            "p50": null,
+            "p90": null
+          },
+          "reduction_percent": {
+            "count": 0,
+            "mean": null,
+            "sample_standard_deviation": null,
+            "minimum": null,
+            "maximum": null,
+            "p50": null,
+            "p90": null
+          },
+          "statistics_by_unit": {}
+        },
+        "carbon": {
+          "matched_pairs": 0,
+          "unmatched_pairs": 2,
+          "reason_counts": {
+            "metric-unknown": 2
+          },
+          "units": [],
+          "aggregate_reason": null,
+          "absolute_delta": {
+            "count": 0,
+            "mean": null,
+            "sample_standard_deviation": null,
+            "minimum": null,
+            "maximum": null,
+            "p50": null,
+            "p90": null
+          },
+          "reduction_percent": {
+            "count": 0,
+            "mean": null,
+            "sample_standard_deviation": null,
+            "minimum": null,
+            "maximum": null,
+            "p50": null,
+            "p90": null
+          },
+          "statistics_by_unit": {}
+        }
+      },
+      "pairs": [
+        {
+          "case_id": "demo-account",
+          "repeat": 0,
+          "baseline_status": "completed",
+          "treatment_status": "completed",
+          "metrics": {
+            "response_seconds": {
+              "baseline": 6.0,
+              "treatment": 3.0,
+              "unit": "s",
+              "absolute_delta": -3.0,
+              "reduction_percent": 50.0,
+              "comparison_reason": null,
+              "percentage_reason": null
+            },
+            "completion_seconds": {
+              "baseline": 8.0,
+              "treatment": 4.0,
+              "unit": "s",
+              "absolute_delta": -4.0,
+              "reduction_percent": 50.0,
+              "comparison_reason": null,
+              "percentage_reason": null
+            },
+            "cost": {
+              "baseline": 0.0,
+              "treatment": 0.0,
+              "unit": "USD",
+              "absolute_delta": 0.0,
+              "reduction_percent": null,
+              "comparison_reason": null,
+              "percentage_reason": "zero-baseline"
+            },
+            "energy": {
+              "baseline": null,
+              "treatment": null,
+              "unit": null,
+              "absolute_delta": null,
+              "reduction_percent": null,
+              "comparison_reason": "metric-unknown",
+              "percentage_reason": "metric-unknown"
+            },
+            "carbon": {
+              "baseline": null,
+              "treatment": null,
+              "unit": null,
+              "absolute_delta": null,
+              "reduction_percent": null,
+              "comparison_reason": "metric-unknown",
+              "percentage_reason": "metric-unknown"
+            }
+          },
+          "quality": {
+            "baseline": null,
+            "treatment": null,
+            "absolute_delta": null
+          }
+        },
+        {
+          "case_id": "demo-invoice",
+          "repeat": 0,
+          "baseline_status": "completed",
+          "treatment_status": "completed",
+          "metrics": {
+            "response_seconds": {
+              "baseline": 6.0,
+              "treatment": 3.0,
+              "unit": "s",
+              "absolute_delta": -3.0,
+              "reduction_percent": 50.0,
+              "comparison_reason": null,
+              "percentage_reason": null
+            },
+            "completion_seconds": {
+              "baseline": 8.0,
+              "treatment": 4.0,
+              "unit": "s",
+              "absolute_delta": -4.0,
+              "reduction_percent": 50.0,
+              "comparison_reason": null,
+              "percentage_reason": null
+            },
+            "cost": {
+              "baseline": 0.0,
+              "treatment": 0.0,
+              "unit": "USD",
+              "absolute_delta": 0.0,
+              "reduction_percent": null,
+              "comparison_reason": null,
+              "percentage_reason": "zero-baseline"
+            },
+            "energy": {
+              "baseline": null,
+              "treatment": null,
+              "unit": null,
+              "absolute_delta": null,
+              "reduction_percent": null,
+              "comparison_reason": "metric-unknown",
+              "percentage_reason": "metric-unknown"
+            },
+            "carbon": {
+              "baseline": null,
+              "treatment": null,
+              "unit": null,
+              "absolute_delta": null,
+              "reduction_percent": null,
+              "comparison_reason": "metric-unknown",
+              "percentage_reason": "metric-unknown"
+            }
+          },
+          "quality": {
+            "baseline": null,
+            "treatment": null,
+            "absolute_delta": null
+          }
+        }
+      ],
+      "quality": {
+        "matched_pairs": 0,
+        "unmatched_pairs": 2,
+        "absolute_delta": {
+          "count": 0,
+          "mean": null,
+          "sample_standard_deviation": null,
+          "minimum": null,
+          "maximum": null,
+          "p50": null,
+          "p90": null
+        }
+      }
+    }
+  ],
+  "trials": [
+    {
+      "trial_id": "trial-da83d379a1f3a1a3664f8f47",
+      "case_id": "demo-invoice",
+      "repeat": 0,
+      "arm_id": "fixed-2",
+      "workflow_id": "trial-da83d379a1f3a1a3664f8f47",
+      "state": "finished",
+      "bundle": "bundles/trial-da83d379a1f3a1a3664f8f47",
+      "started_at": "2026-11-01T17:43:04.023012+00:00",
+      "finished_at": "2026-11-01T17:43:08.023012+00:00",
+      "stop_reason": "completed",
+      "workflow_status": "completed",
+      "execution": {
+        "schema_version": 1,
+        "record_type": "ExecutionAccountingReport",
+        "workflow_id": "trial-da83d379a1f3a1a3664f8f47",
+        "status": "completed",
+        "coverage": {
+          "attempt_count": 4,
+          "accounted_attempts": 4,
+          "missing_attempt_ids": [],
+          "unrepresented_retry_indices": [],
+          "confirmed_undispatched_retries": [],
+          "uncertain_provider_attempt_ids": [],
+          "overlapping_host_windows": [],
+          "context_present": true
+        },
+        "resources": {
+          "cost": {
+            "total": 0.0,
+            "unit": "USD",
+            "known_subtotals": {
+              "USD": 0.0
+            },
+            "complete": true,
+            "known_attempts": 4,
+            "unknown_attempts": 0,
+            "provenance_counts": {
+              "estimated": 4
+            }
+          },
+          "energy": {
+            "total": null,
+            "unit": null,
+            "known_subtotals": {},
+            "complete": false,
+            "known_attempts": 0,
+            "unknown_attempts": 4,
+            "provenance_counts": {
+              "unknown": 4
+            }
+          },
+          "carbon": {
+            "total": null,
+            "unit": null,
+            "known_subtotals": {},
+            "complete": false,
+            "known_attempts": 0,
+            "unknown_attempts": 4,
+            "provenance_counts": {
+              "unknown": 4
+            }
+          }
+        },
+        "quality": {
+          "value": null,
+          "provenance": "unknown",
+          "reason": "end-to-end-output-review-required"
+        },
+        "timing": {
+          "response_ready_at": "2026-11-01T17:43:07.023012+00:00",
+          "response_seconds": 3.0,
+          "response_deadline_met": true,
+          "completed_at": "2026-11-01T17:43:08.023012+00:00",
+          "completion_seconds": 4.0,
+          "completion_deadline_met": true,
+          "planner_preparation_seconds": null,
+          "planner_preparation_records": 0,
+          "health_probe_seconds": null,
+          "health_probe_records": 0,
+          "decision_count": 0
+        },
+        "attempts": [
+          {
+            "attempt_id": "4da88f82547a4e35a9919c6ae811e2b8",
+            "step_id": "classify",
+            "retry_index": 0,
+            "status": "completed",
+            "accounting_present": true,
+            "planned_estimates": {
+              "schema_version": 3,
+              "record_type": "StepEstimates",
+              "latency": {
+                "value": null,
+                "unit": "s",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "accuracy": {
+                "value": null,
+                "unit": "ratio",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "cost": {
+                "value": null,
+                "unit": "USD",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "energy": {
+                "value": null,
+                "unit": "kWh",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "carbon": {
+                "value": null,
+                "unit": "gCO2e",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              }
+            },
+            "observations": {
+              "accuracy": {
+                "provenance": "unknown",
+                "source": "live-quality-not-reviewed",
+                "uncertainty": null,
+                "unit": "ratio",
+                "value": null
+              },
+              "carbon": {
+                "provenance": "unknown",
+                "source": "carbon-not-configured",
+                "uncertainty": null,
+                "unit": "gCO2e",
+                "value": null
+              },
+              "cost": {
+                "provenance": "estimated",
+                "source": "local-no-api-subscription; api-only; electricity-excluded",
+                "uncertainty": null,
+                "unit": "USD",
+                "value": 0.0
+              },
+              "energy": {
+                "provenance": "unknown",
+                "source": "host-energy-unavailable",
+                "uncertainty": null,
+                "unit": "kWh",
+                "value": null
+              },
+              "latency": {
+                "provenance": "measured",
+                "source": "provider-adapter-elapsed-time",
+                "uncertainty": null,
+                "unit": "s",
+                "value": 1
+              },
+              "record_type": "StepEstimates",
+              "schema_version": 3
+            },
+            "provider_seconds": 1,
+            "provider_wall_seconds": 1.0,
+            "dependency_ready_at": "2026-11-01T17:43:04.023012+00:00",
+            "wait_seconds": 0.0,
+            "dependency_wait_seconds": 0.0,
+            "deliberate_delay_seconds": 0.0,
+            "queue_and_preparation_wait_seconds": 0.0,
+            "journal_seconds_after_provider": 0.0,
+            "measurement_seconds": 1.0,
+            "energy_scope": "unknown",
+            "accounting_errors": [
+              "remote-energy-unobservable"
+            ]
+          },
+          {
+            "attempt_id": "7e3d52737dd44714818cb161095323eb",
+            "step_id": "retrieve",
+            "retry_index": 0,
+            "status": "completed",
+            "accounting_present": true,
+            "planned_estimates": {
+              "schema_version": 3,
+              "record_type": "StepEstimates",
+              "latency": {
+                "value": null,
+                "unit": "s",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "accuracy": {
+                "value": null,
+                "unit": "ratio",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "cost": {
+                "value": null,
+                "unit": "USD",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "energy": {
+                "value": null,
+                "unit": "kWh",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "carbon": {
+                "value": null,
+                "unit": "gCO2e",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              }
+            },
+            "observations": {
+              "accuracy": {
+                "provenance": "unknown",
+                "source": "live-quality-not-reviewed",
+                "uncertainty": null,
+                "unit": "ratio",
+                "value": null
+              },
+              "carbon": {
+                "provenance": "unknown",
+                "source": "carbon-not-configured",
+                "uncertainty": null,
+                "unit": "gCO2e",
+                "value": null
+              },
+              "cost": {
+                "provenance": "estimated",
+                "source": "local-no-api-subscription; api-only; electricity-excluded",
+                "uncertainty": null,
+                "unit": "USD",
+                "value": 0.0
+              },
+              "energy": {
+                "provenance": "unknown",
+                "source": "host-energy-unavailable",
+                "uncertainty": null,
+                "unit": "kWh",
+                "value": null
+              },
+              "latency": {
+                "provenance": "measured",
+                "source": "provider-adapter-elapsed-time",
+                "uncertainty": null,
+                "unit": "s",
+                "value": 1
+              },
+              "record_type": "StepEstimates",
+              "schema_version": 3
+            },
+            "provider_seconds": 1,
+            "provider_wall_seconds": 1.0,
+            "dependency_ready_at": "2026-11-01T17:43:05.023012+00:00",
+            "wait_seconds": 0.0,
+            "dependency_wait_seconds": 1.0,
+            "deliberate_delay_seconds": 0.0,
+            "queue_and_preparation_wait_seconds": 0.0,
+            "journal_seconds_after_provider": 0.0,
+            "measurement_seconds": 1.0,
+            "energy_scope": "unknown",
+            "accounting_errors": [
+              "remote-energy-unobservable"
+            ]
+          },
+          {
+            "attempt_id": "d8c0406f6d224d28aed8f99e73c4900b",
+            "step_id": "draft",
+            "retry_index": 0,
+            "status": "completed",
+            "accounting_present": true,
+            "planned_estimates": {
+              "schema_version": 3,
+              "record_type": "StepEstimates",
+              "latency": {
+                "value": null,
+                "unit": "s",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "accuracy": {
+                "value": null,
+                "unit": "ratio",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "cost": {
+                "value": null,
+                "unit": "USD",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "energy": {
+                "value": null,
+                "unit": "kWh",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "carbon": {
+                "value": null,
+                "unit": "gCO2e",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              }
+            },
+            "observations": {
+              "accuracy": {
+                "provenance": "unknown",
+                "source": "live-quality-not-reviewed",
+                "uncertainty": null,
+                "unit": "ratio",
+                "value": null
+              },
+              "carbon": {
+                "provenance": "unknown",
+                "source": "carbon-not-configured",
+                "uncertainty": null,
+                "unit": "gCO2e",
+                "value": null
+              },
+              "cost": {
+                "provenance": "estimated",
+                "source": "local-no-api-subscription; api-only; electricity-excluded",
+                "uncertainty": null,
+                "unit": "USD",
+                "value": 0.0
+              },
+              "energy": {
+                "provenance": "unknown",
+                "source": "host-energy-unavailable",
+                "uncertainty": null,
+                "unit": "kWh",
+                "value": null
+              },
+              "latency": {
+                "provenance": "measured",
+                "source": "provider-adapter-elapsed-time",
+                "uncertainty": null,
+                "unit": "s",
+                "value": 1
+              },
+              "record_type": "StepEstimates",
+              "schema_version": 3
+            },
+            "provider_seconds": 1,
+            "provider_wall_seconds": 1.0,
+            "dependency_ready_at": "2026-11-01T17:43:06.023012+00:00",
+            "wait_seconds": 0.0,
+            "dependency_wait_seconds": 2.0,
+            "deliberate_delay_seconds": 0.0,
+            "queue_and_preparation_wait_seconds": 0.0,
+            "journal_seconds_after_provider": 0.0,
+            "measurement_seconds": 1.0,
+            "energy_scope": "unknown",
+            "accounting_errors": [
+              "remote-energy-unobservable"
+            ]
+          },
+          {
+            "attempt_id": "8e44424c91cc4a26a3842d9eddc9d80f",
+            "step_id": "summarize",
+            "retry_index": 0,
+            "status": "completed",
+            "accounting_present": true,
+            "planned_estimates": {
+              "schema_version": 3,
+              "record_type": "StepEstimates",
+              "latency": {
+                "value": null,
+                "unit": "s",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "accuracy": {
+                "value": null,
+                "unit": "ratio",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "cost": {
+                "value": null,
+                "unit": "USD",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "energy": {
+                "value": null,
+                "unit": "kWh",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "carbon": {
+                "value": null,
+                "unit": "gCO2e",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              }
+            },
+            "observations": {
+              "accuracy": {
+                "provenance": "unknown",
+                "source": "live-quality-not-reviewed",
+                "uncertainty": null,
+                "unit": "ratio",
+                "value": null
+              },
+              "carbon": {
+                "provenance": "unknown",
+                "source": "carbon-not-configured",
+                "uncertainty": null,
+                "unit": "gCO2e",
+                "value": null
+              },
+              "cost": {
+                "provenance": "estimated",
+                "source": "local-no-api-subscription; api-only; electricity-excluded",
+                "uncertainty": null,
+                "unit": "USD",
+                "value": 0.0
+              },
+              "energy": {
+                "provenance": "unknown",
+                "source": "host-energy-unavailable",
+                "uncertainty": null,
+                "unit": "kWh",
+                "value": null
+              },
+              "latency": {
+                "provenance": "measured",
+                "source": "provider-adapter-elapsed-time",
+                "uncertainty": null,
+                "unit": "s",
+                "value": 1
+              },
+              "record_type": "StepEstimates",
+              "schema_version": 3
+            },
+            "provider_seconds": 1,
+            "provider_wall_seconds": 1.0,
+            "dependency_ready_at": "2026-11-01T17:43:07.023012+00:00",
+            "wait_seconds": 0.0,
+            "dependency_wait_seconds": 3.0,
+            "deliberate_delay_seconds": 0.0,
+            "queue_and_preparation_wait_seconds": 0.0,
+            "journal_seconds_after_provider": 0.0,
+            "measurement_seconds": 1.0,
+            "energy_scope": "unknown",
+            "accounting_errors": [
+              "remote-energy-unobservable"
+            ]
+          }
+        ],
+        "notes": [
+          "Per-attempt durations overlap end-to-end latency and must not be added to it.",
+          "API fees exclude electricity and machine ownership; host energy includes idle and other processes.",
+          "Missing retry evidence may represent pre-dispatch failure or an unreturned provider call.",
+          "Failed or cancelled dispatched calls may continue beyond the observed host window.",
+          "Overlapping host-window subtotals can double count shared energy; they have no complete total.",
+          "CO2-only and CO2e subtotals are separate; incompatible scopes have no pooled total."
+        ],
+        "fingerprint": "66bed2357852e199b591b38c7736f52ecbe50d145499fba2d8695144d15347f2"
+      },
+      "output_quality": {
+        "value": null,
+        "provenance": "unknown",
+        "passed": null
+      }
+    },
+    {
+      "trial_id": "trial-c68c6c2ac3fae9fb68e9afe7",
+      "case_id": "demo-invoice",
+      "repeat": 0,
+      "arm_id": "fixed-1",
+      "workflow_id": "trial-c68c6c2ac3fae9fb68e9afe7",
+      "state": "finished",
+      "bundle": "bundles/trial-c68c6c2ac3fae9fb68e9afe7",
+      "started_at": "2026-11-01T17:43:08.023012+00:00",
+      "finished_at": "2026-11-01T17:43:16.023012+00:00",
+      "stop_reason": "completed",
+      "workflow_status": "completed",
+      "execution": {
+        "schema_version": 1,
+        "record_type": "ExecutionAccountingReport",
+        "workflow_id": "trial-c68c6c2ac3fae9fb68e9afe7",
+        "status": "completed",
+        "coverage": {
+          "attempt_count": 4,
+          "accounted_attempts": 4,
+          "missing_attempt_ids": [],
+          "unrepresented_retry_indices": [],
+          "confirmed_undispatched_retries": [],
+          "uncertain_provider_attempt_ids": [],
+          "overlapping_host_windows": [],
+          "context_present": true
+        },
+        "resources": {
+          "cost": {
+            "total": 0.0,
+            "unit": "USD",
+            "known_subtotals": {
+              "USD": 0.0
+            },
+            "complete": true,
+            "known_attempts": 4,
+            "unknown_attempts": 0,
+            "provenance_counts": {
+              "estimated": 4
+            }
+          },
+          "energy": {
+            "total": null,
+            "unit": null,
+            "known_subtotals": {},
+            "complete": false,
+            "known_attempts": 0,
+            "unknown_attempts": 4,
+            "provenance_counts": {
+              "unknown": 4
+            }
+          },
+          "carbon": {
+            "total": null,
+            "unit": null,
+            "known_subtotals": {},
+            "complete": false,
+            "known_attempts": 0,
+            "unknown_attempts": 4,
+            "provenance_counts": {
+              "unknown": 4
+            }
+          }
+        },
+        "quality": {
+          "value": null,
+          "provenance": "unknown",
+          "reason": "end-to-end-output-review-required"
+        },
+        "timing": {
+          "response_ready_at": "2026-11-01T17:43:14.023012+00:00",
+          "response_seconds": 6.0,
+          "response_deadline_met": true,
+          "completed_at": "2026-11-01T17:43:16.023012+00:00",
+          "completion_seconds": 8.0,
+          "completion_deadline_met": true,
+          "planner_preparation_seconds": null,
+          "planner_preparation_records": 0,
+          "health_probe_seconds": null,
+          "health_probe_records": 0,
+          "decision_count": 0
+        },
+        "attempts": [
+          {
+            "attempt_id": "b78494e5785447d181b312f95789c4a8",
+            "step_id": "classify",
+            "retry_index": 0,
+            "status": "completed",
+            "accounting_present": true,
+            "planned_estimates": {
+              "schema_version": 3,
+              "record_type": "StepEstimates",
+              "latency": {
+                "value": null,
+                "unit": "s",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "accuracy": {
+                "value": null,
+                "unit": "ratio",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "cost": {
+                "value": null,
+                "unit": "USD",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "energy": {
+                "value": null,
+                "unit": "kWh",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "carbon": {
+                "value": null,
+                "unit": "gCO2e",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              }
+            },
+            "observations": {
+              "accuracy": {
+                "provenance": "unknown",
+                "source": "live-quality-not-reviewed",
+                "uncertainty": null,
+                "unit": "ratio",
+                "value": null
+              },
+              "carbon": {
+                "provenance": "unknown",
+                "source": "carbon-not-configured",
+                "uncertainty": null,
+                "unit": "gCO2e",
+                "value": null
+              },
+              "cost": {
+                "provenance": "estimated",
+                "source": "local-no-api-subscription; api-only; electricity-excluded",
+                "uncertainty": null,
+                "unit": "USD",
+                "value": 0.0
+              },
+              "energy": {
+                "provenance": "unknown",
+                "source": "host-energy-unavailable",
+                "uncertainty": null,
+                "unit": "kWh",
+                "value": null
+              },
+              "latency": {
+                "provenance": "measured",
+                "source": "provider-adapter-elapsed-time",
+                "uncertainty": null,
+                "unit": "s",
+                "value": 2
+              },
+              "record_type": "StepEstimates",
+              "schema_version": 3
+            },
+            "provider_seconds": 2,
+            "provider_wall_seconds": 2.0,
+            "dependency_ready_at": "2026-11-01T17:43:08.023012+00:00",
+            "wait_seconds": 0.0,
+            "dependency_wait_seconds": 0.0,
+            "deliberate_delay_seconds": 0.0,
+            "queue_and_preparation_wait_seconds": 0.0,
+            "journal_seconds_after_provider": 0.0,
+            "measurement_seconds": 2.0,
+            "energy_scope": "unknown",
+            "accounting_errors": [
+              "remote-energy-unobservable"
+            ]
+          },
+          {
+            "attempt_id": "e2878ed648274e009bc3b826ed496873",
+            "step_id": "retrieve",
+            "retry_index": 0,
+            "status": "completed",
+            "accounting_present": true,
+            "planned_estimates": {
+              "schema_version": 3,
+              "record_type": "StepEstimates",
+              "latency": {
+                "value": null,
+                "unit": "s",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "accuracy": {
+                "value": null,
+                "unit": "ratio",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "cost": {
+                "value": null,
+                "unit": "USD",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "energy": {
+                "value": null,
+                "unit": "kWh",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "carbon": {
+                "value": null,
+                "unit": "gCO2e",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              }
+            },
+            "observations": {
+              "accuracy": {
+                "provenance": "unknown",
+                "source": "live-quality-not-reviewed",
+                "uncertainty": null,
+                "unit": "ratio",
+                "value": null
+              },
+              "carbon": {
+                "provenance": "unknown",
+                "source": "carbon-not-configured",
+                "uncertainty": null,
+                "unit": "gCO2e",
+                "value": null
+              },
+              "cost": {
+                "provenance": "estimated",
+                "source": "local-no-api-subscription; api-only; electricity-excluded",
+                "uncertainty": null,
+                "unit": "USD",
+                "value": 0.0
+              },
+              "energy": {
+                "provenance": "unknown",
+                "source": "host-energy-unavailable",
+                "uncertainty": null,
+                "unit": "kWh",
+                "value": null
+              },
+              "latency": {
+                "provenance": "measured",
+                "source": "provider-adapter-elapsed-time",
+                "uncertainty": null,
+                "unit": "s",
+                "value": 2
+              },
+              "record_type": "StepEstimates",
+              "schema_version": 3
+            },
+            "provider_seconds": 2,
+            "provider_wall_seconds": 2.0,
+            "dependency_ready_at": "2026-11-01T17:43:10.023012+00:00",
+            "wait_seconds": 0.0,
+            "dependency_wait_seconds": 2.0,
+            "deliberate_delay_seconds": 0.0,
+            "queue_and_preparation_wait_seconds": 0.0,
+            "journal_seconds_after_provider": 0.0,
+            "measurement_seconds": 2.0,
+            "energy_scope": "unknown",
+            "accounting_errors": [
+              "remote-energy-unobservable"
+            ]
+          },
+          {
+            "attempt_id": "aba803a7d3494a31a2129bec1f780fce",
+            "step_id": "draft",
+            "retry_index": 0,
+            "status": "completed",
+            "accounting_present": true,
+            "planned_estimates": {
+              "schema_version": 3,
+              "record_type": "StepEstimates",
+              "latency": {
+                "value": null,
+                "unit": "s",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "accuracy": {
+                "value": null,
+                "unit": "ratio",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "cost": {
+                "value": null,
+                "unit": "USD",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "energy": {
+                "value": null,
+                "unit": "kWh",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "carbon": {
+                "value": null,
+                "unit": "gCO2e",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              }
+            },
+            "observations": {
+              "accuracy": {
+                "provenance": "unknown",
+                "source": "live-quality-not-reviewed",
+                "uncertainty": null,
+                "unit": "ratio",
+                "value": null
+              },
+              "carbon": {
+                "provenance": "unknown",
+                "source": "carbon-not-configured",
+                "uncertainty": null,
+                "unit": "gCO2e",
+                "value": null
+              },
+              "cost": {
+                "provenance": "estimated",
+                "source": "local-no-api-subscription; api-only; electricity-excluded",
+                "uncertainty": null,
+                "unit": "USD",
+                "value": 0.0
+              },
+              "energy": {
+                "provenance": "unknown",
+                "source": "host-energy-unavailable",
+                "uncertainty": null,
+                "unit": "kWh",
+                "value": null
+              },
+              "latency": {
+                "provenance": "measured",
+                "source": "provider-adapter-elapsed-time",
+                "uncertainty": null,
+                "unit": "s",
+                "value": 2
+              },
+              "record_type": "StepEstimates",
+              "schema_version": 3
+            },
+            "provider_seconds": 2,
+            "provider_wall_seconds": 2.0,
+            "dependency_ready_at": "2026-11-01T17:43:12.023012+00:00",
+            "wait_seconds": 0.0,
+            "dependency_wait_seconds": 4.0,
+            "deliberate_delay_seconds": 0.0,
+            "queue_and_preparation_wait_seconds": 0.0,
+            "journal_seconds_after_provider": 0.0,
+            "measurement_seconds": 2.0,
+            "energy_scope": "unknown",
+            "accounting_errors": [
+              "remote-energy-unobservable"
+            ]
+          },
+          {
+            "attempt_id": "9ca87c761e3f4feb99063eb146319341",
+            "step_id": "summarize",
+            "retry_index": 0,
+            "status": "completed",
+            "accounting_present": true,
+            "planned_estimates": {
+              "schema_version": 3,
+              "record_type": "StepEstimates",
+              "latency": {
+                "value": null,
+                "unit": "s",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "accuracy": {
+                "value": null,
+                "unit": "ratio",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "cost": {
+                "value": null,
+                "unit": "USD",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "energy": {
+                "value": null,
+                "unit": "kWh",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "carbon": {
+                "value": null,
+                "unit": "gCO2e",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              }
+            },
+            "observations": {
+              "accuracy": {
+                "provenance": "unknown",
+                "source": "live-quality-not-reviewed",
+                "uncertainty": null,
+                "unit": "ratio",
+                "value": null
+              },
+              "carbon": {
+                "provenance": "unknown",
+                "source": "carbon-not-configured",
+                "uncertainty": null,
+                "unit": "gCO2e",
+                "value": null
+              },
+              "cost": {
+                "provenance": "estimated",
+                "source": "local-no-api-subscription; api-only; electricity-excluded",
+                "uncertainty": null,
+                "unit": "USD",
+                "value": 0.0
+              },
+              "energy": {
+                "provenance": "unknown",
+                "source": "host-energy-unavailable",
+                "uncertainty": null,
+                "unit": "kWh",
+                "value": null
+              },
+              "latency": {
+                "provenance": "measured",
+                "source": "provider-adapter-elapsed-time",
+                "uncertainty": null,
+                "unit": "s",
+                "value": 2
+              },
+              "record_type": "StepEstimates",
+              "schema_version": 3
+            },
+            "provider_seconds": 2,
+            "provider_wall_seconds": 2.0,
+            "dependency_ready_at": "2026-11-01T17:43:14.023012+00:00",
+            "wait_seconds": 0.0,
+            "dependency_wait_seconds": 6.0,
+            "deliberate_delay_seconds": 0.0,
+            "queue_and_preparation_wait_seconds": 0.0,
+            "journal_seconds_after_provider": 0.0,
+            "measurement_seconds": 2.0,
+            "energy_scope": "unknown",
+            "accounting_errors": [
+              "remote-energy-unobservable"
+            ]
+          }
+        ],
+        "notes": [
+          "Per-attempt durations overlap end-to-end latency and must not be added to it.",
+          "API fees exclude electricity and machine ownership; host energy includes idle and other processes.",
+          "Missing retry evidence may represent pre-dispatch failure or an unreturned provider call.",
+          "Failed or cancelled dispatched calls may continue beyond the observed host window.",
+          "Overlapping host-window subtotals can double count shared energy; they have no complete total.",
+          "CO2-only and CO2e subtotals are separate; incompatible scopes have no pooled total."
+        ],
+        "fingerprint": "70a7dd0c0636d93f3144270d883ce5d23c2bd8de102177f5807f48c3cef42402"
+      },
+      "output_quality": {
+        "value": null,
+        "provenance": "unknown",
+        "passed": null
+      }
+    },
+    {
+      "trial_id": "trial-51b5d309b24515c8ac61334a",
+      "case_id": "demo-account",
+      "repeat": 0,
+      "arm_id": "fixed-1",
+      "workflow_id": "trial-51b5d309b24515c8ac61334a",
+      "state": "finished",
+      "bundle": "bundles/trial-51b5d309b24515c8ac61334a",
+      "started_at": "2026-11-01T17:43:16.023012+00:00",
+      "finished_at": "2026-11-01T17:43:24.023012+00:00",
+      "stop_reason": "completed",
+      "workflow_status": "completed",
+      "execution": {
+        "schema_version": 1,
+        "record_type": "ExecutionAccountingReport",
+        "workflow_id": "trial-51b5d309b24515c8ac61334a",
+        "status": "completed",
+        "coverage": {
+          "attempt_count": 4,
+          "accounted_attempts": 4,
+          "missing_attempt_ids": [],
+          "unrepresented_retry_indices": [],
+          "confirmed_undispatched_retries": [],
+          "uncertain_provider_attempt_ids": [],
+          "overlapping_host_windows": [],
+          "context_present": true
+        },
+        "resources": {
+          "cost": {
+            "total": 0.0,
+            "unit": "USD",
+            "known_subtotals": {
+              "USD": 0.0
+            },
+            "complete": true,
+            "known_attempts": 4,
+            "unknown_attempts": 0,
+            "provenance_counts": {
+              "estimated": 4
+            }
+          },
+          "energy": {
+            "total": null,
+            "unit": null,
+            "known_subtotals": {},
+            "complete": false,
+            "known_attempts": 0,
+            "unknown_attempts": 4,
+            "provenance_counts": {
+              "unknown": 4
+            }
+          },
+          "carbon": {
+            "total": null,
+            "unit": null,
+            "known_subtotals": {},
+            "complete": false,
+            "known_attempts": 0,
+            "unknown_attempts": 4,
+            "provenance_counts": {
+              "unknown": 4
+            }
+          }
+        },
+        "quality": {
+          "value": null,
+          "provenance": "unknown",
+          "reason": "end-to-end-output-review-required"
+        },
+        "timing": {
+          "response_ready_at": "2026-11-01T17:43:22.023012+00:00",
+          "response_seconds": 6.0,
+          "response_deadline_met": true,
+          "completed_at": "2026-11-01T17:43:24.023012+00:00",
+          "completion_seconds": 8.0,
+          "completion_deadline_met": true,
+          "planner_preparation_seconds": null,
+          "planner_preparation_records": 0,
+          "health_probe_seconds": null,
+          "health_probe_records": 0,
+          "decision_count": 0
+        },
+        "attempts": [
+          {
+            "attempt_id": "7f390ec7ae6d4e9bbb9f6d0c854aa48f",
+            "step_id": "classify",
+            "retry_index": 0,
+            "status": "completed",
+            "accounting_present": true,
+            "planned_estimates": {
+              "schema_version": 3,
+              "record_type": "StepEstimates",
+              "latency": {
+                "value": null,
+                "unit": "s",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "accuracy": {
+                "value": null,
+                "unit": "ratio",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "cost": {
+                "value": null,
+                "unit": "USD",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "energy": {
+                "value": null,
+                "unit": "kWh",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "carbon": {
+                "value": null,
+                "unit": "gCO2e",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              }
+            },
+            "observations": {
+              "accuracy": {
+                "provenance": "unknown",
+                "source": "live-quality-not-reviewed",
+                "uncertainty": null,
+                "unit": "ratio",
+                "value": null
+              },
+              "carbon": {
+                "provenance": "unknown",
+                "source": "carbon-not-configured",
+                "uncertainty": null,
+                "unit": "gCO2e",
+                "value": null
+              },
+              "cost": {
+                "provenance": "estimated",
+                "source": "local-no-api-subscription; api-only; electricity-excluded",
+                "uncertainty": null,
+                "unit": "USD",
+                "value": 0.0
+              },
+              "energy": {
+                "provenance": "unknown",
+                "source": "host-energy-unavailable",
+                "uncertainty": null,
+                "unit": "kWh",
+                "value": null
+              },
+              "latency": {
+                "provenance": "measured",
+                "source": "provider-adapter-elapsed-time",
+                "uncertainty": null,
+                "unit": "s",
+                "value": 2
+              },
+              "record_type": "StepEstimates",
+              "schema_version": 3
+            },
+            "provider_seconds": 2,
+            "provider_wall_seconds": 2.0,
+            "dependency_ready_at": "2026-11-01T17:43:16.023012+00:00",
+            "wait_seconds": 0.0,
+            "dependency_wait_seconds": 0.0,
+            "deliberate_delay_seconds": 0.0,
+            "queue_and_preparation_wait_seconds": 0.0,
+            "journal_seconds_after_provider": 0.0,
+            "measurement_seconds": 2.0,
+            "energy_scope": "unknown",
+            "accounting_errors": [
+              "remote-energy-unobservable"
+            ]
+          },
+          {
+            "attempt_id": "01ec7ec970644c93bc87abef82dc8c07",
+            "step_id": "retrieve",
+            "retry_index": 0,
+            "status": "completed",
+            "accounting_present": true,
+            "planned_estimates": {
+              "schema_version": 3,
+              "record_type": "StepEstimates",
+              "latency": {
+                "value": null,
+                "unit": "s",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "accuracy": {
+                "value": null,
+                "unit": "ratio",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "cost": {
+                "value": null,
+                "unit": "USD",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "energy": {
+                "value": null,
+                "unit": "kWh",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "carbon": {
+                "value": null,
+                "unit": "gCO2e",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              }
+            },
+            "observations": {
+              "accuracy": {
+                "provenance": "unknown",
+                "source": "live-quality-not-reviewed",
+                "uncertainty": null,
+                "unit": "ratio",
+                "value": null
+              },
+              "carbon": {
+                "provenance": "unknown",
+                "source": "carbon-not-configured",
+                "uncertainty": null,
+                "unit": "gCO2e",
+                "value": null
+              },
+              "cost": {
+                "provenance": "estimated",
+                "source": "local-no-api-subscription; api-only; electricity-excluded",
+                "uncertainty": null,
+                "unit": "USD",
+                "value": 0.0
+              },
+              "energy": {
+                "provenance": "unknown",
+                "source": "host-energy-unavailable",
+                "uncertainty": null,
+                "unit": "kWh",
+                "value": null
+              },
+              "latency": {
+                "provenance": "measured",
+                "source": "provider-adapter-elapsed-time",
+                "uncertainty": null,
+                "unit": "s",
+                "value": 2
+              },
+              "record_type": "StepEstimates",
+              "schema_version": 3
+            },
+            "provider_seconds": 2,
+            "provider_wall_seconds": 2.0,
+            "dependency_ready_at": "2026-11-01T17:43:18.023012+00:00",
+            "wait_seconds": 0.0,
+            "dependency_wait_seconds": 2.0,
+            "deliberate_delay_seconds": 0.0,
+            "queue_and_preparation_wait_seconds": 0.0,
+            "journal_seconds_after_provider": 0.0,
+            "measurement_seconds": 2.0,
+            "energy_scope": "unknown",
+            "accounting_errors": [
+              "remote-energy-unobservable"
+            ]
+          },
+          {
+            "attempt_id": "26fd691862da4e98973c37374ddd7c25",
+            "step_id": "draft",
+            "retry_index": 0,
+            "status": "completed",
+            "accounting_present": true,
+            "planned_estimates": {
+              "schema_version": 3,
+              "record_type": "StepEstimates",
+              "latency": {
+                "value": null,
+                "unit": "s",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "accuracy": {
+                "value": null,
+                "unit": "ratio",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "cost": {
+                "value": null,
+                "unit": "USD",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "energy": {
+                "value": null,
+                "unit": "kWh",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "carbon": {
+                "value": null,
+                "unit": "gCO2e",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              }
+            },
+            "observations": {
+              "accuracy": {
+                "provenance": "unknown",
+                "source": "live-quality-not-reviewed",
+                "uncertainty": null,
+                "unit": "ratio",
+                "value": null
+              },
+              "carbon": {
+                "provenance": "unknown",
+                "source": "carbon-not-configured",
+                "uncertainty": null,
+                "unit": "gCO2e",
+                "value": null
+              },
+              "cost": {
+                "provenance": "estimated",
+                "source": "local-no-api-subscription; api-only; electricity-excluded",
+                "uncertainty": null,
+                "unit": "USD",
+                "value": 0.0
+              },
+              "energy": {
+                "provenance": "unknown",
+                "source": "host-energy-unavailable",
+                "uncertainty": null,
+                "unit": "kWh",
+                "value": null
+              },
+              "latency": {
+                "provenance": "measured",
+                "source": "provider-adapter-elapsed-time",
+                "uncertainty": null,
+                "unit": "s",
+                "value": 2
+              },
+              "record_type": "StepEstimates",
+              "schema_version": 3
+            },
+            "provider_seconds": 2,
+            "provider_wall_seconds": 2.0,
+            "dependency_ready_at": "2026-11-01T17:43:20.023012+00:00",
+            "wait_seconds": 0.0,
+            "dependency_wait_seconds": 4.0,
+            "deliberate_delay_seconds": 0.0,
+            "queue_and_preparation_wait_seconds": 0.0,
+            "journal_seconds_after_provider": 0.0,
+            "measurement_seconds": 2.0,
+            "energy_scope": "unknown",
+            "accounting_errors": [
+              "remote-energy-unobservable"
+            ]
+          },
+          {
+            "attempt_id": "910979a0e15f4000b294b0a56db4b718",
+            "step_id": "summarize",
+            "retry_index": 0,
+            "status": "completed",
+            "accounting_present": true,
+            "planned_estimates": {
+              "schema_version": 3,
+              "record_type": "StepEstimates",
+              "latency": {
+                "value": null,
+                "unit": "s",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "accuracy": {
+                "value": null,
+                "unit": "ratio",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "cost": {
+                "value": null,
+                "unit": "USD",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "energy": {
+                "value": null,
+                "unit": "kWh",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "carbon": {
+                "value": null,
+                "unit": "gCO2e",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              }
+            },
+            "observations": {
+              "accuracy": {
+                "provenance": "unknown",
+                "source": "live-quality-not-reviewed",
+                "uncertainty": null,
+                "unit": "ratio",
+                "value": null
+              },
+              "carbon": {
+                "provenance": "unknown",
+                "source": "carbon-not-configured",
+                "uncertainty": null,
+                "unit": "gCO2e",
+                "value": null
+              },
+              "cost": {
+                "provenance": "estimated",
+                "source": "local-no-api-subscription; api-only; electricity-excluded",
+                "uncertainty": null,
+                "unit": "USD",
+                "value": 0.0
+              },
+              "energy": {
+                "provenance": "unknown",
+                "source": "host-energy-unavailable",
+                "uncertainty": null,
+                "unit": "kWh",
+                "value": null
+              },
+              "latency": {
+                "provenance": "measured",
+                "source": "provider-adapter-elapsed-time",
+                "uncertainty": null,
+                "unit": "s",
+                "value": 2
+              },
+              "record_type": "StepEstimates",
+              "schema_version": 3
+            },
+            "provider_seconds": 2,
+            "provider_wall_seconds": 2.0,
+            "dependency_ready_at": "2026-11-01T17:43:22.023012+00:00",
+            "wait_seconds": 0.0,
+            "dependency_wait_seconds": 6.0,
+            "deliberate_delay_seconds": 0.0,
+            "queue_and_preparation_wait_seconds": 0.0,
+            "journal_seconds_after_provider": 0.0,
+            "measurement_seconds": 2.0,
+            "energy_scope": "unknown",
+            "accounting_errors": [
+              "remote-energy-unobservable"
+            ]
+          }
+        ],
+        "notes": [
+          "Per-attempt durations overlap end-to-end latency and must not be added to it.",
+          "API fees exclude electricity and machine ownership; host energy includes idle and other processes.",
+          "Missing retry evidence may represent pre-dispatch failure or an unreturned provider call.",
+          "Failed or cancelled dispatched calls may continue beyond the observed host window.",
+          "Overlapping host-window subtotals can double count shared energy; they have no complete total.",
+          "CO2-only and CO2e subtotals are separate; incompatible scopes have no pooled total."
+        ],
+        "fingerprint": "830443df71326901f42d0dad9cb9a28956e36780a0fca1ff3359e813db4734d4"
+      },
+      "output_quality": {
+        "value": null,
+        "provenance": "unknown",
+        "passed": null
+      }
+    },
+    {
+      "trial_id": "trial-1c7adf1a3f104cc83f6002f0",
+      "case_id": "demo-account",
+      "repeat": 0,
+      "arm_id": "fixed-2",
+      "workflow_id": "trial-1c7adf1a3f104cc83f6002f0",
+      "state": "finished",
+      "bundle": "bundles/trial-1c7adf1a3f104cc83f6002f0",
+      "started_at": "2026-11-01T17:43:24.023012+00:00",
+      "finished_at": "2026-11-01T17:43:28.023012+00:00",
+      "stop_reason": "completed",
+      "workflow_status": "completed",
+      "execution": {
+        "schema_version": 1,
+        "record_type": "ExecutionAccountingReport",
+        "workflow_id": "trial-1c7adf1a3f104cc83f6002f0",
+        "status": "completed",
+        "coverage": {
+          "attempt_count": 4,
+          "accounted_attempts": 4,
+          "missing_attempt_ids": [],
+          "unrepresented_retry_indices": [],
+          "confirmed_undispatched_retries": [],
+          "uncertain_provider_attempt_ids": [],
+          "overlapping_host_windows": [],
+          "context_present": true
+        },
+        "resources": {
+          "cost": {
+            "total": 0.0,
+            "unit": "USD",
+            "known_subtotals": {
+              "USD": 0.0
+            },
+            "complete": true,
+            "known_attempts": 4,
+            "unknown_attempts": 0,
+            "provenance_counts": {
+              "estimated": 4
+            }
+          },
+          "energy": {
+            "total": null,
+            "unit": null,
+            "known_subtotals": {},
+            "complete": false,
+            "known_attempts": 0,
+            "unknown_attempts": 4,
+            "provenance_counts": {
+              "unknown": 4
+            }
+          },
+          "carbon": {
+            "total": null,
+            "unit": null,
+            "known_subtotals": {},
+            "complete": false,
+            "known_attempts": 0,
+            "unknown_attempts": 4,
+            "provenance_counts": {
+              "unknown": 4
+            }
+          }
+        },
+        "quality": {
+          "value": null,
+          "provenance": "unknown",
+          "reason": "end-to-end-output-review-required"
+        },
+        "timing": {
+          "response_ready_at": "2026-11-01T17:43:27.023012+00:00",
+          "response_seconds": 3.0,
+          "response_deadline_met": true,
+          "completed_at": "2026-11-01T17:43:28.023012+00:00",
+          "completion_seconds": 4.0,
+          "completion_deadline_met": true,
+          "planner_preparation_seconds": null,
+          "planner_preparation_records": 0,
+          "health_probe_seconds": null,
+          "health_probe_records": 0,
+          "decision_count": 0
+        },
+        "attempts": [
+          {
+            "attempt_id": "077acb29d7a348cab7ce0b17699c9fe9",
+            "step_id": "classify",
+            "retry_index": 0,
+            "status": "completed",
+            "accounting_present": true,
+            "planned_estimates": {
+              "schema_version": 3,
+              "record_type": "StepEstimates",
+              "latency": {
+                "value": null,
+                "unit": "s",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "accuracy": {
+                "value": null,
+                "unit": "ratio",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "cost": {
+                "value": null,
+                "unit": "USD",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "energy": {
+                "value": null,
+                "unit": "kWh",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "carbon": {
+                "value": null,
+                "unit": "gCO2e",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              }
+            },
+            "observations": {
+              "accuracy": {
+                "provenance": "unknown",
+                "source": "live-quality-not-reviewed",
+                "uncertainty": null,
+                "unit": "ratio",
+                "value": null
+              },
+              "carbon": {
+                "provenance": "unknown",
+                "source": "carbon-not-configured",
+                "uncertainty": null,
+                "unit": "gCO2e",
+                "value": null
+              },
+              "cost": {
+                "provenance": "estimated",
+                "source": "local-no-api-subscription; api-only; electricity-excluded",
+                "uncertainty": null,
+                "unit": "USD",
+                "value": 0.0
+              },
+              "energy": {
+                "provenance": "unknown",
+                "source": "host-energy-unavailable",
+                "uncertainty": null,
+                "unit": "kWh",
+                "value": null
+              },
+              "latency": {
+                "provenance": "measured",
+                "source": "provider-adapter-elapsed-time",
+                "uncertainty": null,
+                "unit": "s",
+                "value": 1
+              },
+              "record_type": "StepEstimates",
+              "schema_version": 3
+            },
+            "provider_seconds": 1,
+            "provider_wall_seconds": 1.0,
+            "dependency_ready_at": "2026-11-01T17:43:24.023012+00:00",
+            "wait_seconds": 0.0,
+            "dependency_wait_seconds": 0.0,
+            "deliberate_delay_seconds": 0.0,
+            "queue_and_preparation_wait_seconds": 0.0,
+            "journal_seconds_after_provider": 0.0,
+            "measurement_seconds": 1.0,
+            "energy_scope": "unknown",
+            "accounting_errors": [
+              "remote-energy-unobservable"
+            ]
+          },
+          {
+            "attempt_id": "53af7a1160154f6bbaed610ffeaa9ee2",
+            "step_id": "retrieve",
+            "retry_index": 0,
+            "status": "completed",
+            "accounting_present": true,
+            "planned_estimates": {
+              "schema_version": 3,
+              "record_type": "StepEstimates",
+              "latency": {
+                "value": null,
+                "unit": "s",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "accuracy": {
+                "value": null,
+                "unit": "ratio",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "cost": {
+                "value": null,
+                "unit": "USD",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "energy": {
+                "value": null,
+                "unit": "kWh",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "carbon": {
+                "value": null,
+                "unit": "gCO2e",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              }
+            },
+            "observations": {
+              "accuracy": {
+                "provenance": "unknown",
+                "source": "live-quality-not-reviewed",
+                "uncertainty": null,
+                "unit": "ratio",
+                "value": null
+              },
+              "carbon": {
+                "provenance": "unknown",
+                "source": "carbon-not-configured",
+                "uncertainty": null,
+                "unit": "gCO2e",
+                "value": null
+              },
+              "cost": {
+                "provenance": "estimated",
+                "source": "local-no-api-subscription; api-only; electricity-excluded",
+                "uncertainty": null,
+                "unit": "USD",
+                "value": 0.0
+              },
+              "energy": {
+                "provenance": "unknown",
+                "source": "host-energy-unavailable",
+                "uncertainty": null,
+                "unit": "kWh",
+                "value": null
+              },
+              "latency": {
+                "provenance": "measured",
+                "source": "provider-adapter-elapsed-time",
+                "uncertainty": null,
+                "unit": "s",
+                "value": 1
+              },
+              "record_type": "StepEstimates",
+              "schema_version": 3
+            },
+            "provider_seconds": 1,
+            "provider_wall_seconds": 1.0,
+            "dependency_ready_at": "2026-11-01T17:43:25.023012+00:00",
+            "wait_seconds": 0.0,
+            "dependency_wait_seconds": 1.0,
+            "deliberate_delay_seconds": 0.0,
+            "queue_and_preparation_wait_seconds": 0.0,
+            "journal_seconds_after_provider": 0.0,
+            "measurement_seconds": 1.0,
+            "energy_scope": "unknown",
+            "accounting_errors": [
+              "remote-energy-unobservable"
+            ]
+          },
+          {
+            "attempt_id": "01cb6f20d7db49edb7d0e23365165d8b",
+            "step_id": "draft",
+            "retry_index": 0,
+            "status": "completed",
+            "accounting_present": true,
+            "planned_estimates": {
+              "schema_version": 3,
+              "record_type": "StepEstimates",
+              "latency": {
+                "value": null,
+                "unit": "s",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "accuracy": {
+                "value": null,
+                "unit": "ratio",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "cost": {
+                "value": null,
+                "unit": "USD",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "energy": {
+                "value": null,
+                "unit": "kWh",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "carbon": {
+                "value": null,
+                "unit": "gCO2e",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              }
+            },
+            "observations": {
+              "accuracy": {
+                "provenance": "unknown",
+                "source": "live-quality-not-reviewed",
+                "uncertainty": null,
+                "unit": "ratio",
+                "value": null
+              },
+              "carbon": {
+                "provenance": "unknown",
+                "source": "carbon-not-configured",
+                "uncertainty": null,
+                "unit": "gCO2e",
+                "value": null
+              },
+              "cost": {
+                "provenance": "estimated",
+                "source": "local-no-api-subscription; api-only; electricity-excluded",
+                "uncertainty": null,
+                "unit": "USD",
+                "value": 0.0
+              },
+              "energy": {
+                "provenance": "unknown",
+                "source": "host-energy-unavailable",
+                "uncertainty": null,
+                "unit": "kWh",
+                "value": null
+              },
+              "latency": {
+                "provenance": "measured",
+                "source": "provider-adapter-elapsed-time",
+                "uncertainty": null,
+                "unit": "s",
+                "value": 1
+              },
+              "record_type": "StepEstimates",
+              "schema_version": 3
+            },
+            "provider_seconds": 1,
+            "provider_wall_seconds": 1.0,
+            "dependency_ready_at": "2026-11-01T17:43:26.023012+00:00",
+            "wait_seconds": 0.0,
+            "dependency_wait_seconds": 2.0,
+            "deliberate_delay_seconds": 0.0,
+            "queue_and_preparation_wait_seconds": 0.0,
+            "journal_seconds_after_provider": 0.0,
+            "measurement_seconds": 1.0,
+            "energy_scope": "unknown",
+            "accounting_errors": [
+              "remote-energy-unobservable"
+            ]
+          },
+          {
+            "attempt_id": "ec6376cebc4142ddaba25955ddd34716",
+            "step_id": "summarize",
+            "retry_index": 0,
+            "status": "completed",
+            "accounting_present": true,
+            "planned_estimates": {
+              "schema_version": 3,
+              "record_type": "StepEstimates",
+              "latency": {
+                "value": null,
+                "unit": "s",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "accuracy": {
+                "value": null,
+                "unit": "ratio",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "cost": {
+                "value": null,
+                "unit": "USD",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "energy": {
+                "value": null,
+                "unit": "kWh",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              },
+              "carbon": {
+                "value": null,
+                "unit": "gCO2e",
+                "provenance": "unknown",
+                "source": null,
+                "uncertainty": null
+              }
+            },
+            "observations": {
+              "accuracy": {
+                "provenance": "unknown",
+                "source": "live-quality-not-reviewed",
+                "uncertainty": null,
+                "unit": "ratio",
+                "value": null
+              },
+              "carbon": {
+                "provenance": "unknown",
+                "source": "carbon-not-configured",
+                "uncertainty": null,
+                "unit": "gCO2e",
+                "value": null
+              },
+              "cost": {
+                "provenance": "estimated",
+                "source": "local-no-api-subscription; api-only; electricity-excluded",
+                "uncertainty": null,
+                "unit": "USD",
+                "value": 0.0
+              },
+              "energy": {
+                "provenance": "unknown",
+                "source": "host-energy-unavailable",
+                "uncertainty": null,
+                "unit": "kWh",
+                "value": null
+              },
+              "latency": {
+                "provenance": "measured",
+                "source": "provider-adapter-elapsed-time",
+                "uncertainty": null,
+                "unit": "s",
+                "value": 1
+              },
+              "record_type": "StepEstimates",
+              "schema_version": 3
+            },
+            "provider_seconds": 1,
+            "provider_wall_seconds": 1.0,
+            "dependency_ready_at": "2026-11-01T17:43:27.023012+00:00",
+            "wait_seconds": 0.0,
+            "dependency_wait_seconds": 3.0,
+            "deliberate_delay_seconds": 0.0,
+            "queue_and_preparation_wait_seconds": 0.0,
+            "journal_seconds_after_provider": 0.0,
+            "measurement_seconds": 1.0,
+            "energy_scope": "unknown",
+            "accounting_errors": [
+              "remote-energy-unobservable"
+            ]
+          }
+        ],
+        "notes": [
+          "Per-attempt durations overlap end-to-end latency and must not be added to it.",
+          "API fees exclude electricity and machine ownership; host energy includes idle and other processes.",
+          "Missing retry evidence may represent pre-dispatch failure or an unreturned provider call.",
+          "Failed or cancelled dispatched calls may continue beyond the observed host window.",
+          "Overlapping host-window subtotals can double count shared energy; they have no complete total.",
+          "CO2-only and CO2e subtotals are separate; incompatible scopes have no pooled total."
+        ],
+        "fingerprint": "40be5b10a138ce3174a4177095766b0033aa9c8e800a489cb2db2059e12a0208"
+      },
+      "output_quality": {
+        "value": null,
+        "provenance": "unknown",
+        "passed": null
+      }
+    }
+  ],
+  "release_evidence": {
+    "eligible": false,
+    "reasons": [
+      "end-to-end-quality-unreviewed",
+      "simulation-not-live-evidence",
+      "pilot-dataset-not-final-evaluation",
+      "incomplete-resource-coverage"
+    ]
+  },
+  "notes": [
+    "Statistics and interpolated percentiles are descriptive; no confidence interval or stable-tail claim is implied.",
+    "Failed, infeasible and unfinished trials remain in coverage denominators; paired metrics require completed workflows.",
+    "Absolute deltas are treatment minus baseline; positive reduction percentages mean lower treatment observations.",
+    "A zero or unknown baseline has no reduction percentage. CO2 and CO2e are never pooled.",
+    "Serial randomized blocks are not simultaneous counterfactuals; model residency and host conditions may vary.",
+    "Per-step quality proxies do not establish reviewed end-to-end quality or quality-preserving savings."
+  ],
+  "fingerprint": "082a95ddea2edd20dc2b1591d3a0ab4d1231ece7e9c02f2eeb45f454fd9912d5",
+  "quality_review_coverage": {
+    "reviewed_trials": 0,
+    "scheduled_trials": 4,
+    "complete": false,
+    "review_set_fingerprint": null,
+    "aggregation": "minimum-step-mean.v1"
+  }
+}

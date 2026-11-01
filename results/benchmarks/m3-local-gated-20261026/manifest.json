@@ -1,0 +1,42 @@
+{
+  "schema_version": 2,
+  "record_type": "FrozenCalibrationAggregate",
+  "identity_method": "eligible-profile-content-v1",
+  "calibration_id": "373b1ec26bb5619414aa470c3915adcf8b7ff1238d9f12508c259c1af1431781",
+  "inputs": [
+    {
+      "directory": "results\\benchmarks\\m3-local-classify-followup-20261019",
+      "run_id": "5955915b9c074590870c3fa6d4892c28",
+      "retained_trials": 11,
+      "trials_fingerprint": "bb631da2f6401d95de1cd88273b2cd05098684682ca8e8f454eb4752bd9fe1d6",
+      "manifest_fingerprint": "08ca710c5e271f3859c57fc0258198a9200b316e6c09db9f15bd906c9acea675"
+    },
+    {
+      "directory": "results\\benchmarks\\m3-local-calibration-20261019",
+      "run_id": "a890ce477f114b6198e239726de07d98",
+      "retained_trials": 88,
+      "trials_fingerprint": "0b58d50604ccedc103ba1cc1ec819c2c19d77a8514689fa9c9517f85ff8dd603",
+      "manifest_fingerprint": "c26e0e53245acfdb0ff9a4b02bb152bb780bd2e065b1da81b6f2acf7b7d3496e"
+    }
+  ],
+  "summary": {
+    "retained_trials": 99,
+    "profile_trials": 90,
+    "held_out_excluded": 0,
+    "calibration_warmups_excluded": 9,
+    "profile_count": 8
+  },
+  "quality_status": "only-explicitly-reviewed-trials-can-supply-quality",
+  "quality_policy": {
+    "schema_version": 1,
+    "record_type": "QualityCoveragePolicy",
+    "policy_id": "support-pilot-review-coverage.v1",
+    "minimum_reviewed_trials": 10,
+    "minimum_distinct_cases": 5,
+    "minimum_reviewed_fraction": 1.0
+  },
+  "quality_eligibility": {
+    "eligible_profiles": 0,
+    "profile_count": 8
+  }
+}

@@ -60,7 +60,7 @@ def send_otp_email(to_email: str, otp: str) -> Dict[str, any]:
     """
     # Check for dev mode
     if _is_dev_mode():
-        logging.info(f"[DEV MODE] OTP generated for {to_email[:3]}***: {otp}")
+        logging.info("[DEV MODE] Local verification code generated")
         return {
             "success": True,
             "error": None,

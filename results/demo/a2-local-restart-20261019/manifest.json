@@ -1,0 +1,9 @@
+{
+  "schema_version": 3,
+  "bundle_version": 1,
+  "record_type": "DurableWorkflowReplayManifest",
+  "workflow_id": "0db62cb834ba4e47aaca2427e02e85bb",
+  "files": {
+    "workflow.json": "1116ea5a1e514429eded0e5144d62cabf33ab4465568f5a4d53bbb3b4c8b440e"
+  }
+}

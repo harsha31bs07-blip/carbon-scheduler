@@ -44,6 +44,7 @@ except ImportError:
 import requests
 
 from shared import availability
+from shared.energy import EnergySession
 
 try:
     import httpx
@@ -436,180 +437,73 @@ def call_local_llm(
     model_name: str = "llama3.2:3b",
     enable_thinking: bool = False,
 ) -> dict:
-    """
-    Wrapper for local LLM via Ollama (llama3.2:3b or qwen3.5:4b).
-    Returns {text, latency_ms, input_tokens, output_tokens, model, energy_wh, energy_measured}.
-    
-    No API key required - connects to local Ollama instance.
-    Cost: $0 (local inference, no API charges)
-    
-    Available models (both installed):
-      - llama3.2:3b  (2.0 GB, Meta Llama architecture)
-      - qwen3.5:4b   (3.4 GB, Qwen architecture, supports thinking mode)
-    
-    Args:
-      enable_thinking: For qwen3.5:4b only - enable chain-of-thought reasoning.
-                       Increases latency and token count. Recommended only for
-                       complex generation tasks (draft), not for classify/summarize.
-    
-    Environment variables (optional):
-      - OLLAMA_BASE_URL: Base URL for Ollama API (default: http://localhost:11434)
-    
-    Power Measurement:
-      - If codecarbon is available: REAL measurement via GPU (pynvml) + CPU (Windows EMI/RAPL)
-      - Fallback: TDP-based estimate (48W × duration) if sensors unavailable
-    
-    Raises:
-      - ConnectionError if Ollama is not reachable
-      - TimeoutError if the request times out
-      - AuthError if a configured endpoint requires authentication
-      - RuntimeError for other failures
+    """Call Ollama once and retain conservative host-energy provenance.
+
+    CodeCarbon machine scope includes Ollama, idle energy and other processes;
+    RAM and unverified sensor components remain modeled. If unavailable, the
+    legacy 48W power assumption is explicitly estimated and uncalibrated. A
+    remote endpoint has unknown energy, since coordinator power is not inference
+    host power. Telemetry errors never repeat a provider request.
     """
     payload = {
-        "model": model_name,
-        "prompt": prompt,
-        "stream": False,
-        "options": {
-            "temperature": 0.2,
-            "num_predict": 512,  # Max output tokens
-        },
+        "model": model_name, "prompt": prompt, "stream": False,
+        "options": {"temperature": 0.2, "num_predict": 512},
     }
-    
-    # Disable thinking mode for qwen3.5 (unless explicitly enabled)
-    # This dramatically reduces latency for simple tasks (classify, summarize)
     if "qwen" in model_name.lower() and not enable_thinking:
         payload["think"] = False
-    
-    # Start power tracking if available
-    tracker = None
-    energy_wh = None
-    energy_measured = False
-    energy_method = "TDP estimate (48W)"
-    
-    if CODECARBON_AVAILABLE:
+
+    telemetry = EnergySession(
+        OLLAMA_GENERATE_ENDPOINT,
+        tracker_factory=EmissionsTracker if CODECARBON_AVAILABLE else None,
+        fallback_power_watts=48.0,
+    )
+    with telemetry:
+        start_time = time.perf_counter()
+        response = None
         try:
-            tracker = EmissionsTracker(
-                save_to_file=False,
-                log_level='error',  # Quiet mode
-                gpu_ids=[0] if os.name == 'nt' else None,  # Windows: use GPU 0
-            )
-            tracker.start()
-        except Exception as e:
-            # Graceful degradation: continue without tracking
-            print(f"[WARNING] codecarbon tracker failed to start: {e}. Using TDP estimate.")
-            tracker = None
-    
-    start_time = time.perf_counter()
-    
-    try:
-        resp = requests.post(
-            OLLAMA_GENERATE_ENDPOINT,
-            json=payload,
-            timeout=REQUEST_TIMEOUT_SECONDS,
-        )
-    except (requests.exceptions.InvalidURL, requests.exceptions.InvalidSchema,
-            requests.exceptions.MissingSchema) as exc:
-        if tracker:
             try:
-                tracker.stop()
-            except Exception:
-                pass
-        raise ValueError("Invalid OLLAMA_BASE_URL configuration.") from exc
-    except requests.exceptions.Timeout as e:
-        latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
-        if tracker:
+                response = requests.post(
+                    OLLAMA_GENERATE_ENDPOINT, json=payload,
+                    timeout=REQUEST_TIMEOUT_SECONDS,
+                )
+            except (requests.exceptions.InvalidURL, requests.exceptions.InvalidSchema,
+                    requests.exceptions.MissingSchema) as exc:
+                raise ValueError("Invalid OLLAMA_BASE_URL configuration.") from exc
+            except requests.exceptions.Timeout as exc:
+                raise TimeoutError("Ollama request timed out.") from exc
+            except requests.exceptions.ConnectionError as exc:
+                raise ConnectionError(
+                    "Cannot connect to the configured Ollama endpoint. Ensure Ollama is running."
+                ) from exc
+            except requests.RequestException as exc:
+                raise RuntimeError("Network request to Ollama failed.") from exc
+
+            latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
+            if response.status_code in (401, 403):
+                raise AuthError(
+                    f"Ollama endpoint authentication failed (HTTP {response.status_code})."
+                )
+            if response.status_code != 200:
+                # Provider bodies may echo credentials, prompts or other secrets.
+                raise RuntimeError(
+                    f"Ollama API returned HTTP status {response.status_code} ({latency_ms}ms)."
+                )
             try:
-                tracker.stop()
-            except:
-                pass
-        raise TimeoutError(
-            f"Ollama request timed out after {latency_ms}ms. "
-            f"The model may be loading or the prompt is too complex."
-        ) from e
-    except requests.exceptions.ConnectionError as e:
-        latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
-        if tracker:
-            try:
-                tracker.stop()
-            except:
-                pass
-        raise ConnectionError(
-            f"Cannot connect to Ollama at {OLLAMA_BASE_URL}. "
-            f"Ensure Ollama is running and the model '{model_name}' is installed. "
-            f"Install with: ollama pull {model_name}"
-        ) from e
-    except requests.RequestException as e:
-        latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
-        if tracker:
-            try:
-                tracker.stop()
-            except:
-                pass
-        raise RuntimeError(
-            f"Network request to Ollama failed after {latency_ms}ms: {e}"
-        ) from e
-    
-    latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
-    
-    # Stop power tracking and get energy
-    if tracker:
-        try:
-            emissions_kg = tracker.stop()
-            energy_kwh = tracker._total_energy.kWh
-            energy_wh = energy_kwh * 1000
-            energy_measured = True
-            energy_method = "codecarbon: GPU(pynvml)+CPU(Windows EMI)+RAM(est. 10W)"
-        except Exception as e:
-            print(f"[WARNING] codecarbon tracker failed to stop: {e}. Using TDP estimate.")
-            energy_wh = None
-    
-    # Fallback to TDP estimate if measurement failed
-    if energy_wh is None:
-        # TDP-based estimate: 48W (GPU 60% of 80W TDP) × duration
-        duration_hours = latency_ms / 1000 / 3600
-        energy_wh = 48.0 * duration_hours
-        energy_measured = False
-        energy_method = "TDP estimate (48W × duration)"
-    
-    if resp.status_code != 200:
-        if resp.status_code in (401, 403):
-            raise AuthError(f"Ollama endpoint authentication failed (HTTP {resp.status_code}).")
-        try:
-            error_data = resp.json()
-            error_detail = error_data.get("error", resp.text)
-        except Exception:
-            error_detail = resp.text
-        
-        raise RuntimeError(
-            f"Ollama API returned HTTP status {resp.status_code} "
-            f"({latency_ms}ms): {error_detail}"
-        )
-    
-    try:
-        data = resp.json()
-        text = data.get("response", "")
-        
-        # Ollama returns token counts in metadata
-        # prompt_eval_count = input tokens processed
-        # eval_count = output tokens generated
-        tokens = _token_usage(data.get("prompt_eval_count"), data.get("eval_count"))
-        
-        # Note: Ollama also provides eval_duration (nanoseconds) for throughput calculation
-        # but we only need wall-clock latency here (already measured)
-        
-    except Exception as parse_err:
-        raise RuntimeError(
-            f"Failed to parse Ollama JSON response: {parse_err}"
-        ) from parse_err
-    
+                data = response.json()
+                text = data.get("response", "")
+                tokens = _token_usage(data.get("prompt_eval_count"), data.get("eval_count"))
+            except Exception as exc:
+                raise RuntimeError("Failed to parse Ollama JSON response.") from exc
+        finally:
+            if response is not None:
+                try:
+                    response.close()
+                except Exception:
+                    pass
+
     return {
-        "text": text,
-        "latency_ms": latency_ms,
-        **tokens,
-        "model": f"local-{model_name}",  # Prefix to distinguish from cloud models
-        "energy_wh": energy_wh,
-        "energy_measured": energy_measured,
-        "energy_method": energy_method,
+        "text": text, "latency_ms": latency_ms, **tokens,
+        "model": f"local-{model_name}", **telemetry.report(latency_ms),
     }
 
 

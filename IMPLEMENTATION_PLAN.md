@@ -1,6 +1,14 @@
 # A2 Implementation Plan: Carbon- and Latency-Aware Agent Workflow Scheduler
 
-Updated: 2026-10-18. This is the working plan for future implementation.
+New app improvement backlog: [App analysis and implementation plan (2026-11-01)](docs/plans/APP_IMPROVEMENT_PLAN-2026-11-01.md). It prioritizes authentication correctness, guided setup, workflow tracking, scheduling explanations, review usability and operational checks; the experimental release gates below remain separate.
+
+Latest repository review: **2026-10-26**. See the [project analysis and ordered completion plan](docs/plans/COMPLETION_PLAN-2026-10-26.md) for current verification, corrected capability status, implementation tasks, dependencies and release acceptance. The milestone history below is preserved.
+
+Implementation update **2026-11-01**: the local implementation now integrates optimized dashboard submission/decisions, resource coverage, paired comparisons, human review, durable execution and offline replay. The fresh-install rehearsal repaired conflicting Windows dependency pins. A fully executed scripted demo is retained with explicit simulation labels and no human scores. The full A2 experimental release remains open: the user has no second destination and no assigned human reviewer; the local endpoint is currently unavailable. See [release readiness](docs/release-readiness.md), [the dashboard](docs/dashboard.md) and [the current demo guide](DEMO_GUIDE.md).
+
+Latest checks: the new isolated environment installed successfully, passed `pip check`, and passed **1,917 full-suite tests in 233.58 seconds**. The added scripted-demo test passed; these cover all 1,918 collected tests. Dashboard startup returned HTTP 200/ok. The completed four-trial demo is simulation; real quality and live optimized execution remain unverified.
+
+Updated: 2026-10-19. This is the working plan for implementation.
 
 ## 1. Objective
 
@@ -14,7 +22,7 @@ The previous plan is preserved at [docs/plans/IMPLEMENTATION_PLAN.pre-A2-2026-10
 
 ## 2. Reviewed starting point
 
-Baseline: local `main`, commit `b59e258`, with existing modified and untracked source files. Those changes are part of the reviewed baseline; the commit alone does not reproduce it. Preserve existing work and recordings. No current remote publication or CI status is assumed.
+The original review covered local commit `b59e258` plus existing modified and untracked source files. That reviewed source, the generator-mock fix and this plan were subsequently published as baseline commit `2c09887` on `main` at `harsha31bs07-blip/carbon-scheduler`. Its GitHub Actions test run passed. Current implementation work is on `feat/a2-foundations`; preserve the published baseline and historical recordings.
 
 | Area | Evidence from the 2026-10-18 review | Implication |
 |---|---|---|
@@ -35,10 +43,10 @@ No applicable `AGENTS.md` was found. `PERSON_A/B/C_*.md` describe historical mod
 
 Release gates:
 
-- [ ] An input-driven, connected workflow with an urgent response path and an explicitly deferrable background step.
+- [x] An input-driven, connected workflow with an urgent response path and an explicitly deferrable background step.
 - [ ] At least two models and two real execution destinations. Geographic carbon comparisons require known, distinct grid locations; two endpoints on one machine do not establish geographic shifting. Not every model must run at every destination.
-- [ ] The chosen deployment actually receives the request; planned and executed identities are both retained.
-- [ ] Immediate and delayed execution with deadlines, cancellation, durable state and restart recovery.
+- [x] The chosen deployment actually receives the request; planned and executed identities are both retained (local destination verified; second destination still required above).
+- [x] Immediate and delayed execution with deadlines, cancellation, durable state and restart recovery (fixed-assignment local worker; joint dispatch remains incomplete).
 - [ ] Decisions adapt to workload size, deployment availability, elapsed time and timestamped carbon information.
 - [ ] All five metrics appear in reproducible comparisons; quality is evaluated on outputs and every estimate is labeled.
 - [ ] Passing automated checks, a strict replay bundle, a demonstrable live path and documented limitations.
@@ -99,27 +107,27 @@ Version the run schema and preserve scheduled/executed distinctions. Strict repl
 
 Status values: **not started**, **in progress**, **blocked on external dependency**, **verified**. Existing code does not automatically satisfy the new contracts. Record acceptance evidence before marking a milestone verified.
 
-| ID | Milestone | Dependencies | Initial status |
+| ID | Milestone | Dependencies | Current status |
 |---|---|---|---|
-| M0 | Stabilize the reviewed baseline | None | In progress |
-| M1 | Define deployments, requests and records | M0 | Not started |
-| M2 | Connect workflow inputs, outputs and deadlines | M1 | Not started |
-| M3 | Correct measurements and calibrate profiles | M1, M2 | Not started |
-| M4 | Plan model, location and processing time jointly | M1-M3 | Not started |
-| M5 | Execute decisions through a durable queue | M1, M2, M4 | Not started |
-| M6 | Evaluate the complete scheduler | M3-M5 | Not started |
-| M7 | Complete dashboard, replay and release demonstration | M5, M6 | Not started |
+| M0 | Stabilize the reviewed baseline | None | Verified |
+| M1 | Define deployments, requests and records | M0 | Verified |
+| M2 | Connect workflow inputs, outputs and deadlines | M1 | Verified |
+| M3 | Correct measurements and calibrate profiles | M1, M2 | In progress — local pilot and held-out latency verified; semantic review pending |
+| M4 | Plan model, location and processing time jointly | M1-M3 | In progress — planner/profile bridge verified offline; live quality gate unmet |
+| M5 | Execute decisions through a durable queue | M1, M2, M4 | In progress — joint revalidation and accounting verified offline; reviewed live run and second destination pending |
+| M6 | Evaluate the complete scheduler | M3-M5 | In progress — matched runner/comparison tooling verified offline; end-to-end reviews and final live measurements pending |
+| M7 | Complete dashboard, replay and release demonstration | M5, M6 | In progress — queue submission/progress/cancellation; optimized policy views pending |
 
 ### M0 — Stabilize the reviewed baseline
 
 Primary files: `tests/test_scheduler.py`, dependency files, `.gitignore`, existing workflow/run/replay tests.
 
-- [ ] Inventory existing changes/results and preserve unrelated work. Establish a traceable source snapshot or reviewed baseline commit.
+- [x] Inventory existing changes/results and preserve unrelated work. Published reviewed baseline: `2c09887`; historical recordings remain in place.
 - [x] Fix `test_different_policies_produce_different_results` so its mock accepts current generator arguments while retaining winner assertions.
-- [ ] Replace `or True` and other vacuous checks with explicit feasibility/fallback expectations.
-- [ ] Verify an isolated Python environment and capture tested dependency versions. Shared-machine success does not establish clean-install support.
-- [ ] Separate new scratch runs, runtime SQLite state, curated fixtures and versioned benchmarks without deleting historical artifacts.
-- [x] Run the complete offline suite and record its result, retaining strict-replay and comparison-integrity coverage. Publication preflight: **227 passed in 27.42 seconds** with dotenv disabled in the existing machine environment; isolated clean-install verification remains pending.
+- [x] Replace `or True` and other vacuous checks with deterministic trade-off, feasibility/fallback and complete tie-break expectations.
+- [x] Verify an isolated Python environment and capture tested dependency versions. Fresh `.venv-a2`, Windows x64 CPython 3.13.14; dependency snapshot in `constraints/windows-py313.txt`; imports and `pip check` pass. Setup documented in `docs/development.md`.
+- [x] Separate new scratch runs (`results/scratch/`), ordinary runs (`results/runs/`), runtime state (`.runtime/`), curated replay (`results/demo/`) and versioned benchmarks. Ignore new transient artifacts; preserve all historical files. See `results/README.md`.
+- [x] Run the complete offline suite and retain strict-replay/comparison-integrity coverage. On 2026-10-19, `PYTHON_DOTENV_DISABLED=1 .venv-a2/Scripts/python.exe -m pytest -q`: **547 passed in 17.12 seconds** in the fresh Windows environment; `pip check` reports no broken requirements. Published baseline preflight was 227 passing tests.
 
 **Acceptance:** reproducible environment, passing offline tests, preserved artifacts and traceable source. Remote publication is not required to start implementation.
 
@@ -127,26 +135,36 @@ Primary files: `tests/test_scheduler.py`, dependency files, `.gitignore`, existi
 
 Primary files: `shared/schema.py`, `shared/run_records.py`, `shared/availability.py`, new deployment registry/configuration, `workflow/model_clients.py`, `.env.example`.
 
-- [ ] Add validated deployment configuration and separate endpoint, model and physical location.
-- [ ] Inventory actual local models and possible second deployments without provisioning paid resources.
-- [ ] Implement request/decision/attempt contracts, units, deadline rules and unknown values.
-- [ ] Add schema migration and legacy readers; exclude incompatible old records from new comparisons.
-- [ ] Dispatch through an explicit deployment endpoint and exact model configuration.
-- [ ] Define clock and carbon-data interfaces. Carbon samples carry region, issue time, validity interval, value, units, source and provenance.
-- [ ] Define comparison compatibility: workload, configuration, deployment set, calibration, policy version, reference snapshot and experiment mode.
+- [x] Add validated deployment configuration and separate endpoint, canonical/provider model and physical location (`shared/deployments.py`, `config/deployments.example.json`). Credential values are resolved only at call time.
+- [x] Inventory without provisioning: the 2026-10-19 retry of `/api/tags` confirmed `qwen3.5:4b` and `llama3.2:3b` available at local Ollama after the earlier failed probe. No second destination or verified grid is configured. `workflow.deployment_inventory` records timestamped observations and unprobed cloud health as unknown.
+- [x] Implement strict schema-3 requests/decisions/attempts, UTC, seconds, deadline/DAG validation, five-metric provenance and unknown values (`shared/scheduling.py`). Decisions retain workflow, policy and actual weights; dispatched/provider-reported identities remain distinct.
+- [x] Preserve schema-1/2 readers and comparison/replay rules. Typed schema-3 JSON has a separate strict reader/writer (`workflow/scheduling_records.py`); explicit candidate migration converts integral legacy hours without inferring real geography. Historical runs are never silently promoted.
+- [x] Dispatch through an explicit endpoint and exact mapped provider model (`workflow/deployment_clients.py`, `workflow/dispatch.py`). Network-free integration tests verify endpoint selection, future-start rejection and saved success/failure facts.
+- [x] Define clock and carbon-data interfaces. Carbon samples carry region, issue time, validity interval, value, units, source and provenance. No live carbon-feed claim is made at this milestone.
+- [x] Define comparison compatibility: actual workload identity/version, invariant configuration, deployment snapshot, calibration, policy implementation version, reference UTC and experiment mode. Policy selection and run ID do not determine cohort compatibility.
 
 **Acceptance:** adapter tests verify the selected endpoint is used; unsupported pairs are rejected; unknown location stays unknown; records contain no credentials; legacy fixtures remain readable with accurate labels.
 
+**Verification (2026-10-19):** all 547 offline tests pass, including explicit endpoint/model dispatch, typed record roundtrips, policy/weight audit fields, comparison isolation, invalid credentials, incomplete Ollama responses and legacy replay. Read-only review findings were fixed before the final run. See `docs/a2-foundations.md` for the API and `docs/development.md` for reproduction.
+
+**Live follow-up (2026-10-19):** local Ollama 0.34.3 responded and reported both configured models. A schema-3 dispatch to `llama3.2:3b` completed with `READY`, 35 input tokens and 2 output tokens; selected and provider-reported model identities matched. Initial request wall time was 107.58 seconds; an immediate repeat took 2.38 seconds. Preserve loading/queue/network overhead in later latency calibration; this probe does not isolate its cause. Local evidence: `results/scratch/ollama-smoke-20261019T063740Z.json` and `results/scratch/ollama-warm-smoke-20261019.json` (ignored transient artifacts). Qwen inference and a second destination remain untested.
+
+**Integration boundary:** the new one-step A2 dispatch API is available independently of the original schema-2 CLI/dashboard. M2 connects actual workflow data; M4/M5 wire joint planning and durable dispatch into the application. M1 does not establish live two-destination operation, delayed execution, measured quality or policy savings. Cloud generation was not invoked during foundation verification. CI is now configured for Windows and Linux; the changed workflow has not yet run remotely.
+
 ### M2 — Connect workflow inputs, outputs and deadlines
 
-Primary files: `workflow/dag.py`, `workflow/executor.py`, new workload/prompt builders, versioned KB and ticket fixtures.
+Primary files: `workflow/connected.py`, `workflow/workload.py`, `workflow/workflow_store.py`, `data/workloads/`, generation controls in the schema-3 contracts and deployment adapters. The original executor/dashboard retain their legacy path until later application integration.
 
-- [ ] Accept variable ticket input.
-- [ ] Use classification to query a small actual knowledge base. Let the retrieval step select/synthesize retrieved evidence and preserve source IDs; account for lookup overhead.
-- [ ] Build drafts from actual ticket/classification/retrieval results; summarize actual preceding outputs.
-- [ ] Separate the urgent response deadline from a longer CRM-summary deadline. Also support a strict all-urgent case.
-- [ ] Estimate prompt size from actual context and record estimator provenance. Set per-step output limits and thinking settings.
-- [ ] Persist outputs so restart does not regenerate completed steps.
+- [x] Accept ticket text or a UTF-8 ticket file through `python -m workflow.connected`.
+- [x] Classify the actual ticket, query a versioned fictional-product KB by category and ticket terms, synthesize retrieved evidence, retain source IDs and measure local lookup overhead. Missing evidence remains explicit.
+- [x] Draft from actual ticket/classification/retrieval results and summarize actual preceding outputs. Unknown citations, invalid categories, empty output and explicit truncation stop downstream work.
+- [x] Separate response and completion deadlines; `--response-only` saves the urgent reply for later background resume, while `--all-urgent` requires every step before the response deadline. Checks include materialization, journaling and dispatch; late provider failures remain deadline misses. Known violations persist atomically and are audited on restart.
+- [x] Estimate actual rendered prompt sizes using an explicitly labeled UTF-8 byte proxy; retain provider token counts separately. Per-step output limits and nullable thinking controls reach the selected provider and are retained with attempts. Explicit unsupported cloud thinking controls fail before inference.
+- [x] Atomically persist original input, rendered prompts, source metadata, attempts and validated outputs. Resume skips completed steps; configuration/version mismatches are rejected; interrupted dispatch and stale locks require reconciliation rather than automatic duplicate inference.
+
+**Verification (2026-10-19):** **772 offline tests passed in 27.40 seconds** in `.venv-a2`. Live Ollama / `llama3.2:3b` run `5eefddb453a14cefbb07d60a1e74030a` reached `response_ready` with three attempts; a separate CLI invocation resumed only `summarize`, reaching `completed` with exactly four attempts. Evidence: `results/scratch/m2-live-connected-v4-20261019/workflow.json`. Generation ended with natural-stop metadata, with requested limits/thinking and actual usage retained. See `docs/connected-workflow.md` for commands.
+
+**Retained failures and limits:** the earlier `m2-live-connected-20261019` and `m2-live-connected-v2-20261019` probes exposed truncation, templates and incorrect speaker role; `m2-live-connected-v3-20261019` was interrupted after summary dispatch during an interface change and correctly requires reconciliation. All remain untouched in `results/scratch/`. The successful smoke establishes data flow/resume, not semantic quality: its draft implied an account-status review that was not performed and included unnecessary MFA guidance. These are M3/M6 quality-review findings. Current execution is explicitly fixed and immediate, with unknown quality/cost/energy/carbon; joint scheduling, leased queues and measured savings remain incomplete.
 
 **Acceptance:** upstream changes affect downstream prompts; dependencies hold; unsupported KB answers can be evaluated; failed prerequisites block dependents; workload version reflects prompt/data changes.
 
@@ -154,16 +172,20 @@ Primary files: `workflow/dag.py`, `workflow/executor.py`, new workload/prompt bu
 
 Primary files: `workflow/model_clients.py`, both benchmark scripts, `data/model_table.py`, `data/latency_model.py`, `data/eval/`, new `data/METHODOLOGY.md`.
 
-- [ ] Consolidate benchmarks around production prompt builders, model settings and adapters.
-- [ ] Retain every trial, including failures, warm-up/cold-start status, versions, hardware, tokens and timings. Record load/transfer overhead when available.
-- [ ] Fix unconditional measurement flags and `any(energy_measured_flags)` aggregation. Preserve CPU/GPU/RAM provenance; tracker availability does not prove sensor measurement.
-- [ ] Stop trackers in `finally`; never repeat inference because telemetry failed. Avoid nested trackers; document inclusion of the Ollama process, host idle energy and modeled components.
-- [ ] Calculate post-execution token-price cost from actual usage. Local API cost can be zero without implying zero electricity/ownership cost. Retain retry usage or mark it unknown.
-- [ ] Configure the actual local grid. Support a timestamped real carbon feed or documented historical trace; retain synthetic curves for simulation. Verify access/terms when selecting the source.
-- [ ] Define stale/missing-carbon behavior: explicitly labeled static estimate or immediate execution according to policy, never silent synthetic substitution into live savings claims.
-- [ ] Start pilot calibration with a warm-up plus at least 10 retained trials per supported model/task/deployment profile, separating cold starts. This is not sufficient by itself for stable tail-latency claims.
+- [x] Consolidate benchmarks around production prompt builders, model settings and adapters.
+- [x] Retain every trial, including failures, warm-up/cold-start status, versions, hardware, tokens and timings. Record load/transfer overhead when available.
+- [x] Fix unconditional measurement flags and `any(energy_measured_flags)` aggregation. Preserve CPU/GPU/RAM provenance; tracker availability does not prove sensor measurement.
+- [x] Stop trackers in `finally`; never repeat inference because telemetry failed. Avoid nested trackers; document inclusion of the Ollama process, host idle energy and modeled components.
+- [x] Calculate post-execution token-price cost from actual usage. Local API cost can be zero without implying zero electricity/ownership cost. Retain retry usage or mark it unknown.
+- [x] Configure the actual local grid. Support a timestamped real carbon feed or documented historical trace; retain synthetic curves for simulation. Verify access/terms when selecting the source.
+- [x] Define stale/missing-carbon behavior: explicitly labeled static estimate or unknown/infeasible, never silent synthetic substitution into live savings claims.
+- [x] Start pilot calibration with a warm-up plus at least 10 retained trials per supported model/task/deployment profile, separating cold starts. This is not sufficient by itself for stable tail-latency claims.
 - [ ] Run the existing 16-item evaluation live as a smoke check. Create separate calibration and held-out workflow examples, rubrics and manual review.
-- [ ] Replace fixed token budgets and unused latency tables with versioned profiles and an explicit unknown-profile fallback. Record sample counts, uncertainty and held-out estimation error.
+- [x] Add versioned workload-sized profiles and explicit unknown-profile fallback for the A2 planner; the historical demo remains separate. Record sample counts, uncertainty and held-out estimation error.
+
+**Local evidence (2026-10-19):** `workflow.calibrate`, `data.profiles`, `shared.energy`, `data.carbon_sources` and `data.cost_accounting` implement the documented protocol in `data/METHODOLOGY.md`. The first pilot retained 88 trials, including 11 connection failures before Ollama was restarted. A separate 11-trial Llama classification follow-up preserved those failures and supplied ten successful classification measurements. Frozen aggregate: 99 retained trials, 90 non-warm-up attempts, eight profiles, at least ten valid natural completions per profile. Quality remains unknown, and CPU/GPU/RAM host telemetry totals remain mixed rather than wholly measured.
+
+The independent held-out run retained 56 trials: 32 supported latency predictions, eight warm-up exclusions and 16 input-range exclusions. Mean absolute latency error was 0.236 seconds for the 32 covered predictions; this does not describe the excluded cases or a stable production tail. Evidence lives under `results/benchmarks/m3-local-*20261019/`; frozen profiles were not retrained on held-out outputs. Local carbon uses a documented all-India annual historical CO2 proxy, not an hourly Karnataka forecast. Explicit rubric review and complete end-to-end policy evaluation are still outstanding.
 
 **Acceptance:** every number traces to a reading or assumption; mixed/simulated values cannot become wholly measured; realistic workload sizes drive estimates; calibration and final evaluation sets are separate. Local calibration can proceed while remote access is unresolved.
 
@@ -171,34 +193,40 @@ Primary files: `workflow/model_clients.py`, both benchmark scripts, `data/model_
 
 Primary files: `scheduler/candidate_gen.py`, `scheduler/data_adapter.py`, `scheduler/scorer.py`, `scheduler/optimizer.py`, `scheduler/baseline.py`, decision contracts and tests.
 
-- [ ] Enumerate supported pairs/start windows within deadline and forecast horizons.
-- [ ] Model dependencies, remaining downstream execution, capacity reservations and transfer/load overhead.
-- [ ] Implement constrained search and explicit infeasibility from section 4.
-- [ ] Validate custom inputs and preserve normalization snapshots and decision explanations.
-- [ ] Replan at meaningful boundaries; define a minimum improvement threshold to avoid unnecessary schedule changes.
-- [ ] Deduct actual elapsed time after overruns before planning downstream work.
+- [x] Enumerate supported pairs/start windows within deadline and forecast horizons.
+- [x] Model dependencies, remaining downstream execution and capacity reservations; calibrated duration includes adapter/load overhead, with no invented transfer estimate.
+- [x] Implement constrained search and explicit infeasibility from section 4.
+- [x] Validate custom inputs and preserve normalization snapshots and decision explanations.
+- [x] Provide frozen-work replanning API and a minimum improvement threshold; automatic worker integration remains pending.
+- [x] Deduct actual elapsed time after overruns in the replanning API before planning downstream work.
 - [ ] Include waiting in comparisons and handle zero baselines without invented percentages.
 
 **Acceptance:** deterministic fixtures independently demonstrate model, location and time changes; deadlines exclude unsuitable delays; outages/empty pools/invalid inputs are handled. Check small problems against exhaustive enumeration. Record planner overhead and any search truncation.
+
+**Core verification:** `scheduler/joint.py`, `scheduler/profile_candidates.py` and `scheduler/plan_profiles.py` have deterministic model/location/time, capacity, parallel critical-path, exhaustive-oracle, strict persistence and bounded-search coverage. The frozen-context CLI made no inference calls and rejected all 36 real-profile candidates for unknown semantic quality. It is explicitly a planning scenario, not an executed connected workflow or a measured savings result. See `docs/joint-planner.md`.
 
 ### M5 — Execute decisions through a durable queue
 
 Primary files: `workflow/executor.py`, new `workflow/queue_store.py` and `workflow/worker.py`, deployment adapters, run store and replay migration.
 
-- [ ] Implement SQLite enqueue/claim/update and a worker independent of Streamlit.
-- [ ] Dispatch only after prerequisites and scheduled start; record planned/actual times.
-- [ ] Revalidate health, forecast freshness and remaining deadline at dispatch; retain revised decisions.
-- [ ] Implement leases, bounded retries, cancellation, restart recovery and ambiguous-call reconciliation.
-- [ ] Restrict fallback to eligible remaining deployments/models; preserve actual destination and constraint violations.
-- [ ] Retain failed-attempt resource usage, including unknown values.
-- [ ] Run real immediate/delayed jobs and restart during a queued wait.
+- [x] Implement SQLite enqueue/claim/update and a worker independent of Streamlit.
+- [x] Dispatch only after prerequisites and scheduled start; record planned/actual times.
+- [x] Revalidate health, forecast freshness and remaining deadline at dispatch; retain revised decisions (integrated path verified offline on 2026-10-26; reviewed live validation remains open).
+- [x] Implement leases, bounded explicit retries, cancellation, restart recovery and ambiguous-call reconciliation; no automatic ambiguous retries.
+- [x] Restrict pre-dispatch rerouting to eligible remaining deployments/models; preserve actual destination and constraint violations. Provider failures still require explicit retry; ambiguous inference is never automatically repeated.
+- [x] Retain failed-attempt resource usage, including unknown values; preserve superseded late usage without overwriting a newer retry.
+- [x] Run real immediate/delayed jobs and restart during a queued wait.
 - [ ] Verify routing to two actual destinations using worker-side evidence or provider-supported deployment metadata.
 
 **Acceptance:** queued work survives restart; atomic claims prevent concurrent duplicate dispatch; dependencies/cancellation work; fallback and failures remain visible; selected endpoints are actually called. Short-delay live tests prove queue mechanics, not meaningful carbon savings. Accelerated clocks remain simulation.
 
+**Live local verification:** workflow `0db62cb834ba4e47aaca2427e02e85bb` reached `response_ready` with three attempts, then a second worker process executed only the background summary. Its scheduled start was `2026-10-19T12:54:49.597333Z`; provider dispatch began at `12:54:50.253558Z`, with 40.340 seconds waiting since prerequisite completion. Exactly four attempts completed. Database: `.runtime/m5-live-restart-20261019.sqlite3`; immutable export: `results/demo/a2-local-restart-20261019`. The draft contradicted the KB on password resets removing a lockout, and the summary repeated that error. This verifies durability and timing, not semantic quality or carbon savings. See `docs/durable-worker.md`.
+
 ### M6 — Evaluate the complete scheduler
 
 Primary files: unified evaluation runner, curated datasets/results, methodology, comparison loader and benchmark report.
+
+**Tooling update (2026-11-01):** `workflow.evaluate_policies`, `evaluation_protocol`, `planning_constraints` and `policy_comparison` implement protocol/source freeze, seeded paired trials, baselines/ablations, isolated queues and strict offline export. `workflow_quality` and `review_workflow_quality` add frozen-policy output review and comparison joins. Real human judgments, independent final inputs and controlled live measurement remain outstanding; experiment acceptance items below are not checked solely because their tooling exists.
 
 - [ ] Freeze workload, rubric, constraints, profiles, candidate set and protocol before final measurement.
 - [ ] Compare immediate fixed-model/deployment options, a calibration-selected fixed model-per-step assignment, model-only routing, and the joint scheduler.
@@ -216,16 +244,18 @@ Primary files: unified evaluation runner, curated datasets/results, methodology,
 
 Primary files: `workflow/dashboard/app.py`, extracted views/data modules, `README.md`, `DEMO_GUIDE.md`, `DEMO_SCRIPT_LOCAL.md`.
 
-- [ ] Submit workflows with deadlines and policy; display queue progress/cancellation.
-- [ ] Show selected/executed model and deployment, known/unknown geography, planned/actual start, deadline and replan history.
-- [ ] Explain rejected alternatives, score contributions and infeasible requests.
-- [ ] Clearly distinguish live, replay and simulation, with provenance beside every metric.
-- [ ] Display matched comparisons, actual output quality and completion outcomes. Handle partial runs, absent evidence and zero baselines.
-- [ ] Keep SMTP-free development login; defer production identity work.
-- [ ] Document local startup, adding a destination, carbon data, worker commands, evaluation and replay.
+- [x] Submit workflows with deadlines and policy; display queue progress/cancellation (offline AppTest verified).
+- [x] Show selected/executed identities, geography, UTC times, deadlines and replan history.
+- [x] Explain rejected alternatives, score contributions and infeasible requests.
+- [x] Distinguish live/replay/simulation and retain metric provenance/coverage.
+- [x] Display matched outcomes and attributable reviewed-quality fields, including partial/unknown evidence and zero baselines (real judgments still pending).
+- [x] Keep SMTP-free local login and remove verification codes from logs; production identity remains deferred.
+- [x] Document startup, destinations, carbon, worker/evaluation/replay and revised honest demo flow; historical guides retained.
 - [ ] Rehearse in a clean environment; run offline and explicit live integration checks. Verify hosted CI if/when published.
 
 **Acceptance:** a reviewer can follow input → decision → execution → evidence; all three dimensions and five metrics are demonstrated with limitations; documented commands reproduce the result.
+
+Local tooling and clean Windows setup were verified. The remaining unchecked live/hosted-CI rehearsal and the full experimental acceptance are not claimed: no second host or human reviewer is available and the current local inference endpoint is down. See [release readiness](docs/release-readiness.md).
 
 ## 6. Validation matrix
 
@@ -252,7 +282,7 @@ Resolve during M1/M3: second deployment access/location, carbon-data coverage, l
 
 ## 8. Execution order and checkpoints
 
-**Next implementation task: M0.** Fix the failing mock, strengthen ineffective assertions, establish the environment and rerun the suite. Then implement contracts before adding dashboard features.
+**Remaining release work:** real human judgments, supported context/calibration coverage, an available local backend, a second real destination, suitable timestamped carbon inputs and final controlled live measurements. The user confirmed no second destination and no assigned reviewer. Dashboard/review/evaluation integration and clean local setup are implemented and tested. Preserve infeasibility while required evidence is missing. The confirmed local location remains Mangaluru, Karnataka, India.
 
 Order: M0 → M1 → M2 → M3 → M4 → M5 → M6 → M7. Queue/clock scaffolding may begin after M1, but live scheduled dispatch depends on feasibility checks and the decision contract.
 
@@ -272,3 +302,7 @@ Deferred: Kubernetes-scale placement, multi-tenant service, production SSO/billi
 |---|---|---|
 | 2026-10-18 | Replaced demo-only roadmap with A2 scope; preserved previous plan | Reviewed baseline: 226 passed / 1 failed. Next: M0. Planning did not complete an implementation milestone. |
 | 2026-10-18 | GitHub publication preparation: repaired the stale test mock, corrected README paths/replay instructions and left optional cloud credentials blank in the template | Offline suite: 227 passed / 0 failed. M0 is in progress; isolated environment and remaining assertion improvements are not yet verified. |
+| 2026-10-19 | M0/M1 foundations verified: isolated environment, meaningful scheduler assertions, explicit deployments, schema-3 records and typed dispatch | 547 offline tests passed; local Ollama inventory and Llama smoke later succeeded. |
+| 2026-10-19 | M2 connected workload, deadlines, provider controls, retained completion reasons and resumable single-run journal verified | 772 offline tests passed; live response-only plus separate summary resume completed with exactly four attempts. Retained failed probes and semantic-quality limitations feed M3. |
+| 2026-11-01 | P6 matched evaluation tooling: frozen common protocol/source, paired randomization, baseline/ablation restrictions, isolated durable trials, coverage-aware comparisons and portable replay | 1,891 full-suite tests plus one added immutable-package test passed. Frozen local pilot has 48 pending trials and no inference. Human quality, final live measurement and dashboard integration remain open. |
+| 2026-11-01 | P6 workflow quality integration: frozen rubric/policy, actual-output packets, additive human approvals, quality coverage and paired differences in strict comparison exports | 1,912 full-suite tests passed. Review pilot remains unexecuted/unreviewed; actual human judgments and live release gates remain open. |

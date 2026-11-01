@@ -18,13 +18,16 @@ What is sourced and what is assumed
 * ENERGY and BASE ACCURACY are ASSUMPTIONS, not published figures. Neither Google nor
   NVIDIA publishes energy per token or parameter counts for these deployments. Only the
   relative ordering is meant to be meaningful. Change ENERGY_SCALE to rescale all energy.
-* Accuracy only comes from measurement when data/eval/run_eval.py has been run live
-  against the models (results file has "is_measured": true).
+* Accuracy remains an assumption unless an evaluation score explicitly identifies
+  a manual/human-reviewed rubric. Live keyword/format proxy scores and the old
+  "is_measured" flag do not establish semantic quality. Reviewed sample scores
+  still estimate quality on future workflow inputs.
 """
 
 from __future__ import annotations
 
 import json
+import math
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Optional, Tuple
@@ -50,7 +53,7 @@ class ModelSpec:
     energy_out_per_1k_kwh: float  # ASSUMPTION: decode energy per 1k output tokens (incl. PUE)
     ttft_ms: float  # ASSUMPTION: time to first token
     output_tokens_per_sec: float  # ASSUMPTION: decode speed
-    base_accuracy: float  # ASSUMPTION until a live eval is run [0.0 - 1.0]
+    base_accuracy: float  # ASSUMPTION until a reviewed evaluation is supplied [0.0 - 1.0]
     tokenizer_factor: float = 1.0  # tokens produced vs. the reference tokenizer for the same text
 
     @property
@@ -103,7 +106,7 @@ MODEL_TABLE: Dict[str, ModelSpec] = {
         # CALIBRATED: 29 calls on 2026-09-21, median 1371 ms for 42 output tokens
         ttft_ms=1000.0,
         output_tokens_per_sec=150.0,  # ASSUMPTION
-        base_accuracy=0.760,  # ASSUMPTION until run_eval.py is run live
+        base_accuracy=0.760,  # ASSUMPTION until a reviewed rubric is supplied
     ),
     "nemotron-ultra-3": ModelSpec(
         canonical_name="nemotron-ultra-3",
@@ -116,7 +119,7 @@ MODEL_TABLE: Dict[str, ModelSpec] = {
         # CALIBRATED (thin sample): 4 calls on 2026-09-21, median 1313 ms for 36 output tokens
         ttft_ms=800.0,
         output_tokens_per_sec=80.0,  # ASSUMPTION
-        base_accuracy=0.880,  # ASSUMPTION until run_eval.py is run live
+        base_accuracy=0.880,  # ASSUMPTION until a reviewed rubric is supplied
     ),
     # LOCAL MODELS (Ollama via RTX 3050 Laptop GPU)
     "local-qwen3.5": ModelSpec(
@@ -225,8 +228,28 @@ def _load_eval_results(path: Path) -> Optional[dict]:
         with open(path, "r", encoding="utf-8") as f:
             data = json.load(f)
         return data if isinstance(data, dict) else None
-    except (json.JSONDecodeError, OSError):
+    except (json.JSONDecodeError, OSError, UnicodeError):
         return None
+
+
+def _reviewed_accuracy_source(value) -> bool:
+    """Match the reviewed-rubric convention used by the A2 profile builder."""
+    if not isinstance(value, str):
+        return False
+    return value in {"manual-review", "human-review"} or (
+        value.startswith(("manual-review:", "human-review:"))
+        and bool(value.split(":", 1)[1].strip())
+    )
+
+
+def _accuracy_value(value) -> Optional[float]:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    try:
+        valid = math.isfinite(value) and 0 <= value <= 1
+    except OverflowError:
+        valid = False
+    return float(value) if valid else None
 
 
 def get_model_accuracy(
@@ -238,23 +261,39 @@ def get_model_accuracy(
     """Accuracy in [0, 1], optionally for one category
     ('classification', 'qa', 'generation', 'summarization').
 
-    Measured values are used only when the results file was produced by a fully
-    live evaluation ("is_measured": true). Otherwise the assumed base_accuracy is
-    returned. Set allow_simulated=True to use mock-mode results anyway.
+    Only scores with an explicit ``accuracy_source`` (per-model) or
+    ``score_source`` (whole-file) of ``manual-review[:rubric-id]`` or
+    ``human-review[:rubric-id]`` are eligible. The legacy ``is_measured`` flag
+    alone never promotes live keyword/format checks to semantic accuracy.
+    Missing/invalid scores fall back to the documented base assumption.
+
+    ``allow_simulated=True`` is a diagnostic override for old proxy/mock files;
+    callers using it must retain that provenance rather than report measurement.
     """
+    if type(allow_simulated) is not bool:
+        raise ValueError("allow_simulated must be an explicit boolean diagnostic override")
     canonical = normalize_model_name(model)
     data = _load_eval_results(eval_results_file or EVAL_RESULTS_PATH)
-    if data and (data.get("is_measured") or allow_simulated):
-        entry = data.get("models", {}).get(canonical, {})
+    models = data.get("models") if data else None
+    entry = models.get(canonical) if isinstance(models, dict) else None
+    if isinstance(entry, dict):
+        source = entry.get("accuracy_source", data.get("score_source"))
+        provenance = entry.get("accuracy_provenance", data.get("score_provenance"))
+        if not allow_simulated and (not _reviewed_accuracy_source(source)
+                                    or provenance is not None and provenance not in ("estimated", "measured")):
+            return MODEL_TABLE[canonical].base_accuracy
         if category:
-            cat_val = entry.get("category_accuracy", {}).get(category.strip().lower())
-            if cat_val is not None:
-                return float(cat_val)
-        if "accuracy" in entry:
-            return float(entry["accuracy"])
+            categories = entry.get("category_accuracy")
+            key = category.strip().lower()
+            if isinstance(categories, dict) and key in categories:
+                cat_val = _accuracy_value(categories[key])
+                return cat_val if cat_val is not None else MODEL_TABLE[canonical].base_accuracy
+        accuracy = _accuracy_value(entry.get("accuracy"))
+        if accuracy is not None:
+            return accuracy
     return MODEL_TABLE[canonical].base_accuracy
 
 
 def get_model_base_accuracy(model: str, eval_results_file: Optional[Path] = None) -> float:
-    """Overall accuracy (measured if available, else assumed). Kept for backward compatibility."""
+    """Reviewed sample accuracy if available, else assumed; legacy compatibility."""
     return get_model_accuracy(model, None, eval_results_file)

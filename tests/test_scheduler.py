@@ -10,8 +10,10 @@ Tests cover:
 - End-to-end schedule_step for all steps and policies
 """
 
+from datetime import datetime, timezone
+
 import pytest
-from shared.schema import Candidate, STEP_DEFINITIONS
+from shared.schema import Candidate
 from data.candidate_builder import candidate_pool
 from scheduler.candidate_gen import (
     generate_candidates,
@@ -24,6 +26,9 @@ from scheduler.scorer import score_candidates, _normalize
 from scheduler.policies import get_policy_weights, POLICIES
 from scheduler.optimizer import schedule_step
 from scheduler.data_adapter import get_carbon
+
+
+FIXED_BASE_TIME = datetime(2024, 6, 15, 12, 0, 0, tzinfo=timezone.utc)
 
 
 class TestNormalization:
@@ -142,9 +147,8 @@ class TestHardConstraintsAndFallback:
 
     def create_synthetic_candidates(self, step_id: str, overrides: list[dict]) -> list[Candidate]:
         """Create synthetic candidates with specific metric overrides for testing."""
-        step = get_step(step_id)
         candidates = []
-        for i, override in enumerate(overrides):
+        for override in overrides:
             c = Candidate(
                 step_id=step_id,
                 model=override.get("model", "haiku"),
@@ -208,14 +212,14 @@ class TestHardConstraintsAndFallback:
         step_id = "classify"
         pin_step_rules(monkeypatch, min_accuracy=0.6, max_latency_ms=1500)
         candidates = self.create_synthetic_candidates(step_id, [
-            {"latency": 3000, "accuracy": 0.9},  # violation = 1000
-            {"latency": 2500, "accuracy": 0.9},  # violation = 500
-            {"latency": 4000, "accuracy": 0.9},  # violation = 2000
+            {"latency": 3000, "accuracy": 0.9},  # violation = 1500
+            {"latency": 2500, "accuracy": 0.9},  # violation = 1000
+            {"latency": 4000, "accuracy": 0.9},  # violation = 2500
         ])
         weights = get_policy_weights("balanced")
         scored = score_candidates(candidates, weights, step_id)
         assert len(scored) == 1
-        # Fallback should pick lowest latency violation (2500 -> violation 500)
+        # Fallback should pick lowest latency violation (2500 -> violation 1000)
         assert scored[0][0].est_latency_ms == 2500
 
     def test_fallback_prefers_highest_accuracy_then_lowest_violation(self, monkeypatch):
@@ -253,47 +257,27 @@ class TestPolicySpecificWinners:
     """Tests that each policy selects the expected type of candidate."""
 
     def create_policy_test_candidates(self, step_id: str) -> list[Candidate]:
-        """Create candidates with clear winners for each policy."""
-        step = get_step(step_id)
-        # Create 3 candidates: fast/cheap, eco-friendly, balanced
+        """Every candidate gives up something: speed, resources, or quality."""
         return [
-            Candidate(step_id, "haiku", "us-east", 0, 50.0, 0.85, 0.001, 0.0005, 50.0),   # fast, low carbon
-            Candidate(step_id, "opus", "eu-west", 0, 200.0, 0.90, 0.02, 0.01, 500.0),     # slow, high carbon
-            Candidate(step_id, "sonnet", "in-south", 0, 120.0, 0.88, 0.005, 0.002, 200.0),  # middle
+            Candidate(step_id, "fast", "us-east", 0, 100.0, 0.85, 0.03, 0.0030, 300.0),
+            Candidate(step_id, "green", "eu-west", 0, 1100.0, 0.80, 0.02, 0.0010, 100.0),
+            Candidate(step_id, "compromise", "in-south", 0, 700.0, 0.90, 0.01, 0.0018, 180.0),
         ]
 
-    def test_speed_policy_picks_lowest_latency(self):
-        """Speed policy should pick candidate with lowest latency."""
+    @pytest.mark.parametrize("policy, expected_model", [
+        ("speed", "fast"),
+        ("eco", "green"),
+        ("balanced", "compromise"),
+    ])
+    def test_policy_selects_expected_tradeoff(self, monkeypatch, policy, expected_model):
+        """All options are feasible, so policy weights decide the winner."""
+        pin_step_rules(monkeypatch, min_accuracy=0.75, max_latency_ms=1500)
         step_id = "classify"
         candidates = self.create_policy_test_candidates(step_id)
-        weights = get_policy_weights("speed")
-        scored = score_candidates(candidates, weights, step_id)
-        winner = scored[0][0]
-        # haiku model has lowest latency (50ms)
-        assert winner.model == "haiku"
-        assert winner.est_latency_ms == 50.0
-
-    def test_eco_policy_picks_lowest_carbon(self):
-        """Eco policy should pick candidate with lowest carbon."""
-        step_id = "classify"
-        candidates = self.create_policy_test_candidates(step_id)
-        weights = get_policy_weights("eco")
-        scored = score_candidates(candidates, weights, step_id)
-        winner = scored[0][0]
-        # haiku model has lowest carbon (50g)
-        assert winner.model == "haiku"
-        assert winner.est_carbon_g == 50.0
-
-    def test_balanced_policy_picks_middle_ground(self):
-        """Balanced policy should pick a middle-ground candidate."""
-        step_id = "classify"
-        candidates = self.create_policy_test_candidates(step_id)
-        weights = get_policy_weights("balanced")
-        scored = score_candidates(candidates, weights, step_id)
-        winner = scored[0][0]
-        # With equal weights, sonnet model (middle ground) often wins
-        # But let's verify it's not an extreme
-        assert winner.model in {"haiku", "sonnet", "opus"}
+        scored = score_candidates(candidates, get_policy_weights(policy), step_id)
+        assert len(scored) == len(candidates)
+        assert scored[0][0].model == expected_model
+        assert scored[0][1] < scored[1][1]
 
 
 class TestTimeOffsetCarbonSensitivity:
@@ -302,27 +286,27 @@ class TestTimeOffsetCarbonSensitivity:
     def test_carbon_changes_with_time_offset(self):
         """Carbon intensity changes with time offset (per data_adapter formula)."""
         # Carbon intensity follows diurnal pattern - use fixed base_utc_time for reproducibility
-        from datetime import datetime, timezone
-        base_time = datetime(2024, 6, 15, 12, 0, 0, tzinfo=timezone.utc)  # Solar noon UTC
-        carbon_0 = get_carbon("haiku", "us-east", 0, "inference", base_utc_time=base_time)
-        carbon_4 = get_carbon("haiku", "us-east", 4, "inference", base_utc_time=base_time)
-        carbon_8 = get_carbon("haiku", "us-east", 8, "inference", base_utc_time=base_time)
+        carbon_0 = get_carbon("haiku", "us-east", 0, "inference", base_utc_time=FIXED_BASE_TIME)
+        carbon_4 = get_carbon("haiku", "us-east", 4, "inference", base_utc_time=FIXED_BASE_TIME)
+        carbon_8 = get_carbon("haiku", "us-east", 8, "inference", base_utc_time=FIXED_BASE_TIME)
         # Carbon should change with time offset (not all equal)
         assert carbon_0 != carbon_4 or carbon_4 != carbon_8  # At least one difference
         assert carbon_0 > 0 and carbon_4 > 0 and carbon_8 > 0  # All positive
 
-    def test_eco_policy_prefers_later_offset_when_carbon_improves(self):
+    def test_eco_policy_prefers_later_offset_when_carbon_improves(self, monkeypatch):
         """Eco policy should select later time offset when it reduces carbon."""
-        step_id = "retrieve"  # batch, max_latency=1000 (lenient)
-        # Generate all real candidates for this step
-        candidates = generate_candidates(step_id)
+        pin_step_rules(monkeypatch, min_accuracy=0.75, max_latency_ms=1000)
+        step_id = "retrieve"
+        candidates = [
+            Candidate(step_id, "same-model", "same-region", offset, 500.0, 0.9, 0.01, 0.001, carbon)
+            for offset, carbon in [(0, 100.0), (2, 20.0), (4, 90.0)]
+        ]
         weights = get_policy_weights("eco")
         scored = score_candidates(candidates, weights, step_id)
         winner = scored[0][0]
-        # With eco policy (high carbon weight), should prefer offset > 0 if carbon improves
-        # Note: depends on actual data, but at minimum should not crash
-        assert winner.time_offset_hr in TIME_OFFSETS
-        assert winner.est_carbon_g > 0
+        assert len(scored) == 3
+        assert winner.time_offset_hr == 2
+        assert winner.est_carbon_g == 20.0
 
 
 class TestDeferral:
@@ -343,7 +327,7 @@ class TestDeferral:
     def test_eco_policy_defers_for_large_carbon_gain(self):
         candidates = self.same_model_at_offsets([100.0, 40.0, 30.0])
         winner = score_candidates(candidates, get_policy_weights("eco"), "classify")[0][0]
-        assert winner.time_offset_hr > 0
+        assert winner.time_offset_hr == 4
 
     def test_eco_policy_does_not_defer_for_no_gain(self):
         candidates = self.same_model_at_offsets([100.0, 100.0, 100.0])
@@ -360,41 +344,39 @@ class TestDeferral:
 class TestEndToEndScheduling:
     """End-to-end tests for schedule_step across all steps and policies."""
 
-    def test_schedule_step_returns_candidate_for_all_steps_speed(self):
-        """schedule_step returns Candidate for all 4 steps with speed policy."""
-        for step in STEPS:
-            step_id = step["step_id"]
-            candidate = schedule_step(step_id, "speed")
-            assert isinstance(candidate, Candidate)
-            assert candidate.step_id == step_id
-            assert (candidate.model, candidate.location) in candidate_pool()
-            assert candidate.time_offset_hr in TIME_OFFSETS
-            assert candidate.est_accuracy >= step.get("min_accuracy", 0.7) or True  # fallback may violate
-
-    def test_schedule_step_returns_candidate_for_all_steps_balanced(self):
-        """schedule_step returns Candidate for all 4 steps with balanced policy."""
-        for step in STEPS:
-            step_id = step["step_id"]
-            candidate = schedule_step(step_id, "balanced")
-            assert isinstance(candidate, Candidate)
-            assert candidate.step_id == step_id
-
-    def test_schedule_step_returns_candidate_for_all_steps_eco(self):
-        """schedule_step returns Candidate for all 4 steps with eco policy."""
-        for step in STEPS:
-            step_id = step["step_id"]
-            candidate = schedule_step(step_id, "eco")
-            assert isinstance(candidate, Candidate)
-            assert candidate.step_id == step_id
-
-    def test_schedule_step_returns_candidate_for_all_steps_custom(self):
-        """schedule_step returns Candidate for all 4 steps with custom policy."""
+    @pytest.mark.parametrize("step_id", [step["step_id"] for step in STEPS])
+    @pytest.mark.parametrize("policy", ["speed", "balanced", "eco", "custom"])
+    def test_schedule_step_respects_feasibility_or_legacy_fallback(self, step_id, policy):
+        """Real candidate generation must produce a feasible winner or its documented fallback."""
         custom_weights = {"w_latency": 0.3, "w_cost": 0.2, "w_energy": 0.2, "w_carbon": 0.2, "w_accuracy": 0.1}
-        for step in STEPS:
-            step_id = step["step_id"]
-            candidate = schedule_step(step_id, "custom", custom_weights)
-            assert isinstance(candidate, Candidate)
-            assert candidate.step_id == step_id
+        step = get_step(step_id)
+        pool = generate_candidates(step_id, base_utc_time=FIXED_BASE_TIME)
+        candidate = schedule_step(
+            step_id, policy, custom_weights if policy == "custom" else None,
+            base_utc_time=FIXED_BASE_TIME,
+        )
+        assert isinstance(candidate, Candidate)
+        assert candidate.step_id == step_id
+        assert candidate in pool
+        feasible = [
+            option for option in pool
+            if option.est_accuracy >= step.get("min_accuracy", 0.7)
+            and (step.get("max_latency_ms") is None or option.est_latency_ms <= step["max_latency_ms"])
+        ]
+        if feasible:
+            assert candidate in feasible
+        else:
+            # Legacy best effort prioritizes accuracy, then latency violation.
+            # Membership alone would let an arbitrary infeasible candidate pass.
+            highest_accuracy = max(option.est_accuracy for option in pool)
+            assert candidate.est_accuracy == highest_accuracy
+            tied = [option for option in pool if option.est_accuracy == highest_accuracy]
+            max_latency = step.get("max_latency_ms")
+            if max_latency is None:
+                expected = min(tied, key=lambda option: option.est_latency_ms)
+            else:
+                expected = min(tied, key=lambda option: max(0, option.est_latency_ms - max_latency))
+            assert candidate == expected
 
     def test_different_policies_produce_different_results(self, monkeypatch):
         """Given a pool with real trade-offs, speed and eco pick different candidates.
@@ -449,40 +431,36 @@ class TestTieBreaking:
     """Tests for deterministic tie-breaking in scoring."""
 
     def test_tie_breaking_deterministic(self):
-        """Identical candidates produce deterministic ordering."""
+        """Metric ties produce the same ordering for different input orders."""
         step_id = "classify"
-        # Create multiple identical candidates
-        candidates = []
-        for _ in range(5):
-            c = Candidate(step_id, "haiku", "us-east", 0, 100.0, 0.85, 0.01, 0.001, 100.0)
-            candidates.append(c)
+        candidates = [
+            Candidate(step_id, model, location, 0, 100.0, 0.85, 0.01, 0.001, 100.0)
+            for model, location in [("sonnet", "us-east"), ("haiku", "us-east"), ("haiku", "eu-west")]
+        ]
         weights = get_policy_weights("balanced")
-        scored = score_candidates(candidates, weights, step_id)
-        # All should have same score, tie-breaking by carbon, latency, model, location, offset
-        assert len(scored) == 5
-        # All scores should be equal
-        scores = [s for _, s in scored]
-        assert all(s == scores[0] for s in scores)
+        expected = [("haiku", "eu-west"), ("haiku", "us-east"), ("sonnet", "us-east")]
+        for ordered in (candidates, list(reversed(candidates)), candidates[1:] + candidates[:1]):
+            scored = score_candidates(ordered, weights, step_id)
+            assert [(candidate.model, candidate.location) for candidate, _ in scored] == expected
+            assert all(score == 0.0 for _, score in scored)
 
     def test_tie_breaking_order(self):
         """Tie-breaking follows: carbon, latency, model, location, offset."""
         step_id = "classify"
-        # Create candidates with same normalized metrics but different tie-break fields
-        # Two candidates have same low carbon (100), same latency (100)
-        # Lexicographically: "haiku" < "sonnet" < "opus"
-        candidates = [
-            Candidate(step_id, "opus", "in-south", 3, 100.0, 0.85, 0.01, 0.001, 200.0),  # high carbon
-            Candidate(step_id, "sonnet", "us-east", 1, 100.0, 0.85, 0.01, 0.001, 100.0),  # low carbon, same start as haiku
-            Candidate(step_id, "haiku", "eu-west", 1, 100.0, 0.85, 0.01, 0.001, 100.0), # same carbon as sonnet
+        expected = [
+            Candidate(step_id, "haiku", "eu-west", 0, 100.0, 0.85, 0.01, 0.001, 100.0),
+            Candidate(step_id, "haiku", "eu-west", 1, 100.0, 0.85, 0.01, 0.001, 100.0),
+            Candidate(step_id, "haiku", "us-east", 0, 100.0, 0.85, 0.01, 0.001, 100.0),
+            Candidate(step_id, "sonnet", "eu-west", 0, 100.0, 0.85, 0.01, 0.001, 100.0),
+            Candidate(step_id, "haiku", "eu-west", 0, 200.0, 0.85, 0.01, 0.001, 100.0),
+            Candidate(step_id, "haiku", "eu-west", 0, 100.0, 0.85, 0.01, 0.001, 200.0),
         ]
-        weights = get_policy_weights("balanced")
-        scored = score_candidates(candidates, weights, step_id)
-        # Winner should be lowest carbon; among tied carbon, lowest latency;
-        # among tied, lexicographically first model ("haiku" < "sonnet")
-        winner = scored[0][0]
-        assert winner.model == "haiku"
-        assert winner.location == "eu-west"
-        assert winner.time_offset_hr == 1
+        # With identical accuracy and every other weight zero, scores are exactly
+        # tied. The full output therefore exercises each tie-break field alone.
+        weights = get_policy_weights("custom", {"w_accuracy": 1.0})
+        scored = score_candidates(list(reversed(expected)), weights, step_id)
+        assert all(score == 0.0 for _, score in scored)
+        assert [candidate for candidate, _ in scored] == expected
 
 
 class TestReproducibility:
@@ -491,7 +469,7 @@ class TestReproducibility:
     def test_schedule_step_deterministic(self):
         """Multiple calls with same inputs produce same output."""
         step_id = "summarize"
-        results = [schedule_step(step_id, "balanced") for _ in range(10)]
+        results = [schedule_step(step_id, "balanced", base_utc_time=FIXED_BASE_TIME) for _ in range(10)]
         first = results[0]
         for r in results[1:]:
             assert r.model == first.model
@@ -501,7 +479,7 @@ class TestReproducibility:
             assert r.est_accuracy == first.est_accuracy
             assert r.est_cost_usd == first.est_cost_usd
             assert r.est_energy_kwh == first.est_energy_kwh
-            assert r.est_carbon_g == pytest.approx(first.est_carbon_g, rel=1e-3)
+            assert r.est_carbon_g == first.est_carbon_g
 
 
 if __name__ == "__main__":

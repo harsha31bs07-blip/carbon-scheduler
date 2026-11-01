@@ -7,6 +7,7 @@ __pycache__/
 *.bak
 .pytest_cache/
 .venv/
+.venv-*/
 venv/
 
 # Tool / agent state
@@ -16,3 +17,9 @@ venv/
 # Scratch output
 *.log
 test_output*.txt
+results/runs/
+results/scratch/
+.runtime/
+
+# Machine-specific deployment endpoints and location configuration
+config/deployments.local.json

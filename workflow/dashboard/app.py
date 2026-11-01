@@ -592,6 +592,18 @@ if not st.session_state.authenticated:
 # ══════════════════════════════════════════════════════════════════════════════
 
 # ── State Management ─────────────────────────────────────────────────────────
+workspace = st.sidebar.radio("Workspace", ["Ticket workflows", "Legacy policy comparisons"], key="dashboard_workspace")
+if workspace == "Ticket workflows":
+    from workflow.dashboard.queue_view import render_queue_view
+    st.sidebar.caption(f"Logged in: {st.session_state.user_email}")
+    if st.sidebar.button("Logout"):
+        st.session_state.authenticated = False
+        st.session_state.user_email = None
+        st.session_state.otp_sent = False
+        st.rerun()
+    render_queue_view(root_dir)
+    st.stop()
+
 if "run_id" not in st.session_state:
     st.session_state.run_id = get_latest_run_id()
 

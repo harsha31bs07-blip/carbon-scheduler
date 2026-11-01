@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "record_type": "CalibrationRun",
+  "status": "completed",
+  "run_id": "5955915b9c074590870c3fa6d4892c28",
+  "started_at": "2026-10-19T12:41:50.657200+00:00",
+  "split": "calibration",
+  "context_source": "frozen-calibration-context-v1",
+  "requested_trials_per_profile": 10,
+  "registry": {
+    "schema_version": 1,
+    "deployments": [
+      {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "models": {
+          "local-llama3.2": "llama3.2:3b",
+          "local-qwen3.5": "qwen3.5:4b"
+        },
+        "hardware_profile_id": null,
+        "credential_env": null,
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "max_concurrency": 1
+      }
+    ]
+  },
+  "registry_fingerprint": "8c43c73970746b83a5f1d45842e4c2f4bb4e3ccc535519f9393c37a4a3761b17",
+  "kb_fingerprint": "a97c926a08856923b26c2943ad817040f44d3f0ccbecd622a7fd5907cb6cc181",
+  "cases_fingerprint": "c158c33e74477283d573a6851a69f4737cd7fadcbeab6f771a33353a418130ab",
+  "hardware": {
+    "platform": "Windows-11-10.0.26300-SP0",
+    "python": "3.13.14",
+    "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+    "gpu_query": "NVIDIA GeForce RTX 3050 6GB Laptop GPU, 5.05, [N/A], 6144",
+    "gpu_query_scope": "point-in-time capability, not trial energy"
+  },
+  "code_revision": "2c0988794fd7a0252f68bcdcdeaa223b3e4767fb-dirty",
+  "energy_requested": true,
+  "energy_country_iso_code": "IND",
+  "carbon_configured": true,
+  "steps": [
+    "classify"
+  ],
+  "source_snapshot_fingerprint": "8f9f6a5563693af89320b7780669f3077c5117179a1753f88a038bddda0d7cb1",
+  "finished_at": "2026-10-19T12:43:03.435066+00:00",
+  "retained_trials": 11,
+  "profiles_fingerprint": "63711354e616f6b43d74686faf0eeb519cf8992e8da5735cbd198a858d8f2291"
+}

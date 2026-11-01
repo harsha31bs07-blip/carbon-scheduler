@@ -189,6 +189,7 @@ def test_dashboard_renders_validated_run_states(tmp_path, monkeypatch, state):
     monkeypatch.setattr(data_loading, "load_runs", lambda directory: load_runs(tmp_path))
     app = AppTest.from_file(str(Path(__file__).parents[1] / "dashboard" / "app.py"), default_timeout=20)
     app.session_state["authenticated"] = True
+    app.session_state["dashboard_workspace"] = "Legacy policy comparisons"
     app.session_state["run_id"] = "scheduled" if state != "empty" else None
     app.run()
     assert not app.exception
@@ -219,6 +220,7 @@ def test_dashboard_comparison_action_uses_paired_runner(tmp_path, monkeypatch):
     monkeypatch.setattr(data_loading, "load_runs", lambda directory: load_runs(tmp_path))
     app = AppTest.from_file(str(Path(__file__).parents[1] / "dashboard" / "app.py"), default_timeout=20)
     app.session_state["authenticated"] = True
+    app.session_state["dashboard_workspace"] = "Legacy policy comparisons"
     app.session_state["run_id"] = None
     app.run()
     app.button(key="btn_run_comparison").click().run()

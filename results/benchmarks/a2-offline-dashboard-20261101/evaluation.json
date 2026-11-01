@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "record_type": "MatchedPolicyEvaluation",
+  "protocol_fingerprint": "6d8ed6fa619a6b61e09ce93fdf63af9e8c5912b768ec37a357ad9d32d842d758",
+  "status": "completed",
+  "created_at": "2026-11-01T17:43:04.023012+00:00",
+  "updated_at": "2026-11-01T17:43:28.023012+00:00",
+  "trials": [
+    {
+      "trial_id": "trial-da83d379a1f3a1a3664f8f47",
+      "case_id": "demo-invoice",
+      "repeat": 0,
+      "arm_id": "fixed-2",
+      "workflow_id": "trial-da83d379a1f3a1a3664f8f47",
+      "state": "finished",
+      "bundle": "bundles/trial-da83d379a1f3a1a3664f8f47",
+      "started_at": "2026-11-01T17:43:04.023012+00:00",
+      "finished_at": "2026-11-01T17:43:08.023012+00:00",
+      "stop_reason": "completed"
+    },
+    {
+      "trial_id": "trial-c68c6c2ac3fae9fb68e9afe7",
+      "case_id": "demo-invoice",
+      "repeat": 0,
+      "arm_id": "fixed-1",
+      "workflow_id": "trial-c68c6c2ac3fae9fb68e9afe7",
+      "state": "finished",
+      "bundle": "bundles/trial-c68c6c2ac3fae9fb68e9afe7",
+      "started_at": "2026-11-01T17:43:08.023012+00:00",
+      "finished_at": "2026-11-01T17:43:16.023012+00:00",
+      "stop_reason": "completed"
+    },
+    {
+      "trial_id": "trial-51b5d309b24515c8ac61334a",
+      "case_id": "demo-account",
+      "repeat": 0,
+      "arm_id": "fixed-1",
+      "workflow_id": "trial-51b5d309b24515c8ac61334a",
+      "state": "finished",
+      "bundle": "bundles/trial-51b5d309b24515c8ac61334a",
+      "started_at": "2026-11-01T17:43:16.023012+00:00",
+      "finished_at": "2026-11-01T17:43:24.023012+00:00",
+      "stop_reason": "completed"
+    },
+    {
+      "trial_id": "trial-1c7adf1a3f104cc83f6002f0",
+      "case_id": "demo-account",
+      "repeat": 0,
+      "arm_id": "fixed-2",
+      "workflow_id": "trial-1c7adf1a3f104cc83f6002f0",
+      "state": "finished",
+      "bundle": "bundles/trial-1c7adf1a3f104cc83f6002f0",
+      "started_at": "2026-11-01T17:43:24.023012+00:00",
+      "finished_at": "2026-11-01T17:43:28.023012+00:00",
+      "stop_reason": "completed"
+    }
+  ],
+  "fingerprint": "c169282bb42056e99fab764d4e0e21649f440e7c018433e8fbeea6323e6173a0"
+}

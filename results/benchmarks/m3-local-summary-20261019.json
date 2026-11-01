@@ -1,0 +1,196 @@
+{
+  "schema_version": 1,
+  "record_type": "LocalCalibrationCheckpoint",
+  "protocol": "local-pilot-v1",
+  "calibration_id": "f3659fe2b75b976622f20ff33aa4193f8f7514e70f8a755f84149a9fbee6f502",
+  "profile_fingerprint": "aa0229fb699669e032055fb8e3ab3de4af5aa7f69cd903f611bb74eb2e0cb8c3",
+  "training": {
+    "retained_trials": 99,
+    "profile_trials": 90,
+    "held_out_excluded": 0,
+    "calibration_warmups_excluded": 9,
+    "profile_count": 8
+  },
+  "trial_status_counts": {
+    "failed": 11,
+    "completed": 88
+  },
+  "service_failure_codes": {
+    "connection-failed": 11
+  },
+  "profiles": [
+    {
+      "model_id": "local-llama3.2",
+      "step_id": "classify",
+      "sample_counts": {
+        "attempts": 20,
+        "completed": 10,
+        "failed": 10,
+        "valid_natural_completions": 10,
+        "invalid_output": 10,
+        "truncated": 0,
+        "reviewed_quality": 0
+      },
+      "median_latency_seconds": 2.301227550000476,
+      "median_host_energy_wh": 0.04716777243622039,
+      "energy_provenance": "mixed",
+      "quality_provenance": "unknown"
+    },
+    {
+      "model_id": "local-llama3.2",
+      "step_id": "draft",
+      "sample_counts": {
+        "attempts": 10,
+        "completed": 10,
+        "failed": 0,
+        "valid_natural_completions": 10,
+        "invalid_output": 0,
+        "truncated": 0,
+        "reviewed_quality": 0
+      },
+      "median_latency_seconds": 3.669923950001248,
+      "median_host_energy_wh": 0.0907735099820045,
+      "energy_provenance": "mixed",
+      "quality_provenance": "unknown"
+    },
+    {
+      "model_id": "local-llama3.2",
+      "step_id": "retrieve",
+      "sample_counts": {
+        "attempts": 10,
+        "completed": 10,
+        "failed": 0,
+        "valid_natural_completions": 10,
+        "invalid_output": 0,
+        "truncated": 0,
+        "reviewed_quality": 0
+      },
+      "median_latency_seconds": 3.5472913500052528,
+      "median_host_energy_wh": 0.07791072922149118,
+      "energy_provenance": "mixed",
+      "quality_provenance": "unknown"
+    },
+    {
+      "model_id": "local-llama3.2",
+      "step_id": "summarize",
+      "sample_counts": {
+        "attempts": 10,
+        "completed": 10,
+        "failed": 0,
+        "valid_natural_completions": 10,
+        "invalid_output": 0,
+        "truncated": 0,
+        "reviewed_quality": 0
+      },
+      "median_latency_seconds": 2.985867200000939,
+      "median_host_energy_wh": 0.06466024261316174,
+      "energy_provenance": "mixed",
+      "quality_provenance": "unknown"
+    },
+    {
+      "model_id": "local-qwen3.5",
+      "step_id": "classify",
+      "sample_counts": {
+        "attempts": 10,
+        "completed": 10,
+        "failed": 0,
+        "valid_natural_completions": 10,
+        "invalid_output": 0,
+        "truncated": 0,
+        "reviewed_quality": 0
+      },
+      "median_latency_seconds": 2.462323750001815,
+      "median_host_energy_wh": 0.06156986888121779,
+      "energy_provenance": "mixed",
+      "quality_provenance": "unknown"
+    },
+    {
+      "model_id": "local-qwen3.5",
+      "step_id": "draft",
+      "sample_counts": {
+        "attempts": 10,
+        "completed": 10,
+        "failed": 0,
+        "valid_natural_completions": 10,
+        "invalid_output": 0,
+        "truncated": 0,
+        "reviewed_quality": 0
+      },
+      "median_latency_seconds": 4.209558049999032,
+      "median_host_energy_wh": 0.10604025907294096,
+      "energy_provenance": "mixed",
+      "quality_provenance": "unknown"
+    },
+    {
+      "model_id": "local-qwen3.5",
+      "step_id": "retrieve",
+      "sample_counts": {
+        "attempts": 10,
+        "completed": 10,
+        "failed": 0,
+        "valid_natural_completions": 10,
+        "invalid_output": 0,
+        "truncated": 0,
+        "reviewed_quality": 0
+      },
+      "median_latency_seconds": 4.237097000001086,
+      "median_host_energy_wh": 0.10262075528145531,
+      "energy_provenance": "mixed",
+      "quality_provenance": "unknown"
+    },
+    {
+      "model_id": "local-qwen3.5",
+      "step_id": "summarize",
+      "sample_counts": {
+        "attempts": 10,
+        "completed": 10,
+        "failed": 0,
+        "valid_natural_completions": 10,
+        "invalid_output": 0,
+        "truncated": 0,
+        "reviewed_quality": 0
+      },
+      "median_latency_seconds": 3.5032567500020377,
+      "median_host_energy_wh": 0.08566512463033735,
+      "energy_provenance": "mixed",
+      "quality_provenance": "unknown"
+    }
+  ],
+  "held_out": {
+    "schema_version": 1,
+    "record_type": "ProfileEvaluation",
+    "profile_fingerprint": "aa0229fb699669e032055fb8e3ab3de4af5aa7f69cd903f611bb74eb2e0cb8c3",
+    "split": "held_out",
+    "evaluated_count": 32,
+    "excluded_count": 24,
+    "mean_absolute_error_seconds": 0.23600426311968087,
+    "mean_signed_error_seconds": 0.1761742174371444,
+    "p90_absolute_error_seconds": 0.4003446701986795
+  },
+  "held_out_exclusion_counts": {
+    "outside-observed-input-range": 16,
+    "warmup": 8
+  },
+  "legacy_smoke": {
+    "source": "m3-legacy16-live-20261019.json",
+    "status": "completed",
+    "records": 32,
+    "transport_statuses": {
+      "completed": 32
+    },
+    "natural_stop_proxy_scored": 29,
+    "unscored_reasons": {
+      "generation-not-natural-stop": 3
+    },
+    "score_source": "keyword-format-proxy-v1",
+    "is_measured": false
+  },
+  "limitations": [
+    "Local-only trials, no geographic shifting or measured policy savings.",
+    "Semantic quality remains unknown; live keyword/format scores do not supply it.",
+    "Host energy totals mix readings and modeled components.",
+    "CEA annual historical factor is CO2-only, not an hourly Karnataka forecast.",
+    "First pilot source snapshot was captured alongside the active run; its original manifest does not reference it.",
+    "Frozen aggregate schema1 identity included raw journal hashes; current aggregator schema2 excludes warmup metadata from fit identity. Frozen held-out input remains unchanged."
+  ]
+}

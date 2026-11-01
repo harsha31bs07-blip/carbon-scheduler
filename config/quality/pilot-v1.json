@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "record_type": "QualityCoveragePolicy",
+  "policy_id": "support-pilot-review-coverage.v1",
+  "minimum_reviewed_trials": 10,
+  "minimum_distinct_cases": 5,
+  "minimum_reviewed_fraction": 1.0
+}

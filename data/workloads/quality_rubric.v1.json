@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "record_type": "QualityRubric",
+  "rubric_id": "support-semantic-quality.v1",
+  "description": "Human review of each actual support-workflow output against its retained prompt, dependency context, ticket and versioned KB evidence. Format validity alone supplies no semantic score.",
+  "scoring": "Score every criterion from 0 (incorrect or absent), through 0.5 (partially satisfied), to 1 (fully satisfied); intermediate values are permitted with rationale. The step score is the unweighted arithmetic mean. Explain each judgment using actual output/evidence. Do not infer account access or actions that were never performed. A human reviewer must approve the record explicitly.",
+  "steps": {
+    "classify": [
+      {"id": "category_correct", "description": "The selected category matches the ticket's actual support intent and the case guidance; unsupported requests are classified without inventing a product connection."},
+      {"id": "scope_faithful", "description": "The classification preserves the ticket's meaning and uncertainty instead of assuming facts or an account action absent from the input."}
+    ],
+    "retrieve": [
+      {"id": "evidence_relevant", "description": "Selected evidence addresses this ticket and distinguishes superficially similar situations; an unrelated article is not treated as an answer."},
+      {"id": "evidence_faithful", "description": "The output accurately represents the supplied KB facts, restrictions and citations, without contradicting them or fabricating a source."},
+      {"id": "unsupported_handling", "description": "When matching evidence is unavailable the output explicitly says so; when evidence is available it preserves qualifications and does not invent missing procedures."}
+    ],
+    "draft": [
+      {"id": "grounded_correct", "description": "The response answers the actual ticket accurately using supplied evidence; it does not contradict KB constraints such as lockout duration, refund uncertainty or idempotent retry requirements."},
+      {"id": "no_invented_actions", "description": "The response does not claim to have inspected accounts, changed settings, issued refunds, verified status or taken any action absent from the recorded workflow; it makes no unsupported promises."},
+      {"id": "appropriate_next_step", "description": "Guidance and any clarification/escalation are relevant, complete and proportional. Unsupported questions receive an honest limitation or escalation rather than fabricated procedures."},
+      {"id": "evidence_traceable", "description": "Claims and citations reflect the actual supplied evidence, preserving material uncertainty and avoiding irrelevant or misleading supporting statements."}
+    ],
+    "summarize": [
+      {"id": "summary_faithful", "description": "The summary preserves the actual ticket, prior outputs and important qualifications without inventing actions, resolutions, commitments or new facts."},
+      {"id": "material_facts", "description": "The summary retains the issue, response, unresolved limitations and next steps needed for handoff, with no material omission or misleading emphasis."},
+      {"id": "error_awareness", "description": "The summary does not introduce or endorse a contradiction with supplied evidence; unsupported conclusions and uncertain or unresolved outcomes remain visibly uncertain."}
+    ]
+  }
+}

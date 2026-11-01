@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "record_type": "CalibrationSourceSnapshot",
+  "files": {
+    "shared/schema.py": "4ff7a23fc96322fc092ed97017fab38d35f5ad43b2d7f3d52c741281d4dd4847",
+    "shared/scheduling.py": "d09d4e43429f6a5adc1ada6cb15a110c057d62c60f40fd13d92e5aaeb233ead1",
+    "shared/run_records.py": "b6b4a2fb769b22758bf717f64bf4d1f84cf901fdc754961060dd702f63c8dd5c",
+    "shared/energy.py": "17a4be522c2f9ff00ea20e2708cc3aee2d1870ba2e918f89e7e227eba8d0ba3c",
+    "shared/deployments.py": "02460a1fadcc695d9646b869a48c3d02184f0b5fc52cdaba61325a3b71f5438b",
+    "workflow/workload.py": "5e221120e247b86f4762ded358309c50913ac7154f693af8e90e4c1cf71b6e42",
+    "workflow/deployment_clients.py": "22177fd96ec4e98c52b8684c73e3538affabf7af5f2e3f113293da38b5d72522",
+    "workflow/calibrate.py": "759df2daa5a2ba75036eeb6e7f20f6158fcf8b7038f467ab8a323663ecc3bece",
+    "data/profiles.py": "c1b45c63a85ef5e81f78cbb5944d12aedaf5813c20c9f08f1bf1933aff4b88f7",
+    "data/carbon_sources.py": "f5a9dba8ccc33ac105ad67eb5d0214674ebbb997467dce25dee718ab81b2fbfb",
+    "data/cost_accounting.py": "b7e702ef64b2fada4070d4a38560acebfd73f0b0c1d77fa0198f60d15c90f1b7",
+    "data/workloads/support_kb.v1.json": "0fe2aee419b603c5e61d3d329c353e8b646b4997a95881e5ea6ba1096320dc7b",
+    "data/workloads/support_tickets.v1.json": "1e32b2041d9a7d2eb631fcd4ba70222b71411eb70d3b0d34964626b304d85a29",
+    "constraints/windows-py313.txt": "75f432b313fadc72e3179c9a8d195d8eb0f8dd0e4a7abc25bc75859cad45c48f"
+  },
+  "scope": "Exact calibration adapter, workload, contracts, telemetry and profile source; no credential values",
+  "fingerprint": "2eed439bb5257b857da202800d934c9191ffc22daa2f57a29ee4765faf3d02b5"
+}

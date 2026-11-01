@@ -4,9 +4,10 @@ Evaluation harness that runs the benchmark prompt suite (eval_set.json) against 
 models the scheduler can pick, through the same clients the pipeline uses
 (workflow.model_clients: Ollama for local models, Gemini / NVIDIA NIM for cloud).
 
-Live by default; --mock gives deterministic simulated scores instead (never treated
-as measured). Writes data/eval/eval_results.json, which data/model_table.py uses for
-accuracy once a run is fully live ("is_measured": true).
+Live responses receive keyword/format proxy scores, not measured semantic
+accuracy. --mock gives deterministic simulated scores. Actual text and rubric
+metadata are retained for later human review. data.model_table does not promote
+these heuristic scores to scheduling accuracy, even when every response is live.
 """
 
 from __future__ import annotations
@@ -23,6 +24,8 @@ from typing import Any, Dict, List, Optional, Tuple
 EVAL_DIR = Path(__file__).parent
 EVAL_SET_PATH = EVAL_DIR / "eval_set.json"
 RESULTS_OUTPUT_PATH = EVAL_DIR / "eval_results.json"
+SCORE_SOURCE = "keyword-format-proxy-v1"
+SIMULATION_SCORE_SOURCE = "capability-assumption-simulation-v1"
 
 # Simulation-only probabilities by [model][category][difficulty] (ASSUMPTIONS, used by
 # --mock and --allow-fallback). Models without a profile use DEFAULT_SIMULATION_MODEL's.
@@ -101,13 +104,11 @@ def simulate_model_response(
 def score_response(
     response_text: str, eval_item: Dict[str, Any]
 ) -> float:
-    """Score a model response against reference criteria and rubric."""
+    """Return a keyword/format proxy; this does not establish semantic quality."""
     rubric = eval_item.get("rubric", {})
     expected_keywords = rubric.get("expected_keywords", [])
     format_constraint = rubric.get("format_constraint", "text")
-    min_ratio = float(rubric.get("min_keyword_match_ratio", 0.6))
-
-    if not response_text:
+    if not isinstance(response_text, str) or not response_text:
         return 0.0
 
     lower_resp = response_text.lower()
@@ -152,6 +153,37 @@ def score_response(
     return round(max(0.0, min(1.0, composite)), 4)
 
 
+def _fingerprint(value: Any) -> str:
+    return hashlib.sha256(json.dumps(value, sort_keys=True, ensure_ascii=False,
+                                     separators=(",", ":"), allow_nan=False).encode("utf-8")).hexdigest()
+
+
+def _output_validation(response: Any, item: dict) -> dict:
+    """Check nonempty text and requested syntax; never assert answer correctness."""
+    status = "format-valid"
+    if not isinstance(response, str):
+        status = "invalid-type"
+    elif not response.strip():
+        status = "empty"
+    else:
+        constraint = item.get("rubric", {}).get("format_constraint", "text")
+        if constraint == "valid_json":
+            clean = response.strip()
+            if clean.startswith("```"):
+                clean = clean.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
+            try:
+                json.loads(clean)
+            except (ValueError, TypeError):
+                status = "invalid-format"
+        elif constraint == "single_label" and len(response.split()) > 6:
+            status = "invalid-format"
+        elif constraint == "markdown_table" and not ("|" in response and "---" in response):
+            status = "invalid-format"
+    return {"output_valid": status == "format-valid", "output_validation_status": status,
+            "output_validation_scope": "nonempty-text-and-requested-format",
+            "semantic_quality_status": "unreviewed"}
+
+
 def run_evaluation(
     models: Optional[List[str]] = None,
     eval_set_path: Optional[Path] = None,
@@ -174,14 +206,20 @@ def run_evaluation(
 
     if verbose:
         print("=" * 68)
-        print("RUNNING MODEL ACCURACY EVALUATION HARNESS")
+        print("RUNNING KEYWORD/FORMAT PROXY EVALUATION HARNESS")
         print(f"Mode: {mode_label.upper()} | Prompts: {len(items)} | Models: {target_models}")
         print("=" * 68)
 
     results: Dict[str, Any] = {
+        "schema_version": 2,
         "evaluation_timestamp": datetime.now(timezone.utc).isoformat(),
         "mode": mode_label,
         "total_test_cases": len(items),
+        "eval_set_fingerprint": _fingerprint(items),
+        "score_source": SCORE_SOURCE if is_live else SIMULATION_SCORE_SOURCE,
+        "score_provenance": "estimated" if is_live else "simulated",
+        "score_scope": "keyword-and-format-proxy; semantic-quality-unreviewed",
+        "is_measured": False,
         "models": {},
     }
 
@@ -208,12 +246,12 @@ def run_evaluation(
                 except Exception as exc:
                     if not allow_fallback:
                         raise RuntimeError(
-                            f"Live call failed for {model}/{item['id']}: {exc}. "
+                            f"Live call failed for {model}/{item['id']} ({type(exc).__name__}). "
                             "Check Ollama / API keys, or re-run with --allow-fallback to substitute "
                             "simulated scores (results will then be flagged as NOT measured)."
                         ) from exc
                     if verbose:
-                        print(f"  [Warn] Live call failed for {item['id']}: {exc}. Using simulated score.")
+                        print(f"  [Warn] Live call failed for {item['id']} ({type(exc).__name__}). Using simulated score.")
                     resp_text, score = simulate_model_response(model, item)
                     source = "simulated_fallback"
                     fallback_count += 1
@@ -230,6 +268,15 @@ def run_evaluation(
                 "difficulty": item.get("difficulty"),
                 "score": score,
                 "source": source,
+                "response_source": source,
+                "score_source": SCORE_SOURCE if source == "live" else SIMULATION_SCORE_SOURCE,
+                "score_provenance": "estimated" if source == "live" else "simulated",
+                "prompt": item["prompt"],
+                "response": resp_text,
+                "reference_answer": item.get("reference_answer", ""),
+                "rubric": item.get("rubric", {}),
+                "rubric_fingerprint": _fingerprint(item.get("rubric", {})),
+                **_output_validation(resp_text, item),
                 "latency_ms": latency_ms,
             })
 
@@ -242,6 +289,13 @@ def run_evaluation(
         lat = [d["latency_ms"] for d in detail_records if d["latency_ms"] is not None]
         results["models"][model] = {
             "accuracy": round(overall_accuracy, 4),
+            "accuracy_source": SCORE_SOURCE if all(d["source"] == "live" for d in detail_records)
+                               else SIMULATION_SCORE_SOURCE if all(d["source"] != "live" for d in detail_records)
+                               else "mixed-live-proxy-and-simulation",
+            "accuracy_provenance": "estimated" if all(d["source"] == "live" for d in detail_records)
+                                   else "simulated" if all(d["source"] != "live" for d in detail_records)
+                                   else "mixed",
+            "accuracy_scope": "legacy-field-name-for-proxy-score; not-semantic-accuracy",
             "num_evaluated": len(item_scores),
             "category_accuracy": cat_accuracies,
             "avg_latency_ms": round(sum(lat) / len(lat), 1) if lat else None,
@@ -249,14 +303,19 @@ def run_evaluation(
         }
 
         if verbose:
-            print(f"  -> Accuracy: {overall_accuracy * 100:.1f}%")
+            print(f"  -> Proxy score: {overall_accuracy * 100:.1f}%")
             for cat, acc in cat_accuracies.items():
                 print(f"     * {cat:<15}: {acc * 100:.1f}%")
 
     results["simulated_items"] = fallback_count if is_live else len(items) * len(target_models)
-    results["is_measured"] = bool(is_live and fallback_count == 0)
+    results["live_items"] = sum(d["source"] == "live" for model in results["models"].values()
+                                for d in model["details"])
+    results["responses_live"] = bool(results["live_items"] > 0 and results["simulated_items"] == 0)
     if is_live and fallback_count:
         results["mode"] = "live_api_partial"
+        results["score_source"] = ("mixed-live-proxy-and-simulation" if results["live_items"]
+                                   else SIMULATION_SCORE_SOURCE)
+        results["score_provenance"] = "mixed" if results["live_items"] else "simulated"
     return results
 
 
@@ -272,7 +331,7 @@ def save_results(results: Dict[str, Any], output_path: Optional[Path] = None) ->
 def print_summary_table(results: Dict[str, Any], output_path: Optional[Path] = None) -> None:
     """Print clean ASCII comparison summary table."""
     print("\n" + "=" * 68)
-    print(f"{'MODEL ACCURACY EVALUATION SUMMARY TABLE':^68}")
+    print(f"{'KEYWORD/FORMAT PROXY SCORE SUMMARY':^68}")
     print("=" * 68)
     print(f"{'Model':<12} | {'Overall':<10} | {'Classification':<15} | {'QA':<8} | {'Gen':<8} | {'Summ':<8}")
     print("-" * 68)
@@ -288,10 +347,11 @@ def print_summary_table(results: Dict[str, Any], output_path: Optional[Path] = N
 
     print("=" * 68)
     print(f"Results written to: {output_path or RESULTS_OUTPUT_PATH}")
-    if results.get("is_measured"):
-        print("MEASURED (live calls). Consumed by data.model_table.get_model_accuracy(model, category)")
+    if results.get("responses_live"):
+        print("LIVE RESPONSES; ESTIMATED KEYWORD/FORMAT PROXY. Semantic quality remains unreviewed.")
     else:
-        print("NOT MEASURED (simulated). model_table keeps using its assumed base accuracies.")
+        print("SIMULATED OR MIXED RESPONSES; scores do not establish semantic quality.")
+    print("model_table keeps its assumed accuracy until an explicit human-reviewed rubric is supplied.")
 
 
 def main() -> int:

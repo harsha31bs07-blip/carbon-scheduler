@@ -1,0 +1,461 @@
+{
+  "schema_version": 1,
+  "record_type": "ProfileEvaluation",
+  "profile_fingerprint": "aa0229fb699669e032055fb8e3ab3de4af5aa7f69cd903f611bb74eb2e0cb8c3",
+  "split": "held_out",
+  "evaluated_count": 32,
+  "excluded_count": 24,
+  "mean_absolute_error_seconds": 0.23600426311968087,
+  "mean_signed_error_seconds": 0.1761742174371444,
+  "p90_absolute_error_seconds": 0.4003446701986795,
+  "trials": [
+    {
+      "trial_id": "000e1cb953d940b3b06ab3741a211a63",
+      "observed_seconds": 2.278226000002178,
+      "estimated_seconds": 2.462323750001815,
+      "signed_error_seconds": 0.18409774999963702,
+      "absolute_error_seconds": 0.18409774999963702,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "0079301e83d34a28a83e75313e9868d3",
+      "observed_seconds": 2.279559100003098,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "outside-observed-input-range"
+    },
+    {
+      "trial_id": "04a3dc8d1b0447e2a6f68235a7f049d7",
+      "observed_seconds": 2.225231700002041,
+      "estimated_seconds": 2.462323750001815,
+      "signed_error_seconds": 0.23709204999977374,
+      "absolute_error_seconds": 0.23709204999977374,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "0a79d8e3fa65402c9480ead92cae7c5b",
+      "observed_seconds": 2.4449204000047757,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "warmup"
+    },
+    {
+      "trial_id": "0b0b26ce6d61426ca896c60d2deef62a",
+      "observed_seconds": 3.4000892999974894,
+      "estimated_seconds": 3.707612905157183,
+      "signed_error_seconds": 0.3075236051596937,
+      "absolute_error_seconds": 0.3075236051596937,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "0e771c635d40483e87c8b0d603380262",
+      "observed_seconds": 3.519324599998072,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "warmup"
+    },
+    {
+      "trial_id": "0f991fa5f31746b59465274b6bb41724",
+      "observed_seconds": 2.812921600001573,
+      "estimated_seconds": 2.8992747675665327,
+      "signed_error_seconds": 0.08635316756495959,
+      "absolute_error_seconds": 0.08635316756495959,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "106d009e52ae49c3886ead32aff1c706",
+      "observed_seconds": 3.258507300000929,
+      "estimated_seconds": 3.61515003212246,
+      "signed_error_seconds": 0.3566427321215313,
+      "absolute_error_seconds": 0.3566427321215313,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "1a351c290d4d4be4aba331e849a3b5e1",
+      "observed_seconds": 2.241341900000407,
+      "estimated_seconds": 2.462323750001815,
+      "signed_error_seconds": 0.22098185000140802,
+      "absolute_error_seconds": 0.22098185000140802,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "24f05ed8009a4c0bbc79b1ac5c8b5f5c",
+      "observed_seconds": 4.586101499997312,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "warmup"
+    },
+    {
+      "trial_id": "25d6ad93fd43419693fd887146593c6f",
+      "observed_seconds": 2.5446865000049,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "outside-observed-input-range"
+    },
+    {
+      "trial_id": "2a096bad226f488482699d61af2bb1b9",
+      "observed_seconds": 2.6028533999997308,
+      "estimated_seconds": 2.8638502421011736,
+      "signed_error_seconds": 0.2609968421014428,
+      "absolute_error_seconds": 0.2609968421014428,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "2f8f215f70384bdf971eda04db69c693",
+      "observed_seconds": 2.189265900000464,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "outside-observed-input-range"
+    },
+    {
+      "trial_id": "34cf9874e31c497dbf5d9dac66bdfc34",
+      "observed_seconds": 3.4319230999972206,
+      "estimated_seconds": 3.694226967889503,
+      "signed_error_seconds": 0.26230386789228266,
+      "absolute_error_seconds": 0.26230386789228266,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "3cc51608ba1749acacd1d5a1b464b077",
+      "observed_seconds": 3.1554210999966017,
+      "estimated_seconds": 3.507303806210543,
+      "signed_error_seconds": 0.35188270621394135,
+      "absolute_error_seconds": 0.35188270621394135,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "405bf0eeb1d545e989e509f32f558409",
+      "observed_seconds": 2.4935627000013483,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "outside-observed-input-range"
+    },
+    {
+      "trial_id": "4e0ad079afa545de8b9bc96743272a52",
+      "observed_seconds": 2.2049826000002213,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "outside-observed-input-range"
+    },
+    {
+      "trial_id": "509e76c6ad76458791ba233e6227326c",
+      "observed_seconds": 3.580868199998804,
+      "estimated_seconds": 3.236332460323417,
+      "signed_error_seconds": -0.34453573967538675,
+      "absolute_error_seconds": 0.34453573967538675,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "5250db6b573e40c4aca63696b0981013",
+      "observed_seconds": 3.277602999994997,
+      "estimated_seconds": 3.2942284338933634,
+      "signed_error_seconds": 0.01662543389836646,
+      "absolute_error_seconds": 0.01662543389836646,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "55d6d66cb49f49b492dfe275c9ee356d",
+      "observed_seconds": 3.65919820000272,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "outside-observed-input-range"
+    },
+    {
+      "trial_id": "58ed19319ac94e0fb3594409531cab9b",
+      "observed_seconds": 3.0004354000047897,
+      "estimated_seconds": 2.972838341521416,
+      "signed_error_seconds": -0.027597058483373793,
+      "absolute_error_seconds": 0.027597058483373793,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "5967213021fe4053b09abf732c503b97",
+      "observed_seconds": 3.984207699999388,
+      "estimated_seconds": 3.690728317236141,
+      "signed_error_seconds": -0.2934793827632469,
+      "absolute_error_seconds": 0.2934793827632469,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "61d943f4a4a544b2972f2028dcceb420",
+      "observed_seconds": 3.265222599999106,
+      "estimated_seconds": 3.6704230410952463,
+      "signed_error_seconds": 0.4052004410961403,
+      "absolute_error_seconds": 0.4052004410961403,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "677678ad9e2d4c4ab2b086895b174b9c",
+      "observed_seconds": 2.2700407000011182,
+      "estimated_seconds": 2.3709536305785477,
+      "signed_error_seconds": 0.10091293057742945,
+      "absolute_error_seconds": 0.10091293057742945,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "6cb90b1339604381b4e7ddeab1981916",
+      "observed_seconds": 2.2428896999990684,
+      "estimated_seconds": 2.7891961203359763,
+      "signed_error_seconds": 0.5463064203369079,
+      "absolute_error_seconds": 0.5463064203369079,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "6daefb05a17549de9d0c0da042d2d175",
+      "observed_seconds": 4.347458100004587,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "warmup"
+    },
+    {
+      "trial_id": "6f63f0748258446faa89cf2a4a5c8cc3",
+      "observed_seconds": 2.38531000000512,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "outside-observed-input-range"
+    },
+    {
+      "trial_id": "766b4064f8ed49b4a42082c5f3812478",
+      "observed_seconds": 4.189632800000254,
+      "estimated_seconds": 4.209558049999032,
+      "signed_error_seconds": 0.019925249998777872,
+      "absolute_error_seconds": 0.019925249998777872,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "77cee41126ea4e62bb281d4e231ceda3",
+      "observed_seconds": 2.40819829999964,
+      "estimated_seconds": 2.901557470123454,
+      "signed_error_seconds": 0.49335917012381403,
+      "absolute_error_seconds": 0.49335917012381403,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "7be044c290f84f159a65d576298c009f",
+      "observed_seconds": 3.4190533999935724,
+      "estimated_seconds": 3.575767255929841,
+      "signed_error_seconds": 0.1567138559362684,
+      "absolute_error_seconds": 0.1567138559362684,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "7e9843ca3c714348b6abdc13e1c902d1",
+      "observed_seconds": 3.3145767000023625,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "outside-observed-input-range"
+    },
+    {
+      "trial_id": "7ffac74c879c4c7687bf5b469b0a8fb2",
+      "observed_seconds": 4.459645499999169,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "outside-observed-input-range"
+    },
+    {
+      "trial_id": "87a416401f024440a92660874f7be42b",
+      "observed_seconds": 2.7769692999936524,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "outside-observed-input-range"
+    },
+    {
+      "trial_id": "89ea8eef2e42412ead63b584237cc47d",
+      "observed_seconds": 2.915627400005178,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "warmup"
+    },
+    {
+      "trial_id": "8e0b16928fff47c4a8d3872736b1fc86",
+      "observed_seconds": 3.7241368999966653,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "warmup"
+    },
+    {
+      "trial_id": "952c5b81c0fd4292b09e68433b8c203b",
+      "observed_seconds": 2.2740327999999863,
+      "estimated_seconds": 2.3659165007312604,
+      "signed_error_seconds": 0.09188370073127405,
+      "absolute_error_seconds": 0.09188370073127405,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "96ef10350dd6405c83fe03d420ca68c8",
+      "observed_seconds": 4.2054321999967215,
+      "estimated_seconds": 4.209558049999032,
+      "signed_error_seconds": 0.004125850002310472,
+      "absolute_error_seconds": 0.004125850002310472,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "97040b5839d54086b07145c6c7a2cfa6",
+      "observed_seconds": 4.501226599997608,
+      "estimated_seconds": 4.209558049999032,
+      "signed_error_seconds": -0.29166854999857605,
+      "absolute_error_seconds": 0.29166854999857605,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "a1ddb2f38e6f42739b39d2dae0dba365",
+      "observed_seconds": 4.957593699997233,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "outside-observed-input-range"
+    },
+    {
+      "trial_id": "a2bd7cca6eaa4e9a9bc069e1b58f4104",
+      "observed_seconds": 2.755901000004087,
+      "estimated_seconds": 2.9432500405580124,
+      "signed_error_seconds": 0.18734904055392532,
+      "absolute_error_seconds": 0.18734904055392532,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "a486c516cec2477ba1535d99ab500d28",
+      "observed_seconds": 3.3784212000027765,
+      "estimated_seconds": 3.552029620641192,
+      "signed_error_seconds": 0.17360842063841542,
+      "absolute_error_seconds": 0.17360842063841542,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "a99eba1326d54beeb50d11bd11fcb9cb",
+      "observed_seconds": 3.8855084000024362,
+      "estimated_seconds": 4.168977717817213,
+      "signed_error_seconds": 0.28346931781477647,
+      "absolute_error_seconds": 0.28346931781477647,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "b05039ac390048aba5eff6234f240dac",
+      "observed_seconds": 4.023643400003493,
+      "estimated_seconds": 4.498886733602667,
+      "signed_error_seconds": 0.4752433335991739,
+      "absolute_error_seconds": 0.4752433335991739,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "b1342b2c7dbe484586240f2120789fa8",
+      "observed_seconds": 3.2906886999990093,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "warmup"
+    },
+    {
+      "trial_id": "b4f4522924cc4d16a09eb2c0f9a1ef20",
+      "observed_seconds": 2.914819899997383,
+      "estimated_seconds": 3.15865346608613,
+      "signed_error_seconds": 0.24383356608874696,
+      "absolute_error_seconds": 0.24383356608874696,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "b6b23d80742f47a6bcbff09ff669a52c",
+      "observed_seconds": 2.858378700002504,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "outside-observed-input-range"
+    },
+    {
+      "trial_id": "b925d9518e3b4bd3b1a17f7783ea22bc",
+      "observed_seconds": 2.1473283999948762,
+      "estimated_seconds": 2.3709536305785477,
+      "signed_error_seconds": 0.22362523058367145,
+      "absolute_error_seconds": 0.22362523058367145,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "c8c0a5589d73487aa68cc1cbd341dcbf",
+      "observed_seconds": 3.9157126000063727,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "outside-observed-input-range"
+    },
+    {
+      "trial_id": "d1893134bc61477da210cee5ab57a6c4",
+      "observed_seconds": 3.2174863000036567,
+      "estimated_seconds": 3.462528393929929,
+      "signed_error_seconds": 0.2450420939262723,
+      "absolute_error_seconds": 0.2450420939262723,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "e2fe5457ea694c23a5a10ecc72d6706a",
+      "observed_seconds": 2.1152146000022185,
+      "estimated_seconds": 2.3256194619529613,
+      "signed_error_seconds": 0.21040486195074282,
+      "absolute_error_seconds": 0.21040486195074282,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "e4b904441450428abec1f0862f1393d3",
+      "observed_seconds": 2.089836600003764,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "outside-observed-input-range"
+    },
+    {
+      "trial_id": "e816c8d1b4224027b125f9367ae95930",
+      "observed_seconds": 11.448639499998535,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "warmup"
+    },
+    {
+      "trial_id": "eaed2bbc25934abca831534dc83c99ba",
+      "observed_seconds": 3.615237000005436,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "outside-observed-input-range"
+    },
+    {
+      "trial_id": "f5835d9bcf644113b791e4b11c02cd8d",
+      "observed_seconds": 3.958562300002086,
+      "estimated_seconds": 4.209558049999032,
+      "signed_error_seconds": 0.25099574999694596,
+      "absolute_error_seconds": 0.25099574999694596,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "f9360080b7434df1a20cb4135397be5a",
+      "observed_seconds": 2.263967300001241,
+      "estimated_seconds": 2.462323750001815,
+      "signed_error_seconds": 0.1983564500005741,
+      "absolute_error_seconds": 0.1983564500005741,
+      "excluded_reason": null
+    },
+    {
+      "trial_id": "fa583bb54dc1463c9e06beef92c7f6fd",
+      "observed_seconds": 3.552598400005081,
+      "estimated_seconds": null,
+      "signed_error_seconds": null,
+      "absolute_error_seconds": null,
+      "excluded_reason": "outside-observed-input-range"
+    }
+  ]
+}

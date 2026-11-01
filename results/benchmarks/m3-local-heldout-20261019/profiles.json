@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "record_type": "CalibrationProfiles",
+  "calibration_id": "e38025a1154c42b39a03737cc1024783",
+  "context_source": "frozen-calibration-context-v1",
+  "profiles": [],
+  "summary": {
+    "retained_trials": 56,
+    "profile_trials": 0,
+    "held_out_excluded": 56,
+    "calibration_warmups_excluded": 0,
+    "profile_count": 0
+  },
+  "fingerprint": "7fade424cc5d08d62aab4d73646095d48ee515c3c7f080f2f9614f87c22fbcaa"
+}

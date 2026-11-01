@@ -1,0 +1,11 @@
+{
+  "events": [
+    {
+      "observed_at": "2026-10-19T12:27:23.093665+00:00",
+      "event": "local-Ollama-restarted",
+      "process_id": 16288,
+      "cause": "No Ollama process/listener; preceding trials retain connection-failed outcomes",
+      "treatment": "Retain outage trials; do not reinterpret as model-output quality failures"
+    }
+  ]
+}

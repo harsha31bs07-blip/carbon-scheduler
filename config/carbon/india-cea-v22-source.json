@@ -1,0 +1,19 @@
+{
+  "source_title": "CEA CO2 Baseline Database for the Indian Power Sector, Version22.0 UserGuide",
+  "source_url": "https://cea.nic.in/api/cdm-report-version/view-pdf/en/82",
+  "reported_publication_month": "2026-08",
+  "historical_data_period": "FY2025-26",
+  "original_factor": 0.675,
+  "original_unit": "tCO2/MWh",
+  "converted_value": 675,
+  "converted_unit": "gCO2/kWh",
+  "factor_scope": "All-India annual weighted average including renewables, captive injection and cross-border transfers; not Karnataka-specific or hourly",
+  "estimate_issued_at": "2026-10-19T12:22:50.729593+00:00",
+  "issued_at_basis": "Creation of this derived static application estimate; not the original report publication timestamp",
+  "validity_policy": "Configured for90days with maximum estimate-age30days; not observational coverage for these dates",
+  "location_basis": "User-confirmed Mangaluru, Karnataka, India; SRPC constitution confirms Karnataka in SouthernRegion",
+  "grid_mapping_url": "https://srpc.gov.in/en/constitution/",
+  "carbon_scope": "CO2 only, not CO2-equivalent or lifecycle emissions",
+  "copyright_policy_url": "https://cea.nic.in/api/websitepolicy/pdf/view/en/2",
+  "distribution": "Factual numeric factor and attribution only; source report not bundled; no open-data licence asserted"
+}

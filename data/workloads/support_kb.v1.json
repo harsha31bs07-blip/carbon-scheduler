@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "kb_version": "support-kb.v1",
+  "description": "Synthetic support guidance for the fictional CarbonDesk product. These policies are workload fixtures, not guidance for any real service.",
+  "categories": ["account_access", "billing", "technical_issue", "feature_request", "other"],
+  "articles": [
+    {
+      "source_id": "KB-ACCOUNT-001",
+      "category": "account_access",
+      "title": "Reset a forgotten password",
+      "body": "On the CarbonDesk sign-in page, choose Forgot password and enter the account email. The password reset link expires after 30 minutes. Check the spam folder if the reset email is missing. Support never asks for a password or reset link."
+    },
+    {
+      "source_id": "KB-ACCOUNT-002",
+      "category": "account_access",
+      "title": "Account locked after failed login attempts",
+      "body": "After five failed login attempts, the account is temporarily locked for 15 minutes. Wait for the lockout to expire before trying again. A password reset does not shorten the lockout. If the account remains locked after that interval, contact human support with the account email and approximate time; do not send passwords."
+    },
+    {
+      "source_id": "KB-ACCOUNT-003",
+      "category": "account_access",
+      "title": "Lost MFA device or recovery codes",
+      "body": "Use an unused recovery code when the MFA device is unavailable. If no recovery code remains, contact human support for identity verification. Agents cannot disable MFA based only on an email request and must not request authentication codes."
+    },
+    {
+      "source_id": "KB-BILLING-001",
+      "category": "billing",
+      "title": "Download an invoice or receipt",
+      "body": "Workspace owners can download invoices and receipts from Settings, Billing, Invoice history. Members without owner access should ask a workspace owner. Contact billing support with the invoice identifier if the document is missing; do not send full card details."
+    },
+    {
+      "source_id": "KB-BILLING-002",
+      "category": "billing",
+      "title": "Request a refund for a duplicate charge",
+      "body": "Report a suspected duplicate charge to billing support with the dates, amounts and invoice identifiers. Billing support reviews eligibility before approving a refund. No automatic refund or processing date is guaranteed. Never request full payment card details."
+    },
+    {
+      "source_id": "KB-BILLING-003",
+      "category": "billing",
+      "title": "Cancel a subscription renewal",
+      "body": "Workspace owners can cancel subscription renewal under Settings, Billing, Manage plan. Cancellation keeps access until the end of the current paid period and prevents the next renewal. Cancellation alone does not refund previous charges."
+    },
+    {
+      "source_id": "KB-TECH-001",
+      "category": "technical_issue",
+      "title": "API request timeout and safe retry",
+      "body": "For an API request timeout, record the request identifier, timestamp and endpoint. Check the service status page before retrying. Retry read-only requests with exponential backoff. For a write request, confirm its outcome or use the original idempotency key before retrying, to avoid duplicate actions."
+    },
+    {
+      "source_id": "KB-TECH-002",
+      "category": "technical_issue",
+      "title": "API authentication error 401",
+      "body": "For an API 401 authentication error, check that the API token is active and the Authorization header uses Bearer followed by the token. If a token was exposed, revoke it and create a replacement. Do not paste API tokens into a support ticket. A 403 permissions error requires a workspace owner to check the token permissions."
+    },
+    {
+      "source_id": "KB-TECH-003",
+      "category": "technical_issue",
+      "title": "Service outage and status incident",
+      "body": "Check the public service status page for an active outage or incident. If a matching incident exists, follow the updates there. Support cannot guarantee a restoration time. If there is no matching incident, share the timestamp, error message and request identifier with human support; omit secrets."
+    },
+    {
+      "source_id": "KB-FEATURE-001",
+      "category": "feature_request",
+      "title": "Submit a feature or integration request",
+      "body": "Submit feature and integration requests through the product feedback form. Include the use case, affected workflow and desired outcome, without confidential data. Requests are reviewed by the product team; submission does not guarantee acceptance, a roadmap commitment or a release date."
+    }
+  ]
+}

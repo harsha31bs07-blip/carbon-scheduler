@@ -286,6 +286,54 @@ def test_local_authenticated_endpoint_fails_as_auth(monkeypatch):
         clients.call_local_llm("test")
 
 
+@pytest.mark.parametrize("failure", [
+    requests.ConnectionError("offline"),
+    response(503),
+    response(data=["invalid json shape"]),
+])
+def test_local_tracker_always_stops_for_transport_status_and_parse_failure(monkeypatch, failure):
+    sensor = SimpleNamespace(start=Mock(), stop=Mock())
+    monkeypatch.setattr(clients, "CODECARBON_AVAILABLE", True)
+    monkeypatch.setattr(clients, "EmissionsTracker", Mock(return_value=sensor))
+    post = Mock(side_effect=failure) if isinstance(failure, Exception) else Mock(return_value=failure)
+    monkeypatch.setattr(clients.requests, "post", post)
+    with pytest.raises((ConnectionError, RuntimeError)):
+        clients.call_local_llm("test")
+    assert post.call_count == 1
+    sensor.stop.assert_called_once_with()
+
+
+@pytest.mark.parametrize("phase", ["start", "stop"])
+def test_local_telemetry_failure_never_repeats_inference(monkeypatch, phase):
+    sensor = SimpleNamespace(start=Mock(), stop=Mock())
+    getattr(sensor, phase).side_effect = RuntimeError("private device detail")
+    monkeypatch.setattr(clients, "CODECARBON_AVAILABLE", True)
+    monkeypatch.setattr(clients, "EmissionsTracker", Mock(return_value=sensor))
+    post = Mock(return_value=response(data={"response": "answer"}))
+    monkeypatch.setattr(clients.requests, "post", post)
+    actual = clients.call_local_llm("test")
+    assert actual["text"] == "answer"
+    assert actual["energy_provenance"] == "estimated"
+    assert actual["energy_measured"] is False
+    assert actual["telemetry_error"] == f"tracker-{phase}-failed"
+    assert "private" not in str(actual)
+    post.assert_called_once()
+    sensor.stop.assert_called_once_with()
+
+
+def test_remote_ollama_never_tracks_or_estimates_coordinator_energy(monkeypatch):
+    factory = Mock(side_effect=AssertionError("coordinator tracker forbidden"))
+    monkeypatch.setattr(clients, "CODECARBON_AVAILABLE", True)
+    monkeypatch.setattr(clients, "EmissionsTracker", factory)
+    monkeypatch.setattr(clients, "OLLAMA_GENERATE_ENDPOINT", "https://worker.example/api/generate")
+    monkeypatch.setattr(clients.requests, "post", Mock(return_value=response(data={"response": "answer"})))
+    actual = clients.call_local_llm("test")
+    assert actual["energy_wh"] is None
+    assert actual["energy_provenance"] == "unknown"
+    assert actual["energy_measured"] is False
+    factory.assert_not_called()
+
+
 @pytest.mark.parametrize("provider", ["nvidia", "gemini", "local"])
 @pytest.mark.parametrize("counts, source, expected", [
     ((None, None), "unknown", (0, 0)),

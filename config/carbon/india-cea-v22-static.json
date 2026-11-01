@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "record_type": "StaticCarbonEstimate",
+  "sample": {
+    "schema_version": 3,
+    "record_type": "CarbonSample",
+    "region": "IN",
+    "issued_at": "2026-10-19T12:22:50.729593Z",
+    "valid_from": "2026-10-19T12:22:50.729593Z",
+    "valid_until": "2027-01-17T12:22:50.729593Z",
+    "value": 675,
+    "source": "Derived annual static CO2 proxy: CEA v22 FY2025-26 Table S (https://cea.nic.in/api/cdm-report-version/view-pdf/en/82); estimate issued by this application, not a live forecast",
+    "provenance": "estimated",
+    "unit": "gCO2/kWh"
+  },
+  "max_age_seconds": 2592000.0
+}

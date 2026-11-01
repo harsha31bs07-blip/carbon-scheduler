@@ -1,156 +1,96 @@
-# Carbon Scheduler Demo Guide
+# Carbon Scheduler: local demonstration
 
-**Date:** 2026-09-22  
-**Status:** ✅ Ready for Demo
+Updated 2026-11-01. The local implementation is an A2 prototype. Human semantic
+reviews, a second real destination and final live experimental evidence remain
+release gates. Historical scenarios and projected savings are not current
+measurement claims. The prior guide is preserved in
+[the historical copy](docs/plans/DEMO_GUIDE.pre-A2-2026-11-01.md).
 
----
+## Start locally
 
-## 🎯 Quick Demo Flow (90 seconds)
+Use [the Windows setup guide](docs/development.md), then run from PowerShell:
+Use that environment's Python (for example `.\.venv-a2\Scripts\python.exe`)
+where the commands below say `python`.
 
-### Setup (Pre-demo)
-Dashboard is already running at: **http://localhost:8501**
-
-### Demo Script
-
-**1. Introduction (15 sec)**
-> "This is a carbon-aware AI agent scheduler that optimizes model selection, region placement, and timing based on energy grid carbon intensity."
-
-**2. Show Baseline (15 sec)**
-- Open dashboard
-- Select "Baseline" policy from dropdown
-- Point out: "Always uses opus model, us-east region, immediate execution"
-- Metrics: Cost $0.104, Energy 13.3 Wh, Carbon 5.1 gCO2e
-
-**3. Show Eco Policy (20 sec)**
-- Switch to "Eco" policy
-- Point out: "Switches to haiku model, eu-north region (wind power), 8h offset for green window"
-- Metrics: Cost $0.010, Energy 0.2 Wh, Carbon 0.005 gCO2e
-- **Highlight savings: 90% cost reduction, 99% carbon reduction**
-
-**4. Live Weight Adjustment (30 sec)**
-- Switch to "Custom" policy
-- Move "Carbon Weight" slider from 0.2 → 0.7
-- Watch region change: us-east → eu-north
-- Show carbon estimate drop in real-time
-- Say: "Scheduler reacts instantly to priority changes"
-
-**5. Comparison View (10 sec)**
-- Scroll to "Baseline vs Scheduled Comparison" chart
-- Point to the dramatic bars showing savings across all metrics
-
----
-
-## 📊 Key Metrics to Highlight
-
-| Metric | Baseline | Eco Policy | Savings |
-|--------|----------|------------|---------|
-| **Cost** | $0.104 | $0.010 | **90% ↓** |
-| **Energy** | 13.3 Wh | 0.2 Wh | **98% ↓** |
-| **Carbon** | 5.1 gCO2e | 0.005 gCO2e | **99% ↓** |
-| **Latency** | 14.7s | 12.4s | **16% ↓** |
-
----
-
-## 🎬 Pre-Demo Checklist
-
-✅ **Demo data generated** (5 policies: baseline, eco, balanced, speed, custom)  
-✅ **Dashboard running** on http://localhost:8501  
-✅ **Results files** in `results/` directory  
-✅ **Replay mode enabled** (no API calls needed during demo)  
-✅ **Security fixed** (API key removed from LATEST_FIXES.md)  
-✅ **Constraints fixed** (all policies now differentiate properly)
-
----
-
-## 🔧 Technical Details (If Asked)
-
-### What Changed to Fix Differentiation
-
-**Problem:** draft/summarize steps had SLA constraints (5000ms, 2000ms) lower than Person A's latency estimates (8843ms, 5593ms for sonnet/opus). This caused all candidates to fail constraints, forcing fallback to opus every time.
-
-**Solution:** Adjusted constraints in `shared/schema.py`:
-- draft: `max_latency_ms: 5000 → 10000`, `min_accuracy: 0.80 → 0.75`
-- summarize: `max_latency_ms: 2000 → 6000`, `min_accuracy: 0.85 → 0.75`
-
-**Result:** Now 60-90 candidates pass constraints, allowing scheduler to differentiate:
-- Eco: Chooses eu-north (low carbon) + 8h offset
-- Balanced: Mixes us-west/eu-north based on task
-- Speed: Chooses us-east + 12h offset
-- Custom: Follows user weight preferences
-
-### Policy Behavior
-
-| Policy | Optimization Goal | Region Chosen | Time Offset | Carbon (gCO2e) |
-|--------|------------------|---------------|-------------|----------------|
-| **Baseline** | None (always opus/us-east) | us-east | 0h | 5.124 |
-| **Eco** | Minimize carbon | eu-north | 8h | 0.005 |
-| **Balanced** | Balance all metrics | eu-north, us-west | 8h | 0.011 |
-| **Speed** | Minimize latency | us-east | 12h | 0.070 |
-| **Custom** | User-defined weights | Varies | Varies | Varies |
-
----
-
-## 🚀 Live Commands (Backup)
-
-If dashboard needs restart:
 ```powershell
-cd "C:\Users\HARSHA B S\Desktop\carbon-scheduler"
-python -m streamlit run workflow/dashboard/app.py
+$env:PYTHON_DOTENV_DISABLED = '1'
+$env:OTP_DEV_MODE = 'true'
+python -m streamlit run workflow/dashboard/app.py --server.address 127.0.0.1
 ```
 
-Run specific policy (CLI):
-```powershell
-# With replay (no API calls)
-python -m workflow.executor --policy eco --replay
+Use an email address in the local login screen. Development mode displays the
+verification code without SMTP. Enter it to open **Ticket workflows**. This
+login is intended for the loopback-bound local development app.
 
-# Check results
-cat results/<run_id>.jsonl
+The page and worker are separate. A queued ticket starts no model calls during
+Streamlit reruns. If Ollama is installed, start its service in another terminal:
+
+```powershell
+ollama serve
+python -m workflow.deployment_inventory --config config/deployments.local.json
 ```
 
----
+The November 1 rehearsal found the local endpoint unavailable, so no generation
+was attempted. Configured model names are not observed availability. Missing
+models are not downloaded implicitly.
 
-## 🐛 Troubleshooting
+## Demonstrate the implementation
 
-**Dashboard won't load?**
-- Check process: `Get-Process | Where-Object {$_.ProcessName -like "*python*"}`
-- Restart: Kill process, run `python -m streamlit run workflow/dashboard/app.py`
+1. **Fixed assignment:** queue a fictional ticket, choose an installed model and
+   destination, deadlines and optional summary delay. Run the exact worker
+   command displayed for that database. Refresh to inspect actual UTC times,
+   executed identities and durable outputs.
+2. **Optimized policy:** choose speed/balanced/eco/custom and supply frozen
+   profiles, size forecasts and carbon inputs. Dashboard submission retains
+   unobserved health; the worker verifies destinations. Current real profiles
+   are unreviewed, so demonstrate honest infeasibility and rejection/context
+   details. Never weaken a requirement to manufacture eligibility.
+3. **Accounting:** inspect complete/unknown totals, partial subtotals, provenance
+   and coverage. Zero API fees exclude electricity and ownership. Annual CO2
+   proxies do not demonstrate hourly deferral savings.
+4. **Comparison evidence:** load a validated evaluation or portable comparison.
+   Inspect all outcomes, paired differences and quality coverage. A prepared
+   pilot with zero completed trials is not experimental results. Simulation
+   stays explicitly labeled.
+5. **Human review:** select a completed naturally stopped trial in an original
+   evaluation with a frozen rubric. Read the ticket, KB, prompts and outputs.
+   Only a human supplies criterion scores/rationales and explicitly approves.
+   Blank fields supply no quality. Existing approvals cannot be overwritten.
 
-**No data showing?**
-- Results files should exist in `results/` directory
-- Run `python demo_prep.py` to regenerate demo data
+Historical workflow replay remains available offline:
 
-**API quota errors?**
-- Demo uses replay mode (no real API calls needed)
-- All demo data is pre-recorded
+```powershell
+python -m workflow.queue_replay inspect --bundle results/demo/a2-local-restart-20261019
+python -m workflow.queue_replay inspect --bundle results/demo/a2-planned-infeasible-20261026
+```
 
----
+The first bundle demonstrates fixed live durability; the second retains honest
+planned infeasibility. Neither is a final matched five-metric experiment.
 
-## 📁 Important Files
+## Completed offline example
 
-- `demo_prep.py` - Regenerate all demo data
-- `workflow/dashboard/app.py` - Dashboard source
-- `shared/schema.py` - Constraint definitions (lines 25-30)
-- `results/*.jsonl` - Pipeline run records
-- `DEMO_GUIDE.md` - This file
+With no inference host available, open **Comparison evidence**, choose **Portable
+comparison**, and load `results/benchmarks/a2-offline-dashboard-20261101`.
+It contains four completed scripted trials with simulation labels, unknown
+quality/energy/carbon and no release eligibility. To practice the human-review
+form, load its original local evaluation directory
+`.runtime/p7-offline-evaluation-20261101` instead. Practice judgments remain
+simulation evidence and do not review the real calibration outputs.
 
----
+Regenerate this example into new directories with:
 
-## 🎓 Talking Points
+```powershell
+python -m workflow.demo_evidence --output path/to/new-portable-demo --work-directory path/to/new-demo-evaluation
+```
 
-**1. Carbon Awareness**
-"The scheduler uses real-time carbon intensity data per region and predicts future windows when renewable energy is abundant."
+This command uses scripted outputs and a simulated clock. It never calls a
+provider, downloads a model or supplies human scores.
 
-**2. Multi-Objective Optimization**
-"Unlike traditional systems that only consider cost or latency, this balances 5 metrics: carbon, cost, energy, latency, and accuracy."
+## Complete the experimental release
 
-**3. Real-World Impact**
-"If every AI pipeline optimized like this, it could reduce AI carbon emissions by 50-99% with minimal accuracy trade-off."
-
-**4. Flexibility**
-"Different teams have different priorities. Marketing might prioritize cost, sustainability teams prioritize carbon, product teams prioritize latency. Custom weights let each team optimize for their goals."
-
----
-
-## ✅ Demo Ready
-
-Everything is prepared and working. Open http://localhost:8501 in your browser to start the demo.
+Human judgments, profiles covering actual contexts, a calibrated second host and
+suitable timestamped carbon data are still needed. Freeze independent final
+inputs, run matched live trials and preserve failed/equal/worse outcomes. See
+[policy evaluation](docs/policy-evaluation.md),
+[workflow reviews](docs/workflow-quality-review.md) and
+[the completion plan](docs/plans/COMPLETION_PLAN-2026-10-26.md).

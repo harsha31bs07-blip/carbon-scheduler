@@ -1,0 +1,2562 @@
+[
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "00c69e6a9de9430c83fef08e921d3f04",
+    "trial_sha256": "05cd453e253c55f78b20ce666cb120cb120e705143c4fa3c46fe0f9cdad9fc16",
+    "output_sha256": "5212c52eb32208a60a1a8f39eae1188eba518145ea153564107b43c16df70b29",
+    "case_id": "cal-feature-01",
+    "split": "calibration",
+    "step_id": "retrieve",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "evidence_relevant": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "unsupported_handling": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "02bb01c353254fff8f8107ee80900814",
+    "trial_sha256": "9f9941e29f06ac3a0a30227fa678b7f9f52b873ba6076151a52e2e4c50c57e38",
+    "output_sha256": "5460e2cba33dfcf8762447f94e45859fe991db1c5bd98fc15d3f22689d808ffd",
+    "case_id": "cal-account-01",
+    "split": "calibration",
+    "step_id": "draft",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "grounded_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "no_invented_actions": {
+        "score": null,
+        "rationale": ""
+      },
+      "appropriate_next_step": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_traceable": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "03c91a916a974df4868f783f8c4391c5",
+    "trial_sha256": "4cf586c4e1b7d17cb9c5cf7a3560628f50121e6ffc8cae3efd2da7ddf5bcccc3",
+    "output_sha256": "f6d824efbe4292c246210c93ed032fbf9081930e1e73af66f34e7a4894341e73",
+    "case_id": "cal-billing-01",
+    "split": "calibration",
+    "step_id": "draft",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "grounded_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "no_invented_actions": {
+        "score": null,
+        "rationale": ""
+      },
+      "appropriate_next_step": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_traceable": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "04d76ccc1ea346b6a77901fd5c7e3e2a",
+    "trial_sha256": "f90586049678d511be3a6dff3b86b83bf5092fe8aeae7b4c03c93fd5066ee0f8",
+    "output_sha256": "6d10b61b91295d3100cdad1930daad83c8ecb8bcb2feb0bfcf89af86023ce98f",
+    "case_id": "cal-billing-01",
+    "split": "calibration",
+    "step_id": "summarize",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "summary_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "material_facts": {
+        "score": null,
+        "rationale": ""
+      },
+      "error_awareness": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "0640b6730cfe41699df8140ae36a650e",
+    "trial_sha256": "0539430f3a8e84e5772b0097b9f7f7e0963e1089f91e5c679751a72332a812ab",
+    "output_sha256": "7248be5e63c51434986f3e5d271da3b2aaa116ce31e9ac510a5ac31bd1ec31b6",
+    "case_id": "cal-billing-01",
+    "split": "calibration",
+    "step_id": "draft",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "grounded_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "no_invented_actions": {
+        "score": null,
+        "rationale": ""
+      },
+      "appropriate_next_step": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_traceable": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "091b3d06e5804f2bad1f7314c61f39cd",
+    "trial_sha256": "0a63da6dc1260b347c7e2de75768c0652f84a88b1e2d07e7f38d7a29556eff40",
+    "output_sha256": "bf11f9538355c1f825828a71606751171eb8c664eea08ba5a29ff248f5cbeb55",
+    "case_id": "cal-billing-01",
+    "split": "calibration",
+    "step_id": "classify",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "category_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "scope_faithful": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "0b509ea976d34d0bb75e7c22b4149162",
+    "trial_sha256": "599c9f404188f1e1565867afda34510fe00a3170a3bfd4e2abde00da95d34b63",
+    "output_sha256": "9fe0c106cebd1ede50036542d0deedc5ba89f0cbeb4791ed0861a40d03169240",
+    "case_id": "cal-technical-01",
+    "split": "calibration",
+    "step_id": "retrieve",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "evidence_relevant": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "unsupported_handling": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "0dd66f5d51e54ba9b037edc8bba3b599",
+    "trial_sha256": "645abbfe786dccca84ba7787142f34d143a188786929fc68fb2f64a56a7175ea",
+    "output_sha256": "3ed0383e75e430685b38fa75a7ea1ba2a1cfe14280dd6544a81cd1686cb2b346",
+    "case_id": "cal-billing-01",
+    "split": "calibration",
+    "step_id": "summarize",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "summary_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "material_facts": {
+        "score": null,
+        "rationale": ""
+      },
+      "error_awareness": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "0e83247f2fa74dc2a69691ad24399362",
+    "trial_sha256": "ff97452ad5d0aba2b88a045e13ba55ef67c05eec709200b85ab42a4462c83b9a",
+    "output_sha256": "e9da85a805f3c41b3c0e178d02bf1353f149582392796f26eb5bf174730895ea",
+    "case_id": "cal-technical-01",
+    "split": "calibration",
+    "step_id": "classify",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "category_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "scope_faithful": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "0fce4248457c49a4812a5018df51d56c",
+    "trial_sha256": "9cd47ffc149fa73b288ea64c0b3ddd01aafc10de457f89fd11c3178629fff218",
+    "output_sha256": "bf11f9538355c1f825828a71606751171eb8c664eea08ba5a29ff248f5cbeb55",
+    "case_id": "cal-account-01",
+    "split": "calibration",
+    "step_id": "classify",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "category_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "scope_faithful": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "1147df2b198c4d46b00eadbafbfe814b",
+    "trial_sha256": "f4a8552b653cfff99f4c07d5d5780512aa83e63086b2ca24f414cde37b76e81f",
+    "output_sha256": "bf11f9538355c1f825828a71606751171eb8c664eea08ba5a29ff248f5cbeb55",
+    "case_id": "cal-account-01",
+    "split": "calibration",
+    "step_id": "classify",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "category_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "scope_faithful": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "1e3bc58722b44f218d954726e28e1671",
+    "trial_sha256": "e88b8cf67dadf2527c6fc65decc054de899445d1f39258efbd580b390e38d566",
+    "output_sha256": "602fd172a100b9aa9462c08ae1a2d103f79e490083f97d2b6759d296db3fcc71",
+    "case_id": "cal-account-01",
+    "split": "calibration",
+    "step_id": "retrieve",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "evidence_relevant": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "unsupported_handling": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "2073444c51b04becb8da4528d9400fe5",
+    "trial_sha256": "0f901c8a9785e2b0df9e5f6670eb224eda78a114d803a8bf8240ae515a070682",
+    "output_sha256": "b41c4bff396bc3f83c5e308930274d9072dace0adf40232ae7c5a883a9a3ac96",
+    "case_id": "cal-technical-01",
+    "split": "calibration",
+    "step_id": "summarize",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "summary_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "material_facts": {
+        "score": null,
+        "rationale": ""
+      },
+      "error_awareness": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "210882e906cd49f298850856bcea9482",
+    "trial_sha256": "959916c9720bc5a4f273eca449086984a6832e0b46b0c72008272a371af5231e",
+    "output_sha256": "55b0c6cc52ed3c3ff595997195533c0989844aff206aa6e715d90c7890971532",
+    "case_id": "cal-billing-01",
+    "split": "calibration",
+    "step_id": "summarize",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "summary_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "material_facts": {
+        "score": null,
+        "rationale": ""
+      },
+      "error_awareness": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "23227707b1724506a21e83d1a55f23f6",
+    "trial_sha256": "8c78de2e27bceb379f9a54917d54e6b816b5385e7299f179df24c19eaa47f9f8",
+    "output_sha256": "1200b467e9dd22b5b4872d66773f292eb8eacef22dfff5eb9c8cb23046977ed4",
+    "case_id": "cal-account-01",
+    "split": "calibration",
+    "step_id": "retrieve",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "evidence_relevant": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "unsupported_handling": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "24da7e69743340a7bf06476d5d2809fb",
+    "trial_sha256": "8786c3a26c803e2663f836fdd6d1dae0aea90a7c3567d1fdd87d2234b8917bb3",
+    "output_sha256": "bd5a6f68a6432c81c37c63f0649d1c02a058481dfe5c1a8ceecb2932d42bdec0",
+    "case_id": "cal-feature-01",
+    "split": "calibration",
+    "step_id": "summarize",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "summary_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "material_facts": {
+        "score": null,
+        "rationale": ""
+      },
+      "error_awareness": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "26795fbab20e4defaa47e6f68833f398",
+    "trial_sha256": "968eba044fc6f4c49f7a77121770ae96f989cc78aba93a93c8209d7febfe4868",
+    "output_sha256": "dfaef12a799fe1eb627c8508932c80527bb900c49cfbc7d47aef000486728917",
+    "case_id": "cal-feature-01",
+    "split": "calibration",
+    "step_id": "retrieve",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "evidence_relevant": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "unsupported_handling": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "2c79e0efbec64759bd94e3d0acab6d8a",
+    "trial_sha256": "032f4e008f3f31d576e2e339d1ac12d32ffd3cf7476820d40accf2c8e6b4521a",
+    "output_sha256": "207bc6478fff0aac4da2c65207fac5e865746dd84cbeb093f35c6bf9d18a54d7",
+    "case_id": "cal-feature-01",
+    "split": "calibration",
+    "step_id": "retrieve",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "evidence_relevant": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "unsupported_handling": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "2d131960ada649489b9642354fa930a8",
+    "trial_sha256": "cc56bfbe02ec2071b1e7658d3f23d95864d9f393defae0fce5f59c312252b22f",
+    "output_sha256": "1c51676e9ce3785af98aa8e90613e2740ffd1ced1a8b3c41f01771ef1042f497",
+    "case_id": "cal-feature-01",
+    "split": "calibration",
+    "step_id": "classify",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "category_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "scope_faithful": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "31e4cac2feac4f09b13dd9fc7b6487bc",
+    "trial_sha256": "921a9a1164d2035cb208abd810a4d2c9afdcf8ab72b97bf9efc126af9adaf28a",
+    "output_sha256": "1c51676e9ce3785af98aa8e90613e2740ffd1ced1a8b3c41f01771ef1042f497",
+    "case_id": "cal-feature-01",
+    "split": "calibration",
+    "step_id": "classify",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "category_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "scope_faithful": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "328694692a3141fa8fffc975cb688b7a",
+    "trial_sha256": "10d91814e10c9857f0d7c96bd2282a02419546e7c99b5a2369490a34d59f562d",
+    "output_sha256": "0b377afd4236fc94e5658506c65781c2bf5080b038cae264e8e119dde86404c0",
+    "case_id": "cal-billing-01",
+    "split": "calibration",
+    "step_id": "retrieve",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "evidence_relevant": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "unsupported_handling": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "375a0e7dfe1242238d3e8e48a0a7b9fa",
+    "trial_sha256": "7da219a9ebd4d192fabd51a660bb0c5aec6066b68f51938253370d092dc114c1",
+    "output_sha256": "0917b43d084480ad3a469122402a86eda95fce9221af063c13d511d0fb2b24ce",
+    "case_id": "cal-technical-01",
+    "split": "calibration",
+    "step_id": "draft",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "grounded_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "no_invented_actions": {
+        "score": null,
+        "rationale": ""
+      },
+      "appropriate_next_step": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_traceable": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "3e81344db2834c3a8e4e00aec3bcc817",
+    "trial_sha256": "f292b6dd29c059b0fccaadf038770cbb93ed6b4ac87d803f1608f82dfebdaecb",
+    "output_sha256": "1ec0fe884a5936841b5f0935e828a6ba3c1defeeacfdc7adaada5c5fd30a11b2",
+    "case_id": "cal-technical-01",
+    "split": "calibration",
+    "step_id": "draft",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "grounded_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "no_invented_actions": {
+        "score": null,
+        "rationale": ""
+      },
+      "appropriate_next_step": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_traceable": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "3eaa680894aa4fc99496243f8fbcf9f1",
+    "trial_sha256": "585d807bb56da44f0968b20600bf2076f0f302a7b6eab0b507755578b030c8f3",
+    "output_sha256": "c731bd63d9b2cc3c3b4ab942ebab7ffbdbbd41d8cfcfe79fc8cef95546a0e801",
+    "case_id": "cal-other-01",
+    "split": "calibration",
+    "step_id": "draft",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "grounded_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "no_invented_actions": {
+        "score": null,
+        "rationale": ""
+      },
+      "appropriate_next_step": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_traceable": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "4124343975844cdda67b604ea26bc6c7",
+    "trial_sha256": "b324f418028b590bbe5f874d4db0bfdabc7ed3630fa41946e551c07465ec812b",
+    "output_sha256": "80e62d013b75313941f697d24486e2af51d16d1be224580753b242b0cdee4818",
+    "case_id": "cal-technical-01",
+    "split": "calibration",
+    "step_id": "draft",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "grounded_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "no_invented_actions": {
+        "score": null,
+        "rationale": ""
+      },
+      "appropriate_next_step": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_traceable": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "42216587b6f4453db3b7e38023742d9d",
+    "trial_sha256": "453a7d24a5e9be954e9b595cfa343883b2ed0b6090a8f1378d58f35ca60b2e57",
+    "output_sha256": "e898b72a872adaebc99e77e146da90c5a761f65a77603b4c3b16ef3c1dc41264",
+    "case_id": "cal-technical-01",
+    "split": "calibration",
+    "step_id": "retrieve",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "evidence_relevant": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "unsupported_handling": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "48a31632c643482dba48eec87f6628ec",
+    "trial_sha256": "78614935369788cc67f4847b0f3fac0f21506f836fdcc73324dceef9e66c7b6e",
+    "output_sha256": "1c51676e9ce3785af98aa8e90613e2740ffd1ced1a8b3c41f01771ef1042f497",
+    "case_id": "cal-feature-01",
+    "split": "calibration",
+    "step_id": "classify",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "category_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "scope_faithful": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "48c264588f4041ea95ab2cf95fca519e",
+    "trial_sha256": "175cb0a86b00686bd5de6df9e9725c74d6bdbcc2305668f38668cf2787f1cbe6",
+    "output_sha256": "2d39815b43be32a97ff6d712d0509bb40d47e800d69905d52ef8a0ff80f6c9fb",
+    "case_id": "cal-technical-01",
+    "split": "calibration",
+    "step_id": "summarize",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "summary_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "material_facts": {
+        "score": null,
+        "rationale": ""
+      },
+      "error_awareness": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "4db5970813f541639d23ea3fa6f88a49",
+    "trial_sha256": "cf2aed1d6241e03a9f1a7d4885f2e1ddd6d21fb54e96c15a25a0192713612cac",
+    "output_sha256": "fee6877c720cd52ec945e99c0daa9ddb16513da11af7f9161dd678566b463d18",
+    "case_id": "cal-account-01",
+    "split": "calibration",
+    "step_id": "draft",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "grounded_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "no_invented_actions": {
+        "score": null,
+        "rationale": ""
+      },
+      "appropriate_next_step": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_traceable": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "50941032ea3747a39e1db8ec3739e467",
+    "trial_sha256": "ff2a75da392e70500d46918b429f22a99703291e08c3586b6448c892d122febb",
+    "output_sha256": "d9298a10d1b0735837dc4bd85dac641b0f3cef27a47e5d53a54f2f3f5b2fcffa",
+    "case_id": "cal-other-01",
+    "split": "calibration",
+    "step_id": "classify",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "category_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "scope_faithful": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "51722e288a9441a8a8acff478f381229",
+    "trial_sha256": "5b3999e4e8b95d4dd46f397c38a386d887518e9b40cf3d4cf8b45db7b8c98dfd",
+    "output_sha256": "bf11f9538355c1f825828a71606751171eb8c664eea08ba5a29ff248f5cbeb55",
+    "case_id": "cal-billing-01",
+    "split": "calibration",
+    "step_id": "classify",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "category_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "scope_faithful": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "55423628405241178656e00f328e7973",
+    "trial_sha256": "2efa17365c9644aa6c32a9e4d3f2bf16598dbcdbb7d5e76ac32614f0e5a7cf8b",
+    "output_sha256": "bf11f9538355c1f825828a71606751171eb8c664eea08ba5a29ff248f5cbeb55",
+    "case_id": "cal-account-01",
+    "split": "calibration",
+    "step_id": "classify",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "category_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "scope_faithful": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "55a345e0ffef45a795d7b2e9ac7ab1af",
+    "trial_sha256": "46a2d7d89c3ef3a15e022790a160c9992537c505df81ecdf58c9798c4fb52f91",
+    "output_sha256": "3963b4dd26c26ff701a8cd7f0e5c7febc97f87a85f1a8fa3708caa385d42fcfd",
+    "case_id": "cal-other-01",
+    "split": "calibration",
+    "step_id": "draft",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "grounded_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "no_invented_actions": {
+        "score": null,
+        "rationale": ""
+      },
+      "appropriate_next_step": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_traceable": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "56900529ca6047bd91bd4ae1bf6acd2c",
+    "trial_sha256": "698c579b471e68af29e40cf865076efe15f856179f4e4f74cbfcd2c034c20e3d",
+    "output_sha256": "31167c33bc026167a9085a4d415795aadc0d2a37bb0bff308b8734f812e0248c",
+    "case_id": "cal-billing-01",
+    "split": "calibration",
+    "step_id": "draft",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "grounded_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "no_invented_actions": {
+        "score": null,
+        "rationale": ""
+      },
+      "appropriate_next_step": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_traceable": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "589a0471ddc84f26ba3c50890bd9dcd0",
+    "trial_sha256": "d9b6507a406d6b1597757a19779ca288da9d139027811da12e34a676570522a9",
+    "output_sha256": "97ff8da5a3619d60f19cf89d86cbcd3b142f33e8741c3965f59cb17e69cb3695",
+    "case_id": "cal-other-01",
+    "split": "calibration",
+    "step_id": "retrieve",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "evidence_relevant": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "unsupported_handling": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "5e395dbad37d4615bb666b0df6b6fb05",
+    "trial_sha256": "d38dac88b8753c7833d6d41ce327fc98f83d31fc8d3a13973d5e44351760aa6c",
+    "output_sha256": "0b377afd4236fc94e5658506c65781c2bf5080b038cae264e8e119dde86404c0",
+    "case_id": "cal-billing-01",
+    "split": "calibration",
+    "step_id": "retrieve",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "evidence_relevant": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "unsupported_handling": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "606fe3f1fd64429b8008ba9800ebc8fe",
+    "trial_sha256": "ff4497e6115caaae548dd868e76a1393383e7022e93958dbd9afa73cdbf698fb",
+    "output_sha256": "98224a56a8b51835fc28dc5fa052ce1cdd790a0feed751b339f3f0364a159939",
+    "case_id": "cal-feature-01",
+    "split": "calibration",
+    "step_id": "summarize",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "summary_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "material_facts": {
+        "score": null,
+        "rationale": ""
+      },
+      "error_awareness": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "6405e21f2c584777a40661f70edd749f",
+    "trial_sha256": "16d6f5a9c2f35768761c71bd320891c2787db4b5b42bf21458c90b3e54684a5a",
+    "output_sha256": "c5d36c022d85af76dc49f4ebdeb15d2ffd1307c7731957fe60a6c91cdadb1f5d",
+    "case_id": "cal-feature-01",
+    "split": "calibration",
+    "step_id": "draft",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "grounded_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "no_invented_actions": {
+        "score": null,
+        "rationale": ""
+      },
+      "appropriate_next_step": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_traceable": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "6427d47ac4dd4f05bcf332b39d1aa502",
+    "trial_sha256": "dfae40b82fea9e0fd3dfe3837094ebd91c6006b90ea856393ab6ed116b244060",
+    "output_sha256": "6d6118b9b4aadc5f4816aae19614f0ce169e1eb70e503495562e2d48f0a153a6",
+    "case_id": "cal-billing-01",
+    "split": "calibration",
+    "step_id": "draft",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "grounded_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "no_invented_actions": {
+        "score": null,
+        "rationale": ""
+      },
+      "appropriate_next_step": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_traceable": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "64e36cdcbb7344d1bc66af7260a03b8b",
+    "trial_sha256": "34b1e69f8cc532f0bc41c427f393ed2704d56cb8cd8469498f0a0a09080fef07",
+    "output_sha256": "97ff8da5a3619d60f19cf89d86cbcd3b142f33e8741c3965f59cb17e69cb3695",
+    "case_id": "cal-other-01",
+    "split": "calibration",
+    "step_id": "retrieve",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "evidence_relevant": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "unsupported_handling": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "659dd566efac438f92a1281ddb2c2977",
+    "trial_sha256": "03d0a39508ae529ee256913a8d9bcf48de40050cdbc7a080c903fb295f2f9744",
+    "output_sha256": "88c7326950f09e8d5bd0c708a451347b9aead8985258e0f1cc08d9658b97168c",
+    "case_id": "cal-feature-01",
+    "split": "calibration",
+    "step_id": "draft",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "grounded_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "no_invented_actions": {
+        "score": null,
+        "rationale": ""
+      },
+      "appropriate_next_step": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_traceable": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "6b99bf1a012a4119a853e5b3f604ebed",
+    "trial_sha256": "0468054678aa0e0ea013bc2cb855e7d19ca2ab440d1b9141d5b1acc6a78fd6aa",
+    "output_sha256": "d9298a10d1b0735837dc4bd85dac641b0f3cef27a47e5d53a54f2f3f5b2fcffa",
+    "case_id": "cal-other-01",
+    "split": "calibration",
+    "step_id": "classify",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "category_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "scope_faithful": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "6e9b3bb7483c475f904ff7dd50883e9f",
+    "trial_sha256": "5044f00c4b25eebecd10b632007056db67d908cf1acd3e3187bc9a980139ce31",
+    "output_sha256": "780e7ba7c38a9a29c36d40312eae1393cf6e9e1e88c8955f03267c6302d265d9",
+    "case_id": "cal-account-01",
+    "split": "calibration",
+    "step_id": "retrieve",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "evidence_relevant": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "unsupported_handling": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "6f553f16db2e4785a6219b1f1ecb28c9",
+    "trial_sha256": "3004e1ff2c03e40dec2ee54d4fe26cc83865f1a8851d9973e9c724870f960cf3",
+    "output_sha256": "d9298a10d1b0735837dc4bd85dac641b0f3cef27a47e5d53a54f2f3f5b2fcffa",
+    "case_id": "cal-other-01",
+    "split": "calibration",
+    "step_id": "classify",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "category_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "scope_faithful": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "7053044980f74100843d41af328c9b0c",
+    "trial_sha256": "49f1d13fd6b7c9d2f818923f12faa94f17a5f8cd110b4e04e06191673c139e43",
+    "output_sha256": "9ce4774199b1f50b65d56bfa149c3d1ec1ff3357ce47667b607a92326a2c1113",
+    "case_id": "cal-feature-01",
+    "split": "calibration",
+    "step_id": "summarize",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "summary_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "material_facts": {
+        "score": null,
+        "rationale": ""
+      },
+      "error_awareness": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "713a0af0263f4d6b90459cabec427ec5",
+    "trial_sha256": "e4caec62a20739f1d77ac73168578b40730be17692de8c5b6c19ef1f74437cc0",
+    "output_sha256": "1c51676e9ce3785af98aa8e90613e2740ffd1ced1a8b3c41f01771ef1042f497",
+    "case_id": "cal-feature-01",
+    "split": "calibration",
+    "step_id": "classify",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "category_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "scope_faithful": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "7b5d501bab7545319e153765667fefed",
+    "trial_sha256": "f7c2eb49b47f102284ec00703c43250ebc50aaaa2d2ddeed95f5cb7304283d35",
+    "output_sha256": "1740a788c14c8696824f0696d24b4394b9ba25772acf0d26049ed9269bcd2193",
+    "case_id": "cal-other-01",
+    "split": "calibration",
+    "step_id": "summarize",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "summary_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "material_facts": {
+        "score": null,
+        "rationale": ""
+      },
+      "error_awareness": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "81f40c418d6d4a9aa27b44d61438034f",
+    "trial_sha256": "d5a6f2b931e5e41405d5e1ebc61ef9a2128782406d69c4840c2d7857591922f4",
+    "output_sha256": "3e25c9fef2a4485c989639b6cac84dfffbc54032caf69473d2b7e0b07cee5850",
+    "case_id": "cal-other-01",
+    "split": "calibration",
+    "step_id": "draft",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "grounded_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "no_invented_actions": {
+        "score": null,
+        "rationale": ""
+      },
+      "appropriate_next_step": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_traceable": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "830bf9d4fd774b84b2fda5c01b1df7f7",
+    "trial_sha256": "e387079abf8d9c8f16dbacfc5fe12e022484acf52d8194e8497ca650436ef774",
+    "output_sha256": "e08f0e2a5fd936d5da66c4de4615ea62ce7478fb04345bfd631c77ac0b594f52",
+    "case_id": "cal-feature-01",
+    "split": "calibration",
+    "step_id": "summarize",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "summary_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "material_facts": {
+        "score": null,
+        "rationale": ""
+      },
+      "error_awareness": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "86a5a2aaf06e4b938eabecdd2764a41e",
+    "trial_sha256": "b63076939f532d000b97b0f852419d29e80d5eac5cbc227c4cafba7edb2ec5fb",
+    "output_sha256": "e9da85a805f3c41b3c0e178d02bf1353f149582392796f26eb5bf174730895ea",
+    "case_id": "cal-technical-01",
+    "split": "calibration",
+    "step_id": "classify",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "category_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "scope_faithful": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "86dd489c459145499f652a1bdd0b14fc",
+    "trial_sha256": "4260082c61597c0ddde6f0806c3fa7454cba57646ec73d3cdc67b25e0b05b6fb",
+    "output_sha256": "0c95c7ece1ce1a9750275ef1c6d7ad6b278f70d66592207783ffe7d58474cc01",
+    "case_id": "cal-billing-01",
+    "split": "calibration",
+    "step_id": "classify",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "category_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "scope_faithful": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "90fbec38338843ee80f41159c5df5858",
+    "trial_sha256": "95dad57e885456b78cb0a0cb05075f1530afcf32387c0251c71217fac491c3cb",
+    "output_sha256": "a4f32eac595076c98da35d77f62bbfb7e54352d92bad0453db3d54bb14bdb5ce",
+    "case_id": "cal-account-01",
+    "split": "calibration",
+    "step_id": "summarize",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "summary_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "material_facts": {
+        "score": null,
+        "rationale": ""
+      },
+      "error_awareness": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "961afddaaf3d4ba4a778e3e14029d1ec",
+    "trial_sha256": "f0abbdece302ad76516a2ce8aa9eb5fff9695ade5f6051d6ffd1afef1950f906",
+    "output_sha256": "85d2f0ab714d71c6cf7f2ef361a81087536901a99528f84df01e9d6c68d172eb",
+    "case_id": "cal-account-01",
+    "split": "calibration",
+    "step_id": "retrieve",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "evidence_relevant": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "unsupported_handling": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "9baae4715f08495b8005c17517e01bea",
+    "trial_sha256": "7a83a9df0115a507304323807b37dc986df7593a1e659e49d05c566864d2636c",
+    "output_sha256": "ebb9fd70763846e295b4e02c6d58914eef5c3bbd71c36f04bad323081768a58c",
+    "case_id": "cal-other-01",
+    "split": "calibration",
+    "step_id": "summarize",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "summary_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "material_facts": {
+        "score": null,
+        "rationale": ""
+      },
+      "error_awareness": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "a114e4cd43954335ad6776c5254e28bc",
+    "trial_sha256": "ded7994ff1d7373af7429c455336a0f4a284e65e0c0b3f912805028f4a9e8de0",
+    "output_sha256": "97ff8da5a3619d60f19cf89d86cbcd3b142f33e8741c3965f59cb17e69cb3695",
+    "case_id": "cal-other-01",
+    "split": "calibration",
+    "step_id": "retrieve",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "evidence_relevant": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "unsupported_handling": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "a155c73cb5664948ba6c76a8e8276152",
+    "trial_sha256": "14f522c274f2dc5f7de232722fb9013ec5f6cccba6d32dd5e5cabe483f4ffb81",
+    "output_sha256": "7ab4d87c0825f9da18538f540e27f9070237a0201668f273a6f4ba0f9c74093b",
+    "case_id": "cal-technical-01",
+    "split": "calibration",
+    "step_id": "retrieve",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "evidence_relevant": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "unsupported_handling": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "a85b682cc4dd41ebb21c1770df22db7f",
+    "trial_sha256": "333849ce2e5ea9109bbb72bad5c8d8700a7f5178d297dbd372cbaf7133c6586e",
+    "output_sha256": "0c95c7ece1ce1a9750275ef1c6d7ad6b278f70d66592207783ffe7d58474cc01",
+    "case_id": "cal-billing-01",
+    "split": "calibration",
+    "step_id": "classify",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "category_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "scope_faithful": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "b343aa2007b244648099d652b434acfa",
+    "trial_sha256": "dc00dc4b0704142959eb447e4050cd91e089d125a02ca3b00245edd0137e928f",
+    "output_sha256": "c9b59d89a7f167604b094b648add05aff06b438f6d70a9d09944d8e951c0eaf6",
+    "case_id": "cal-account-01",
+    "split": "calibration",
+    "step_id": "draft",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "grounded_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "no_invented_actions": {
+        "score": null,
+        "rationale": ""
+      },
+      "appropriate_next_step": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_traceable": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "b3e182bb38a14b4381acb0909814bd28",
+    "trial_sha256": "a09c38f08745e9f5a3a0b24e084f603f306aa20d54daeb2ab918913866a0811d",
+    "output_sha256": "27d52e5e1c1f83af780c40ba22977c8eec15d357e0a91aa05fc56a296a32c9d8",
+    "case_id": "cal-account-01",
+    "split": "calibration",
+    "step_id": "summarize",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "summary_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "material_facts": {
+        "score": null,
+        "rationale": ""
+      },
+      "error_awareness": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "bad96f5b793d431899bd09a0bc62de1a",
+    "trial_sha256": "4d9e0413bc8700948ef0ccf206032a50d82aee0d8bacb444f10d5e57432a2db5",
+    "output_sha256": "e9da85a805f3c41b3c0e178d02bf1353f149582392796f26eb5bf174730895ea",
+    "case_id": "cal-technical-01",
+    "split": "calibration",
+    "step_id": "classify",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "category_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "scope_faithful": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "bc5fdda33af1440e961b001f85f87baa",
+    "trial_sha256": "e97546cd801eef3ebfd7d4835523889010720d04876b11fda6b9c72cf5c3a58b",
+    "output_sha256": "25abbe5e2535c9570851f746638fb3d0d0b75026e18701354a694caf940773dc",
+    "case_id": "cal-account-01",
+    "split": "calibration",
+    "step_id": "draft",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "grounded_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "no_invented_actions": {
+        "score": null,
+        "rationale": ""
+      },
+      "appropriate_next_step": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_traceable": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "be77ed3b26544a32abe3f238c63e03cf",
+    "trial_sha256": "3e23d86ac8fbde5ca50946f5e41a3a00b0cf79b02c38830231de0d6c6a9c8945",
+    "output_sha256": "07bcd30a4e81055e6eefb2b11f0e8860e5893934f38b49294458b41e48de8bcf",
+    "case_id": "cal-technical-01",
+    "split": "calibration",
+    "step_id": "summarize",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "summary_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "material_facts": {
+        "score": null,
+        "rationale": ""
+      },
+      "error_awareness": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "bfaf003156e44f0db627094fef44299e",
+    "trial_sha256": "339d1ffb76d192e2e9ce618867bbb293f4af77caf897feecaaaf3dc3b5617f3a",
+    "output_sha256": "fd8dea4a8ca769a4f661a0ff0e66c75b5ee6b65a351033dc2e0871ffc0f78192",
+    "case_id": "cal-billing-01",
+    "split": "calibration",
+    "step_id": "summarize",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "summary_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "material_facts": {
+        "score": null,
+        "rationale": ""
+      },
+      "error_awareness": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "c074db37fe294abe869300f70e06ac93",
+    "trial_sha256": "c7ef68e79f267e4d8a613c3356b0cdee9da6fc6fada88587bd45c54506cd400b",
+    "output_sha256": "97ff8da5a3619d60f19cf89d86cbcd3b142f33e8741c3965f59cb17e69cb3695",
+    "case_id": "cal-other-01",
+    "split": "calibration",
+    "step_id": "retrieve",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "evidence_relevant": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "unsupported_handling": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "c8a912110dd54d0eb4f4152adc855d9f",
+    "trial_sha256": "b7441e8b07eb518809c2b4f1fce8f2d9010757c30a1a2b409b2b890b2be6cdd8",
+    "output_sha256": "1df68575eb57a4150ec91346b84efbb91c7d5ba2f749178ca920bf9d51629212",
+    "case_id": "cal-technical-01",
+    "split": "calibration",
+    "step_id": "summarize",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "summary_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "material_facts": {
+        "score": null,
+        "rationale": ""
+      },
+      "error_awareness": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "cc179ef5bda44ac280ed534a75944ef2",
+    "trial_sha256": "956ecf6fa7c53be7ef688654210a44546be9cf0f0f1ac19b17bc88483237357c",
+    "output_sha256": "60d59369bedc560174098125fbf2637f4d0d50b15b88a4ed11b8b1bf634a7a2c",
+    "case_id": "cal-other-01",
+    "split": "calibration",
+    "step_id": "draft",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "grounded_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "no_invented_actions": {
+        "score": null,
+        "rationale": ""
+      },
+      "appropriate_next_step": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_traceable": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "d773a324a3f04ee28c0de836e4073c3c",
+    "trial_sha256": "338217075ee6faf1bc407bafcecb53227d133fe465647f97292f002af27450f1",
+    "output_sha256": "1ec5ded56e111a20fd4fb33e430c9363ff311a9d0491ed54ae9331ba11c76b01",
+    "case_id": "cal-other-01",
+    "split": "calibration",
+    "step_id": "summarize",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "summary_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "material_facts": {
+        "score": null,
+        "rationale": ""
+      },
+      "error_awareness": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "d9c1ca28070a4a8fab67e011331f687f",
+    "trial_sha256": "cd20877871803d14993bc2c277ca775c7d1c0a78fc268cf0b01bb9d71973dcdd",
+    "output_sha256": "bf11f9538355c1f825828a71606751171eb8c664eea08ba5a29ff248f5cbeb55",
+    "case_id": "cal-account-01",
+    "split": "calibration",
+    "step_id": "classify",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "category_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "scope_faithful": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "db8d7f861e9d48a6b142add0cc2b8e29",
+    "trial_sha256": "27ffaa97f97af2757f5ae3f5e39909fe076725433c73b8d2810c6743ec52f79d",
+    "output_sha256": "a6e86869d6ed9b5f6fa894a25597c1af98dff61ccddfda61542f9c67ea289869",
+    "case_id": "cal-feature-01",
+    "split": "calibration",
+    "step_id": "retrieve",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "evidence_relevant": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "unsupported_handling": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "de46e95e442c41a4a5466f5e3e49e895",
+    "trial_sha256": "0319bcf880801159811efc3f9ce64f177ac4ef96261d30797b2ca593df52da7b",
+    "output_sha256": "475f91f71d9ef5583673e61883446765bea573a1a14e264a61ff56e1a2635485",
+    "case_id": "cal-billing-01",
+    "split": "calibration",
+    "step_id": "retrieve",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "evidence_relevant": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "unsupported_handling": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "de524cb80f2947a2a8580728622a26aa",
+    "trial_sha256": "f79a683198cd1212df4ed99a8d407b312061958de0fd21df00e27ee3b6fb3ccb",
+    "output_sha256": "30197d6fa727425e7d3773c75dfeba89381301a16510b30cf93cc7d3e6b7ea8a",
+    "case_id": "cal-feature-01",
+    "split": "calibration",
+    "step_id": "draft",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "grounded_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "no_invented_actions": {
+        "score": null,
+        "rationale": ""
+      },
+      "appropriate_next_step": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_traceable": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "e72a0aa4ae2340428a0028ef0b614a9d",
+    "trial_sha256": "af83cb9d6cf5924218930b76bf4bda1bcb79a2c14122d1a24819836801a675c2",
+    "output_sha256": "d51335ef15e32461846c783ad60383025de5d087e5ec0fdfcd1f02d66e66c28f",
+    "case_id": "cal-feature-01",
+    "split": "calibration",
+    "step_id": "draft",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "grounded_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "no_invented_actions": {
+        "score": null,
+        "rationale": ""
+      },
+      "appropriate_next_step": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_traceable": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "ebc62c8d68014534ae420480d046de44",
+    "trial_sha256": "9a160f14ed71690636a8c2a8d38e610d76a425f841a9017134c397370f14f9bc",
+    "output_sha256": "e9da85a805f3c41b3c0e178d02bf1353f149582392796f26eb5bf174730895ea",
+    "case_id": "cal-technical-01",
+    "split": "calibration",
+    "step_id": "classify",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "category_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "scope_faithful": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "ed7c076c218b4f1fb57646b2f4566f63",
+    "trial_sha256": "e9a64c13a7f96ec2156f9bc573097062b08da82ea1b6279ab1dee16347bcc1d9",
+    "output_sha256": "db5eb90faff5f985c60dac0dafd3726058b92a88467e4226275f301405569cc3",
+    "case_id": "cal-technical-01",
+    "split": "calibration",
+    "step_id": "draft",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "grounded_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "no_invented_actions": {
+        "score": null,
+        "rationale": ""
+      },
+      "appropriate_next_step": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_traceable": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "f00822ff63e44d5ea9101e050d6c11de",
+    "trial_sha256": "29d67b6370ea277416e867a7f1c85e7d43a421aa1093c67b94519a6452bd840e",
+    "output_sha256": "35c7a19ea95ed8a241bd618de2916b248ac7b4d3186904b40490a155d119aaad",
+    "case_id": "cal-account-01",
+    "split": "calibration",
+    "step_id": "summarize",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "summary_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "material_facts": {
+        "score": null,
+        "rationale": ""
+      },
+      "error_awareness": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "f0bc09a5f63148d696eb4aa5f55e5dd5",
+    "trial_sha256": "9b54ef89bb31b4e50ab56c6e99e826071c50306829fb23a907e1427a1ff4f9b2",
+    "output_sha256": "33638c872b0bd14880b2f55464dd92bf349aaa869953db863c8cd543af9186f4",
+    "case_id": "cal-account-01",
+    "split": "calibration",
+    "step_id": "summarize",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "summary_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "material_facts": {
+        "score": null,
+        "rationale": ""
+      },
+      "error_awareness": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "f61ba3f986f9425daa885f1b3dd148d3",
+    "trial_sha256": "8aaf77305a4be41b77706d178c85f89a75cbe2c692d9c6ef6202a9003a44f676",
+    "output_sha256": "55be27c21b6d5e8138e7a3e9424a54c12198d3df594c6244e659e61a68e3bbcc",
+    "case_id": "cal-billing-01",
+    "split": "calibration",
+    "step_id": "retrieve",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "evidence_relevant": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "unsupported_handling": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "f628d4bc420f4213a7202374fc920a2d",
+    "trial_sha256": "adb5f73e406d18e7fa254309db888bc0f0197bb8fb2e2b7084a509fea9561372",
+    "output_sha256": "7ab4d87c0825f9da18538f540e27f9070237a0201668f273a6f4ba0f9c74093b",
+    "case_id": "cal-technical-01",
+    "split": "calibration",
+    "step_id": "retrieve",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "evidence_relevant": {
+        "score": null,
+        "rationale": ""
+      },
+      "evidence_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "unsupported_handling": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "f7c976f7fc6b4554901c784b64d1b502",
+    "trial_sha256": "045d43a3ccd4ce35100ea279f9b6f09e12dad099828878458c9f6799c86285d4",
+    "output_sha256": "d9298a10d1b0735837dc4bd85dac641b0f3cef27a47e5d53a54f2f3f5b2fcffa",
+    "case_id": "cal-other-01",
+    "split": "calibration",
+    "step_id": "classify",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "category_correct": {
+        "score": null,
+        "rationale": ""
+      },
+      "scope_faithful": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  },
+  {
+    "schema_version": 1,
+    "record_type": "QualityReview",
+    "trial_id": "fbc1dae3fe634ad38ac548dee8667165",
+    "trial_sha256": "49741830e689b46e1414ffe9a37d94f79c147f2f21ce7012c0903259c37338a0",
+    "output_sha256": "1ec5ded56e111a20fd4fb33e430c9363ff311a9d0491ed54ae9331ba11c76b01",
+    "case_id": "cal-other-01",
+    "split": "calibration",
+    "step_id": "summarize",
+    "rubric_id": "support-semantic-quality.v1",
+    "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+    "status": "pending",
+    "review_method": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "criteria": {
+      "summary_faithful": {
+        "score": null,
+        "rationale": ""
+      },
+      "material_facts": {
+        "score": null,
+        "rationale": ""
+      },
+      "error_awareness": {
+        "score": null,
+        "rationale": ""
+      }
+    },
+    "score": null,
+    "rationale": ""
+  }
+]

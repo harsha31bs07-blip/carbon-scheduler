@@ -1,0 +1,379 @@
+{
+  "schema_version": 1,
+  "record_type": "EvaluationProtocol",
+  "protocol_id": "offline-dashboard-demonstration.v1",
+  "experiment_mode": "simulation",
+  "created_at": "2026-11-01T17:43:04.023012+00:00",
+  "dataset": {
+    "dataset_id": "scripted-demo.v1",
+    "split": "pilot",
+    "provenance": "Scripted synthetic outputs and clock; no inference, human judgments or live savings evidence",
+    "cases": [
+      {
+        "case_id": "demo-account",
+        "ticket": "My CarbonDesk account is locked after failed login attempts."
+      },
+      {
+        "case_id": "demo-invoice",
+        "ticket": "I own the CarbonDesk workspace and need to download last month's invoice."
+      }
+    ]
+  },
+  "registry": {
+    "schema_version": 1,
+    "deployments": [
+      {
+        "deployment_id": "scripted-fixture",
+        "provider": "ollama",
+        "endpoint": "http://simulation.invalid:11434",
+        "models": {
+          "small": "fixture:small",
+          "large": "fixture:large"
+        },
+        "hardware_profile_id": null,
+        "credential_env": null,
+        "region": null,
+        "grid": null,
+        "location_source": null,
+        "max_concurrency": 1
+      }
+    ]
+  },
+  "knowledge_base": {
+    "schema_version": 1,
+    "kb_version": "support-kb.v1",
+    "description": "Synthetic support guidance for the fictional CarbonDesk product. These policies are workload fixtures, not guidance for any real service.",
+    "categories": [
+      "account_access",
+      "billing",
+      "technical_issue",
+      "feature_request",
+      "other"
+    ],
+    "articles": [
+      {
+        "source_id": "KB-ACCOUNT-001",
+        "category": "account_access",
+        "title": "Reset a forgotten password",
+        "body": "On the CarbonDesk sign-in page, choose Forgot password and enter the account email. The password reset link expires after 30 minutes. Check the spam folder if the reset email is missing. Support never asks for a password or reset link."
+      },
+      {
+        "source_id": "KB-ACCOUNT-002",
+        "category": "account_access",
+        "title": "Account locked after failed login attempts",
+        "body": "After five failed login attempts, the account is temporarily locked for 15 minutes. Wait for the lockout to expire before trying again. A password reset does not shorten the lockout. If the account remains locked after that interval, contact human support with the account email and approximate time; do not send passwords."
+      },
+      {
+        "source_id": "KB-ACCOUNT-003",
+        "category": "account_access",
+        "title": "Lost MFA device or recovery codes",
+        "body": "Use an unused recovery code when the MFA device is unavailable. If no recovery code remains, contact human support for identity verification. Agents cannot disable MFA based only on an email request and must not request authentication codes."
+      },
+      {
+        "source_id": "KB-BILLING-001",
+        "category": "billing",
+        "title": "Download an invoice or receipt",
+        "body": "Workspace owners can download invoices and receipts from Settings, Billing, Invoice history. Members without owner access should ask a workspace owner. Contact billing support with the invoice identifier if the document is missing; do not send full card details."
+      },
+      {
+        "source_id": "KB-BILLING-002",
+        "category": "billing",
+        "title": "Request a refund for a duplicate charge",
+        "body": "Report a suspected duplicate charge to billing support with the dates, amounts and invoice identifiers. Billing support reviews eligibility before approving a refund. No automatic refund or processing date is guaranteed. Never request full payment card details."
+      },
+      {
+        "source_id": "KB-BILLING-003",
+        "category": "billing",
+        "title": "Cancel a subscription renewal",
+        "body": "Workspace owners can cancel subscription renewal under Settings, Billing, Manage plan. Cancellation keeps access until the end of the current paid period and prevents the next renewal. Cancellation alone does not refund previous charges."
+      },
+      {
+        "source_id": "KB-TECH-001",
+        "category": "technical_issue",
+        "title": "API request timeout and safe retry",
+        "body": "For an API request timeout, record the request identifier, timestamp and endpoint. Check the service status page before retrying. Retry read-only requests with exponential backoff. For a write request, confirm its outcome or use the original idempotency key before retrying, to avoid duplicate actions."
+      },
+      {
+        "source_id": "KB-TECH-002",
+        "category": "technical_issue",
+        "title": "API authentication error 401",
+        "body": "For an API 401 authentication error, check that the API token is active and the Authorization header uses Bearer followed by the token. If a token was exposed, revoke it and create a replacement. Do not paste API tokens into a support ticket. A 403 permissions error requires a workspace owner to check the token permissions."
+      },
+      {
+        "source_id": "KB-TECH-003",
+        "category": "technical_issue",
+        "title": "Service outage and status incident",
+        "body": "Check the public service status page for an active outage or incident. If a matching incident exists, follow the updates there. Support cannot guarantee a restoration time. If there is no matching incident, share the timestamp, error message and request identifier with human support; omit secrets."
+      },
+      {
+        "source_id": "KB-FEATURE-001",
+        "category": "feature_request",
+        "title": "Submit a feature or integration request",
+        "body": "Submit feature and integration requests through the product feedback form. Include the use case, affected workflow and desired outcome, without confidential data. Requests are reviewed by the product team; submission does not guarantee acceptance, a roadmap commitment or a release date."
+      }
+    ]
+  },
+  "profiles": null,
+  "forecasts": {
+    "demo-account": [],
+    "demo-invoice": []
+  },
+  "carbon": null,
+  "tariffs": null,
+  "energy_mode": "none",
+  "energy_country": null,
+  "arms": [
+    {
+      "arm_id": "fixed-1",
+      "kind": "fixed",
+      "policy": "fixed",
+      "custom_weights": null,
+      "allowed_pairs": {
+        "classify": [
+          {
+            "deployment_id": "scripted-fixture",
+            "model_id": "large"
+          }
+        ],
+        "retrieve": [
+          {
+            "deployment_id": "scripted-fixture",
+            "model_id": "large"
+          }
+        ],
+        "draft": [
+          {
+            "deployment_id": "scripted-fixture",
+            "model_id": "large"
+          }
+        ],
+        "summarize": [
+          {
+            "deployment_id": "scripted-fixture",
+            "model_id": "large"
+          }
+        ]
+      },
+      "allow_summary_deferral": false,
+      "start_offsets_seconds": [
+        0
+      ],
+      "selection_source": "explicit-inventory-baseline"
+    },
+    {
+      "arm_id": "fixed-2",
+      "kind": "fixed",
+      "policy": "fixed",
+      "custom_weights": null,
+      "allowed_pairs": {
+        "classify": [
+          {
+            "deployment_id": "scripted-fixture",
+            "model_id": "small"
+          }
+        ],
+        "retrieve": [
+          {
+            "deployment_id": "scripted-fixture",
+            "model_id": "small"
+          }
+        ],
+        "draft": [
+          {
+            "deployment_id": "scripted-fixture",
+            "model_id": "small"
+          }
+        ],
+        "summarize": [
+          {
+            "deployment_id": "scripted-fixture",
+            "model_id": "small"
+          }
+        ]
+      },
+      "allow_summary_deferral": false,
+      "start_offsets_seconds": [
+        0
+      ],
+      "selection_source": "explicit-inventory-baseline"
+    }
+  ],
+  "baseline_arm_id": "fixed-1",
+  "response_seconds": 300,
+  "completion_seconds": 600,
+  "timeout_seconds": 120.0,
+  "quality_floor": 0.8,
+  "repeats": 1,
+  "seed": 42,
+  "poll_seconds": 0.1,
+  "planning_controls": {
+    "search_limit": 100000,
+    "health_max_age_seconds": 300.0,
+    "minimum_improvement": 0.01,
+    "replan_interval_seconds": 10.0,
+    "probe_timeout_seconds": 3.0,
+    "max_decision_age_seconds": 5.0
+  },
+  "source_manifest": {
+    "config/quality/pilot-v1.json": "10ed770c05b8f9ac05fab00a1c347a3fac7cb3d24fc28d86fa39e6325132766d",
+    "constraints/windows-py313.txt": "22f7ea239a9259835b63bc7c12c06df9d6fd45022ae569e1e7bd4b0b741f0b55",
+    "data/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "data/candidate_builder.py": "a91d792c987473d061febdc8812cb0bc7d3e81a2a2d2c0275d6b6604d4fcdc56",
+    "data/carbon_sources.py": "f5a9dba8ccc33ac105ad67eb5d0214674ebbb997467dce25dee718ab81b2fbfb",
+    "data/cost_accounting.py": "b7e702ef64b2fada4070d4a38560acebfd73f0b0c1d77fa0198f60d15c90f1b7",
+    "data/eval/run_eval.py": "4847c4cf23c15b1b7f3fbc88b650a5f4eddd7cb7db717c4615aa18eb0c9dacb9",
+    "data/latency_model.py": "f9927df6fe36e0c4dcec3b02477856bece402eb281d0aa8193acf6d27c59bbf2",
+    "data/model_table.py": "327b888f30ed74589777a2ec3f09ac67481c9266c6fe7fb6a1af6ec1da78b86d",
+    "data/profiles.py": "f7408e9253808684ea63ff8ee599305dae967dfbce49253f64f3917992b7d759",
+    "data/quality_policy.py": "e8191072684a62ffa7090d98300f5dd53f891825c549bd4f8e66aff381cbaac6",
+    "data/quality_reviews.py": "02d4cb475c23ea1112d03b354bd8a2121442a82d8d7ac5f0b310189cc707cbc3",
+    "data/region_carbon.py": "7af7e2230258e408b16895c3cfe1755a2985c4fc9932e35d1e599558ae5b062d",
+    "data/tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "data/tests/test_data_layer.py": "ca00adacfe3f353b9626551c16552015844ff86190965b0b65c724c1d7b93c24",
+    "data/time_curve.py": "5524914b6eaa5e135590913580e59cf0b4ed6b261c8e2e4e9aa124a6bd342e98",
+    "data/workloads/quality_rubric.v1.json": "87b1438ab4fa9f06c7154daf4ba1f7edbc6668409f64d5016eb7359c9ae925f2",
+    "data/workloads/support_kb.v1.json": "0fe2aee419b603c5e61d3d329c353e8b646b4997a95881e5ea6ba1096320dc7b",
+    "data/workloads/support_tickets.v1.json": "1e32b2041d9a7d2eb631fcd4ba70222b71411eb70d3b0d34964626b304d85a29",
+    "requirements-dev.txt": "45880814a0f0e2a1f3dc9f56f31ce2a20cf7b20d45fb0b78f8a0adc80b7d44de",
+    "requirements.txt": "5c04040fd19bdd60fe0fafa39d41d5dd8545aeb67ece7234f90e24785b4bb65b",
+    "scheduler/__init__.py": "20be4aa27b943847cce48d5117022a049684787f68f3a896235fc5550be224dc",
+    "scheduler/baseline.py": "1b54f6460f9b77c1175ebb9a72603231ec7ada02d16c77aa66da7e5e9fff927c",
+    "scheduler/candidate_gen.py": "98f193707d31946501bf5bf168badef83d66ff90a0618d83da429a47809e5361",
+    "scheduler/data_adapter.py": "cb8b59824d3449b2915d39b04888a6140e808e3a20676fb92872bb13eb44a131",
+    "scheduler/joint.py": "d28b999b44dd103c16a84818c01404069c4729c4dc19104ecd48dc1db5fa5fc0",
+    "scheduler/optimizer.py": "7ccfb34518f35a29e298c0540bb3165c2bb31f8665a23b030b59f73cd9c3caa4",
+    "scheduler/plan_profiles.py": "669f7bd0cdd7540739f86a322c3ad1f9cd5d5c4417b9974f534f72778ca7f47c",
+    "scheduler/policies.py": "f3bdfb6545d4b92b498d3df25d703a5cbfe0d5434ced073edef1e04b08783b7c",
+    "scheduler/profile_candidates.py": "8be665ae2d554d2243dbb33e1449d5c86b1a27dddb70e353c1df04038544db80",
+    "scheduler/scorer.py": "6c1b01edf9e3a8cde15830ed6b731564d5c4799f54fa6a85db8694588b629985",
+    "shared/__init__.py": "0166fec88bfa6b3ab080ad0e9d432a272e4656bff7903fa1f20cf20f1b56cd36",
+    "shared/availability.py": "7295939d38f507c20a4c4ef2b4c992ae9cdca047fd8bc67087e61fcaad9519a1",
+    "shared/deployments.py": "02460a1fadcc695d9646b869a48c3d02184f0b5fc52cdaba61325a3b71f5438b",
+    "shared/energy.py": "17a4be522c2f9ff00ea20e2708cc3aee2d1870ba2e918f89e7e227eba8d0ba3c",
+    "shared/run_records.py": "b6b4a2fb769b22758bf717f64bf4d1f84cf901fdc754961060dd702f63c8dd5c",
+    "shared/scheduling.py": "cd4a8c852681516b27de45f5c0912464e025a7605fddfc82f5f310298cccf552",
+    "shared/schema.py": "4ff7a23fc96322fc092ed97017fab38d35f5ad43b2d7f3d52c741281d4dd4847",
+    "workflow/__init__.py": "30d09a69e80aad807d2ba92f9b01a5dd4b5e0420f3b9d0fc1c529e3227e8a719",
+    "workflow/accounting_report.py": "bfef02fdf5c782fbe15cd258566d6b34afb54e6fb95d719822eb81d3af5dc0d0",
+    "workflow/auth/__init__.py": "68fa99d7950e3597efdc3a015ffce75712476097529eec93fb2476792f9df758",
+    "workflow/auth/email_sender.py": "eaf10588997abe1062ff4847fd18d61497421cdc0655c6ed21cf1251a13c22d6",
+    "workflow/auth/otp.py": "5978a031a701dfcbfa77b34a74923b630d30d254a32a156887da35399a4df91a",
+    "workflow/benchmark_local_models.py": "e2713580bfb6e3567a9f90eba6f6f85cc26058fb7150e4033cf1db522ca31e45",
+    "workflow/calibrate.py": "bb846aacb565bd5e72e7ce97b3872caee89c9968ad30d46270fe24396229872e",
+    "workflow/connected.py": "fbabcba8154b696e542698eb4a88550e02212b1813748498a05a75bf5aaeadf1",
+    "workflow/dag.py": "726a163fa1199ff589150101181976f5e3b9b358dd1cd1e73ba47a8b4531e50e",
+    "workflow/dashboard/app.py": "bcc7a57058a023de480c5f43e596a77ef2768c27afd84350215396a293e50228",
+    "workflow/dashboard/data_loading.py": "a707e4f33717a51be851c23f8875a08c652d5229fbd6daa85f05192b2c17f42f",
+    "workflow/dashboard/evidence_view.py": "9988217d7ad4f2e58afcebcf956c2dfe0025c9ab7ec9f4e4d4f3077ac5bae76f",
+    "workflow/dashboard/queue_actions.py": "536546055666af9b6a452dd9b4abbab6ef4d59ea3bb2000fbf93893ab0e988e3",
+    "workflow/dashboard/queue_view.py": "ada5d655833b724dd8bd57f7edcbc9ad5260b72aa2aeb7f3c638a414e7ee5b4d",
+    "workflow/demo_evidence.py": "61dd5a9114bb752d3e5a67c8fb0d39f67957b8eb03ef874efa057c06f8669ca0",
+    "workflow/deployment_clients.py": "22177fd96ec4e98c52b8684c73e3538affabf7af5f2e3f113293da38b5d72522",
+    "workflow/deployment_inventory.py": "e3f5e557fde21f51e722ed84ab175f392b19ee76203e1f5b65320efbcefaa01f",
+    "workflow/dispatch.py": "2ca991734190480dfd222eedd2185b33c8773f56c03a3c526a825da9660a2838",
+    "workflow/evaluate_policies.py": "cd55833df9c12cec154ba0937ea0cc5c9e40c1b772bb47dce18355047545ae10",
+    "workflow/evaluate_smoke.py": "2a2cbc13758e2011dd25da579044eee5c4c516ad0fbb1797c1fa4e14028a665f",
+    "workflow/evaluation_protocol.py": "2077e9994ae62eb4fe977e44683e5113a3e1de15b243000c6272f7bb64f5efe9",
+    "workflow/execution_accounting.py": "3ce7c0f0b34bd5d204372db1b3cc0d71acd8006cca4950995f6f4a6002dd29ef",
+    "workflow/executor.py": "c455b83a2954766c370448997f520a6fad1976d43baa31c831fcdcca40e97997",
+    "workflow/model_clients.py": "5cbde59ab4a9edea0bc3bc5295091a33268239db7f8af244c74775ff33338269",
+    "workflow/planned_worker.py": "8cd80eaee310e3270ef01c9b6db39e3b7327d96def6bad6798e5f471c66f2d95",
+    "workflow/planning.py": "01ce7780dd27e94d67a5484f88572e97a8435acbad7abf04dbb512fec78ddab5",
+    "workflow/planning_constraints.py": "ebb807b6f5e73655e0f07e177162529e07419d5da84cdd9aee372bc615d5100d",
+    "workflow/planning_records.py": "cf5072907e43b7d0570f82cd332710d0915559e160be926a71fc6b0d2bc9b745",
+    "workflow/policy_comparison.py": "71ddbee9fc413ff72238388a18af267444412f2c60fa01eb9d568606faaebd47",
+    "workflow/profile_report.py": "e3e32df0ab44c77c0fb6bbe3b3058c1096ce98e6b725c2e0c3d29a0f6f2288a9",
+    "workflow/queue_replay.py": "106aa9060927b1a24c308cc8746e6acafccfc742c8b51ab26ee5fe1e2b1802dc",
+    "workflow/queue_store.py": "94c4e9a15de954dabe4ec5c0270294401dfd036948fe318ba74baf4c2742b9a0",
+    "workflow/replay.py": "36cfb2fb5d4070228f0e16b81fb67af61128226ce10ce4bd946090b66330e8a7",
+    "workflow/review_quality.py": "09552c7804472db67eb3e477017647702521feb8d67cbdde34f0a2f648619464",
+    "workflow/review_workflow_quality.py": "06d46cf7009054496860de918e9f0e5a7bfd8e4e0ff18af6398f8d3bebbe959b",
+    "workflow/run_store.py": "5d73bab614eae237d3f3519627e10a10fb5b84b96f60c58490bba95eef3e1ac5",
+    "workflow/scheduling_records.py": "1567847228fc2f9bc78694bbd36f0bded8dae8a581e0e022adf21923f047c157",
+    "workflow/tests/__init__.py": "6210ac646d95008117fdf26a624c63967624df4240abc6e8b7508ec2d2eb88ed",
+    "workflow/tests/test_data_loading.py": "bab0b8b4a4cb1f6e1bbace5916cc09e098345836b105242083a2ec997afb7302",
+    "workflow/tests/test_model_clients.py": "1f8c4dc7cb397ecbab4525ff19d3ae15ebf072e0f17ec29a066a705818c68b5a",
+    "workflow/tests/test_run_evidence.py": "616dbc717d2251177f9cfa2322cd7e0b907d6ca628b872cf6b0e92f7e2671b11",
+    "workflow/tests/test_workflow.py": "e4c00ae22f74d42a3dc1025c5aa8bb26975fefc52d9731c798742e5795f74a36",
+    "workflow/worker.py": "8fb2bc13180eb086ffe5a54629b047e2e01771f2f690268c4ccf7f4c43603f09",
+    "workflow/workflow_quality.py": "6668ada49445aacf980de8fb4da0697b04a96e45569e7591e5d4e5d86b59fb09",
+    "workflow/workflow_store.py": "a19db48580f0efd8bcd98109d86e657f181426733a6121691b7beba108ac4196",
+    "workflow/workload.py": "5e221120e247b86f4762ded358309c50913ac7154f693af8e90e4c1cf71b6e42"
+  },
+  "output_quality": {
+    "rubric": {
+      "schema_version": 1,
+      "record_type": "QualityRubric",
+      "rubric_id": "support-semantic-quality.v1",
+      "description": "Human review of each actual support-workflow output against its retained prompt, dependency context, ticket and versioned KB evidence. Format validity alone supplies no semantic score.",
+      "scoring": "Score every criterion from 0 (incorrect or absent), through 0.5 (partially satisfied), to 1 (fully satisfied); intermediate values are permitted with rationale. The step score is the unweighted arithmetic mean. Explain each judgment using actual output/evidence. Do not infer account access or actions that were never performed. A human reviewer must approve the record explicitly.",
+      "steps": {
+        "classify": [
+          {
+            "id": "category_correct",
+            "description": "The selected category matches the ticket's actual support intent and the case guidance; unsupported requests are classified without inventing a product connection."
+          },
+          {
+            "id": "scope_faithful",
+            "description": "The classification preserves the ticket's meaning and uncertainty instead of assuming facts or an account action absent from the input."
+          }
+        ],
+        "retrieve": [
+          {
+            "id": "evidence_relevant",
+            "description": "Selected evidence addresses this ticket and distinguishes superficially similar situations; an unrelated article is not treated as an answer."
+          },
+          {
+            "id": "evidence_faithful",
+            "description": "The output accurately represents the supplied KB facts, restrictions and citations, without contradicting them or fabricating a source."
+          },
+          {
+            "id": "unsupported_handling",
+            "description": "When matching evidence is unavailable the output explicitly says so; when evidence is available it preserves qualifications and does not invent missing procedures."
+          }
+        ],
+        "draft": [
+          {
+            "id": "grounded_correct",
+            "description": "The response answers the actual ticket accurately using supplied evidence; it does not contradict KB constraints such as lockout duration, refund uncertainty or idempotent retry requirements."
+          },
+          {
+            "id": "no_invented_actions",
+            "description": "The response does not claim to have inspected accounts, changed settings, issued refunds, verified status or taken any action absent from the recorded workflow; it makes no unsupported promises."
+          },
+          {
+            "id": "appropriate_next_step",
+            "description": "Guidance and any clarification/escalation are relevant, complete and proportional. Unsupported questions receive an honest limitation or escalation rather than fabricated procedures."
+          },
+          {
+            "id": "evidence_traceable",
+            "description": "Claims and citations reflect the actual supplied evidence, preserving material uncertainty and avoiding irrelevant or misleading supporting statements."
+          }
+        ],
+        "summarize": [
+          {
+            "id": "summary_faithful",
+            "description": "The summary preserves the actual ticket, prior outputs and important qualifications without inventing actions, resolutions, commitments or new facts."
+          },
+          {
+            "id": "material_facts",
+            "description": "The summary retains the issue, response, unresolved limitations and next steps needed for handoff, with no material omission or misleading emphasis."
+          },
+          {
+            "id": "error_awareness",
+            "description": "The summary does not introduce or endorse a contradiction with supplied evidence; unsupported conclusions and uncertain or unresolved outcomes remain visibly uncertain."
+          }
+        ]
+      }
+    },
+    "policy": {
+      "schema_version": 1,
+      "record_type": "WorkflowQualityPolicy",
+      "policy_id": "workflow-quality-pilot.v1",
+      "aggregation": "minimum-step-mean.v1",
+      "minimum_score": 0.8,
+      "minimum_criterion_score": 0.5
+    }
+  },
+  "fingerprint": "6d8ed6fa619a6b61e09ce93fdf63af9e8c5912b768ec37a357ad9d32d842d758"
+}

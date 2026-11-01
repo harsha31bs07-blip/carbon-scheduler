@@ -1,0 +1,246 @@
+{
+  "schema_version": 1,
+  "record_type": "CalibrationProfiles",
+  "calibration_id": "5955915b9c074590870c3fa6d4892c28",
+  "context_source": "frozen-calibration-context-v1",
+  "profiles": [
+    {
+      "deployment_id": "local-ollama",
+      "deployment_fingerprint": "d1abfac5892a4ab70b40f2df548ff0824f554ed1a68341d4a112763e718c21f0",
+      "model_id": "local-llama3.2",
+      "step_id": "classify",
+      "task_type": "classification",
+      "workload_version": "support-workflow.v1:b1da1662d616f68aee94",
+      "carbon_unit": "gCO2",
+      "settings": {
+        "output_limit_tokens": 24,
+        "enable_thinking": false,
+        "temperature": 0.2
+      },
+      "input_size": {
+        "unit": "utf8-bytes-proxy",
+        "minimum": 550,
+        "maximum": 590
+      },
+      "sample_counts": {
+        "attempts": 10,
+        "completed": 10,
+        "failed": 0,
+        "valid_natural_completions": 10,
+        "invalid_output": 0,
+        "truncated": 0,
+        "reviewed_quality": 0
+      },
+      "metrics": {
+        "latency": {
+          "unit": "s",
+          "count": 10,
+          "minimum": 2.2556601999967825,
+          "maximum": 2.453758099996776,
+          "mean": 2.3461037899985966,
+          "median": 2.301227550000476,
+          "p90": 2.4511988599973846,
+          "stddev": 0.08749192770289531,
+          "provenance": "estimated"
+        },
+        "accuracy": {
+          "unit": "ratio",
+          "count": 0,
+          "minimum": null,
+          "maximum": null,
+          "mean": null,
+          "median": null,
+          "p90": null,
+          "stddev": null,
+          "sources": [],
+          "comparable": false,
+          "provenance": "unknown"
+        },
+        "cost": {
+          "unit": "USD",
+          "count": 10,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p90": 0.0,
+          "stddev": 0.0,
+          "provenance": "estimated",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "estimated": 10
+          },
+          "sources": [
+            "local-no-api-subscription; api-only; electricity-excluded"
+          ]
+        },
+        "energy": {
+          "unit": "kWh",
+          "count": 10,
+          "minimum": 3.36947927712374e-05,
+          "maximum": 6.663180292188685e-05,
+          "mean": 4.7710315752967246e-05,
+          "median": 4.716777243622039e-05,
+          "p90": 5.9082038985582206e-05,
+          "stddev": 1.1457880792528948e-05,
+          "provenance": "mixed",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "mixed": 10
+          },
+          "sources": [
+            "CodeCarbon sensor/model composition (RAM modeled)"
+          ]
+        },
+        "carbon": {
+          "unit": "gCO2",
+          "count": 10,
+          "minimum": 0.022743985120585248,
+          "maximum": 0.04497646697227362,
+          "mean": 0.03220446313325289,
+          "median": 0.03183824639444876,
+          "p90": 0.03988037631526799,
+          "stddev": 0.00773406953495704,
+          "provenance": "estimated",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "estimated": 10
+          },
+          "sources": [
+            "energy-times-Derived annual static CO2 proxy: CEA v22 FY2025-26 Table S (https://cea.nic.in/api/cdm-report-version/view-pdf/en/82); estimate issued by this application, not a live forecast"
+          ]
+        }
+      },
+      "all_attempt_latency": {
+        "count": 10,
+        "minimum": 2.2556601999967825,
+        "maximum": 2.453758099996776,
+        "mean": 2.3461037899985966,
+        "median": 2.301227550000476,
+        "p90": 2.4511988599973846,
+        "stddev": 0.08749192770289531
+      },
+      "latency_model": {
+        "method": "nonnegative-input-size-slope",
+        "distinct_input_sizes": 5,
+        "slope_seconds_per_byte": 0.0016790432824291233,
+        "intercept_seconds": 1.3920713969223686,
+        "residual_stddev_seconds": 0.08307406471118355
+      },
+      "input_tokens": {
+        "count": 10,
+        "minimum": 135,
+        "maximum": 142,
+        "mean": 139.2,
+        "median": 139.0,
+        "p90": 142.0,
+        "stddev": 2.780887148615228
+      },
+      "output_tokens": {
+        "count": 10,
+        "minimum": 2,
+        "maximum": 3,
+        "mean": 2.8,
+        "median": 3.0,
+        "p90": 3.0,
+        "stddev": 0.4216370213557839
+      },
+      "start_states": {
+        "cold": {
+          "attempt_count": 0,
+          "valid_latency": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          },
+          "load_seconds": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          }
+        },
+        "warm": {
+          "attempt_count": 10,
+          "valid_latency": {
+            "count": 10,
+            "minimum": 2.2556601999967825,
+            "maximum": 2.453758099996776,
+            "mean": 2.3461037899985966,
+            "median": 2.301227550000476,
+            "p90": 2.4511988599973846,
+            "stddev": 0.08749192770289531
+          },
+          "load_seconds": {
+            "count": 10,
+            "minimum": 0.0095628,
+            "maximum": 0.0134523,
+            "mean": 0.01168521,
+            "median": 0.01166735,
+            "p90": 0.01328157,
+            "stddev": 0.0011510349801133087
+          }
+        },
+        "unknown": {
+          "attempt_count": 0,
+          "valid_latency": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          },
+          "load_seconds": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          }
+        }
+      },
+      "quality_source_counts": {
+        "unknown": 10
+      },
+      "trial_ids": [
+        "091b3d06e5804f2bad1f7314c61f39cd",
+        "0e83247f2fa74dc2a69691ad24399362",
+        "0fce4248457c49a4812a5018df51d56c",
+        "1147df2b198c4d46b00eadbafbfe814b",
+        "31e4cac2feac4f09b13dd9fc7b6487bc",
+        "48a31632c643482dba48eec87f6628ec",
+        "51722e288a9441a8a8acff478f381229",
+        "6f553f16db2e4785a6219b1f1ecb28c9",
+        "86a5a2aaf06e4b938eabecdd2764a41e",
+        "f7c976f7fc6b4554901c784b64d1b502"
+      ],
+      "source_fingerprint": "4ad136d42dc6574177863c1bf12bb1e5a7ef933e649e3b416210cd0af28cb4c3",
+      "calibration_id": "5955915b9c074590870c3fa6d4892c28",
+      "uncertainty_method": "sample-standard-deviation; descriptive, not a confidence interval",
+      "tail_claim": "p90 is descriptive; these samples do not establish stable tail latency",
+      "fingerprint": "6026a99e70c52dff883163f6d72086a260a0f7083872655bd3017e241688b351"
+    }
+  ],
+  "summary": {
+    "retained_trials": 11,
+    "profile_trials": 10,
+    "held_out_excluded": 0,
+    "calibration_warmups_excluded": 1,
+    "profile_count": 1
+  },
+  "fingerprint": "63711354e616f6b43d74686faf0eeb519cf8992e8da5735cbd198a858d8f2291"
+}

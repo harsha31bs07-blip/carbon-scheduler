@@ -1,0 +1,1866 @@
+{
+  "schema_version": 1,
+  "record_type": "CalibrationProfiles",
+  "calibration_id": "f3659fe2b75b976622f20ff33aa4193f8f7514e70f8a755f84149a9fbee6f502",
+  "context_source": "frozen-calibration-context-v1",
+  "profiles": [
+    {
+      "deployment_id": "local-ollama",
+      "deployment_fingerprint": "d1abfac5892a4ab70b40f2df548ff0824f554ed1a68341d4a112763e718c21f0",
+      "model_id": "local-llama3.2",
+      "step_id": "retrieve",
+      "task_type": "retrieval",
+      "workload_version": "support-workflow.v1:b1da1662d616f68aee94",
+      "carbon_unit": "gCO2",
+      "settings": {
+        "output_limit_tokens": 192,
+        "enable_thinking": false,
+        "temperature": 0.2
+      },
+      "input_size": {
+        "unit": "utf8-bytes-proxy",
+        "minimum": 338,
+        "maximum": 1854
+      },
+      "sample_counts": {
+        "attempts": 10,
+        "completed": 10,
+        "failed": 0,
+        "valid_natural_completions": 10,
+        "invalid_output": 0,
+        "truncated": 0,
+        "reviewed_quality": 0
+      },
+      "metrics": {
+        "latency": {
+          "unit": "s",
+          "count": 10,
+          "minimum": 2.535501500002283,
+          "maximum": 3.9584899000037694,
+          "mean": 3.44880627000166,
+          "median": 3.5472913500052528,
+          "p90": 3.921964300001855,
+          "stddev": 0.5008198137704731,
+          "provenance": "estimated"
+        },
+        "accuracy": {
+          "unit": "ratio",
+          "count": 0,
+          "minimum": null,
+          "maximum": null,
+          "mean": null,
+          "median": null,
+          "p90": null,
+          "stddev": null,
+          "sources": [],
+          "comparable": false,
+          "provenance": "unknown"
+        },
+        "cost": {
+          "unit": "USD",
+          "count": 10,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p90": 0.0,
+          "stddev": 0.0,
+          "provenance": "estimated",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "estimated": 10
+          },
+          "sources": [
+            "local-no-api-subscription; api-only; electricity-excluded"
+          ]
+        },
+        "energy": {
+          "unit": "kWh",
+          "count": 10,
+          "minimum": 2.5057547649566085e-05,
+          "maximum": 0.00011976462668045891,
+          "mean": 7.438907768067421e-05,
+          "median": 7.791072922149118e-05,
+          "p90": 8.976343082775219e-05,
+          "stddev": 2.392943357558626e-05,
+          "provenance": "mixed",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "mixed": 10
+          },
+          "sources": [
+            "CodeCarbon sensor/model composition (RAM modeled)"
+          ]
+        },
+        "carbon": {
+          "unit": "gCO2",
+          "count": 10,
+          "minimum": 0.016913844663457106,
+          "maximum": 0.08084112300930976,
+          "mean": 0.0502126274344551,
+          "median": 0.05258974222450655,
+          "p90": 0.06059031580873273,
+          "stddev": 0.016152367663520725,
+          "provenance": "estimated",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "estimated": 10
+          },
+          "sources": [
+            "energy-times-Derived annual static CO2 proxy: CEA v22 FY2025-26 Table S (https://cea.nic.in/api/cdm-report-version/view-pdf/en/82); estimate issued by this application, not a live forecast"
+          ]
+        }
+      },
+      "all_attempt_latency": {
+        "count": 10,
+        "minimum": 2.535501500002283,
+        "maximum": 3.9584899000037694,
+        "mean": 3.44880627000166,
+        "median": 3.5472913500052528,
+        "p90": 3.921964300001855,
+        "stddev": 0.5008198137704731
+      },
+      "latency_model": {
+        "method": "nonnegative-input-size-slope",
+        "distinct_input_sizes": 5,
+        "slope_seconds_per_byte": 0.0006723854736653248,
+        "intercept_seconds": 2.5511716626584513,
+        "residual_stddev_seconds": 0.2886771459340103
+      },
+      "input_tokens": {
+        "count": 10,
+        "minimum": 93,
+        "maximum": 421,
+        "mean": 301.8,
+        "median": 368.0,
+        "p90": 421.0,
+        "stddev": 130.87975821765224
+      },
+      "output_tokens": {
+        "count": 10,
+        "minimum": 12,
+        "maximum": 108,
+        "mean": 70.5,
+        "median": 76.0,
+        "p90": 102.6,
+        "stddev": 33.59646145388264
+      },
+      "start_states": {
+        "cold": {
+          "attempt_count": 0,
+          "valid_latency": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          },
+          "load_seconds": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          }
+        },
+        "warm": {
+          "attempt_count": 10,
+          "valid_latency": {
+            "count": 10,
+            "minimum": 2.535501500002283,
+            "maximum": 3.9584899000037694,
+            "mean": 3.44880627000166,
+            "median": 3.5472913500052528,
+            "p90": 3.921964300001855,
+            "stddev": 0.5008198137704731
+          },
+          "load_seconds": {
+            "count": 10,
+            "minimum": 0.0102884,
+            "maximum": 0.0155972,
+            "mean": 0.01255947,
+            "median": 0.01197295,
+            "p90": 0.015451939999999999,
+            "stddev": 0.0018885926212394244
+          }
+        },
+        "unknown": {
+          "attempt_count": 0,
+          "valid_latency": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          },
+          "load_seconds": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          }
+        }
+      },
+      "quality_source_counts": {
+        "unknown": 10
+      },
+      "trial_ids": [
+        "23227707b1724506a21e83d1a55f23f6",
+        "26795fbab20e4defaa47e6f68833f398",
+        "2c79e0efbec64759bd94e3d0acab6d8a",
+        "589a0471ddc84f26ba3c50890bd9dcd0",
+        "961afddaaf3d4ba4a778e3e14029d1ec",
+        "a114e4cd43954335ad6776c5254e28bc",
+        "a155c73cb5664948ba6c76a8e8276152",
+        "de46e95e442c41a4a5466f5e3e49e895",
+        "f61ba3f986f9425daa885f1b3dd148d3",
+        "f628d4bc420f4213a7202374fc920a2d"
+      ],
+      "source_fingerprint": "8b093b1999ada5e7bf7e90573c439b598a89ad5660ce130f7b0257e156b20d06",
+      "calibration_id": "f3659fe2b75b976622f20ff33aa4193f8f7514e70f8a755f84149a9fbee6f502",
+      "uncertainty_method": "sample-standard-deviation; descriptive, not a confidence interval",
+      "tail_claim": "p90 is descriptive; these samples do not establish stable tail latency",
+      "fingerprint": "27ea8f51437dd38505a8f543ceb51986f5ba2ef3050f2f3abb2c57cd06bd26ad"
+    },
+    {
+      "deployment_id": "local-ollama",
+      "deployment_fingerprint": "d1abfac5892a4ab70b40f2df548ff0824f554ed1a68341d4a112763e718c21f0",
+      "model_id": "local-qwen3.5",
+      "step_id": "retrieve",
+      "task_type": "retrieval",
+      "workload_version": "support-workflow.v1:b1da1662d616f68aee94",
+      "carbon_unit": "gCO2",
+      "settings": {
+        "output_limit_tokens": 192,
+        "enable_thinking": false,
+        "temperature": 0.2
+      },
+      "input_size": {
+        "unit": "utf8-bytes-proxy",
+        "minimum": 338,
+        "maximum": 1854
+      },
+      "sample_counts": {
+        "attempts": 10,
+        "completed": 10,
+        "failed": 0,
+        "valid_natural_completions": 10,
+        "invalid_output": 0,
+        "truncated": 0,
+        "reviewed_quality": 0
+      },
+      "metrics": {
+        "latency": {
+          "unit": "s",
+          "count": 10,
+          "minimum": 2.621218800006318,
+          "maximum": 4.777741199999582,
+          "mean": 4.065732809999463,
+          "median": 4.237097000001086,
+          "p90": 4.757310029996006,
+          "stddev": 0.7710205129815441,
+          "provenance": "estimated"
+        },
+        "accuracy": {
+          "unit": "ratio",
+          "count": 0,
+          "minimum": null,
+          "maximum": null,
+          "mean": null,
+          "median": null,
+          "p90": null,
+          "stddev": null,
+          "sources": [],
+          "comparable": false,
+          "provenance": "unknown"
+        },
+        "cost": {
+          "unit": "USD",
+          "count": 10,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p90": 0.0,
+          "stddev": 0.0,
+          "provenance": "estimated",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "estimated": 10
+          },
+          "sources": [
+            "local-no-api-subscription; api-only; electricity-excluded"
+          ]
+        },
+        "energy": {
+          "unit": "kWh",
+          "count": 10,
+          "minimum": 4.1578941923020254e-05,
+          "maximum": 0.00014382506292011756,
+          "mean": 9.809533044984911e-05,
+          "median": 0.00010262075528145531,
+          "p90": 0.0001300503443082162,
+          "stddev": 3.2809628003854754e-05,
+          "provenance": "mixed",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "mixed": 10
+          },
+          "sources": [
+            "CodeCarbon sensor/model composition (RAM modeled)"
+          ]
+        },
+        "carbon": {
+          "unit": "gCO2",
+          "count": 10,
+          "minimum": 0.028065785798038673,
+          "maximum": 0.09708191747107936,
+          "mean": 0.06621434805364816,
+          "median": 0.06926900981498235,
+          "p90": 0.08778398240804594,
+          "stddev": 0.02214649890260196,
+          "provenance": "estimated",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "estimated": 10
+          },
+          "sources": [
+            "energy-times-Derived annual static CO2 proxy: CEA v22 FY2025-26 Table S (https://cea.nic.in/api/cdm-report-version/view-pdf/en/82); estimate issued by this application, not a live forecast"
+          ]
+        }
+      },
+      "all_attempt_latency": {
+        "count": 10,
+        "minimum": 2.621218800006318,
+        "maximum": 4.777741199999582,
+        "mean": 4.065732809999463,
+        "median": 4.237097000001086,
+        "p90": 4.757310029996006,
+        "stddev": 0.7710205129815441
+      },
+      "latency_model": {
+        "method": "nonnegative-input-size-slope",
+        "distinct_input_sizes": 5,
+        "slope_seconds_per_byte": 0.0011867230783649428,
+        "intercept_seconds": 2.4814575003822643,
+        "residual_stddev_seconds": 0.26971997739950104
+      },
+      "input_tokens": {
+        "count": 10,
+        "minimum": 81,
+        "maximum": 422,
+        "mean": 296.2,
+        "median": 363.0,
+        "p90": 422.0,
+        "stddev": 135.41606666533744
+      },
+      "output_tokens": {
+        "count": 10,
+        "minimum": 12,
+        "maximum": 110,
+        "mean": 71.4,
+        "median": 75.0,
+        "p90": 101.0,
+        "stddev": 33.82372605796772
+      },
+      "start_states": {
+        "cold": {
+          "attempt_count": 0,
+          "valid_latency": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          },
+          "load_seconds": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          }
+        },
+        "warm": {
+          "attempt_count": 10,
+          "valid_latency": {
+            "count": 10,
+            "minimum": 2.621218800006318,
+            "maximum": 4.777741199999582,
+            "mean": 4.065732809999463,
+            "median": 4.237097000001086,
+            "p90": 4.757310029996006,
+            "stddev": 0.7710205129815441
+          },
+          "load_seconds": {
+            "count": 10,
+            "minimum": 0.0089302,
+            "maximum": 0.0128599,
+            "mean": 0.0099464,
+            "median": 0.00971485,
+            "p90": 0.01046455,
+            "stddev": 0.0011134528319102202
+          }
+        },
+        "unknown": {
+          "attempt_count": 0,
+          "valid_latency": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          },
+          "load_seconds": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          }
+        }
+      },
+      "quality_source_counts": {
+        "unknown": 10
+      },
+      "trial_ids": [
+        "00c69e6a9de9430c83fef08e921d3f04",
+        "0b509ea976d34d0bb75e7c22b4149162",
+        "1e3bc58722b44f218d954726e28e1671",
+        "328694692a3141fa8fffc975cb688b7a",
+        "42216587b6f4453db3b7e38023742d9d",
+        "5e395dbad37d4615bb666b0df6b6fb05",
+        "64e36cdcbb7344d1bc66af7260a03b8b",
+        "6e9b3bb7483c475f904ff7dd50883e9f",
+        "c074db37fe294abe869300f70e06ac93",
+        "db8d7f861e9d48a6b142add0cc2b8e29"
+      ],
+      "source_fingerprint": "ae7396f5c5dd10f7816d80c2f040f44cc1f7cd70c8b39c91880f00c51299eddb",
+      "calibration_id": "f3659fe2b75b976622f20ff33aa4193f8f7514e70f8a755f84149a9fbee6f502",
+      "uncertainty_method": "sample-standard-deviation; descriptive, not a confidence interval",
+      "tail_claim": "p90 is descriptive; these samples do not establish stable tail latency",
+      "fingerprint": "3fc64ef78435ee9fa7fbed9a853ed255368ea8255852c79a173135ccb4d91852"
+    },
+    {
+      "deployment_id": "local-ollama",
+      "deployment_fingerprint": "d1abfac5892a4ab70b40f2df548ff0824f554ed1a68341d4a112763e718c21f0",
+      "model_id": "local-qwen3.5",
+      "step_id": "classify",
+      "task_type": "classification",
+      "workload_version": "support-workflow.v1:b1da1662d616f68aee94",
+      "carbon_unit": "gCO2",
+      "settings": {
+        "output_limit_tokens": 24,
+        "enable_thinking": false,
+        "temperature": 0.2
+      },
+      "input_size": {
+        "unit": "utf8-bytes-proxy",
+        "minimum": 550,
+        "maximum": 590
+      },
+      "sample_counts": {
+        "attempts": 10,
+        "completed": 10,
+        "failed": 0,
+        "valid_natural_completions": 10,
+        "invalid_output": 0,
+        "truncated": 0,
+        "reviewed_quality": 0
+      },
+      "metrics": {
+        "latency": {
+          "unit": "s",
+          "count": 10,
+          "minimum": 2.4225411000006716,
+          "maximum": 2.5399570999943535,
+          "mean": 2.477910899998824,
+          "median": 2.462323750001815,
+          "p90": 2.537247649997153,
+          "stddev": 0.044313741249176364,
+          "provenance": "estimated"
+        },
+        "accuracy": {
+          "unit": "ratio",
+          "count": 0,
+          "minimum": null,
+          "maximum": null,
+          "mean": null,
+          "median": null,
+          "p90": null,
+          "stddev": null,
+          "sources": [],
+          "comparable": false,
+          "provenance": "unknown"
+        },
+        "cost": {
+          "unit": "USD",
+          "count": 10,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p90": 0.0,
+          "stddev": 0.0,
+          "provenance": "estimated",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "estimated": 10
+          },
+          "sources": [
+            "local-no-api-subscription; api-only; electricity-excluded"
+          ]
+        },
+        "energy": {
+          "unit": "kWh",
+          "count": 10,
+          "minimum": 3.928687704933763e-05,
+          "maximum": 7.637943958536103e-05,
+          "mean": 5.9434351287484826e-05,
+          "median": 6.15698688812178e-05,
+          "p90": 7.371838765883173e-05,
+          "stddev": 1.2184604038623853e-05,
+          "provenance": "mixed",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "mixed": 10
+          },
+          "sources": [
+            "CodeCarbon sensor/model composition (RAM modeled)"
+          ]
+        },
+        "carbon": {
+          "unit": "gCO2",
+          "count": 10,
+          "minimum": 0.026518642008302902,
+          "maximum": 0.05155612172011869,
+          "mean": 0.040118187119052254,
+          "median": 0.041559661494822014,
+          "p90": 0.04975991166971141,
+          "stddev": 0.0082246077260711,
+          "provenance": "estimated",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "estimated": 10
+          },
+          "sources": [
+            "energy-times-Derived annual static CO2 proxy: CEA v22 FY2025-26 Table S (https://cea.nic.in/api/cdm-report-version/view-pdf/en/82); estimate issued by this application, not a live forecast"
+          ]
+        }
+      },
+      "all_attempt_latency": {
+        "count": 10,
+        "minimum": 2.4225411000006716,
+        "maximum": 2.5399570999943535,
+        "mean": 2.477910899998824,
+        "median": 2.462323750001815,
+        "p90": 2.537247649997153,
+        "stddev": 0.044313741249176364
+      },
+      "latency_model": {
+        "method": "median",
+        "distinct_input_sizes": 5,
+        "slope_seconds_per_byte": null,
+        "intercept_seconds": null,
+        "residual_stddev_seconds": null
+      },
+      "input_tokens": {
+        "count": 10,
+        "minimum": 123,
+        "maximum": 130,
+        "mean": 127.2,
+        "median": 127.0,
+        "p90": 130.0,
+        "stddev": 2.780887148615228
+      },
+      "output_tokens": {
+        "count": 10,
+        "minimum": 2,
+        "maximum": 3,
+        "mean": 2.6,
+        "median": 3.0,
+        "p90": 3.0,
+        "stddev": 0.5163977794943223
+      },
+      "start_states": {
+        "cold": {
+          "attempt_count": 0,
+          "valid_latency": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          },
+          "load_seconds": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          }
+        },
+        "warm": {
+          "attempt_count": 10,
+          "valid_latency": {
+            "count": 10,
+            "minimum": 2.4225411000006716,
+            "maximum": 2.5399570999943535,
+            "mean": 2.477910899998824,
+            "median": 2.462323750001815,
+            "p90": 2.537247649997153,
+            "stddev": 0.044313741249176364
+          },
+          "load_seconds": {
+            "count": 10,
+            "minimum": 0.0089091,
+            "maximum": 0.0118975,
+            "mean": 0.01008255,
+            "median": 0.0099161,
+            "p90": 0.011687620000000001,
+            "stddev": 0.0010498968618657528
+          }
+        },
+        "unknown": {
+          "attempt_count": 0,
+          "valid_latency": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          },
+          "load_seconds": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          }
+        }
+      },
+      "quality_source_counts": {
+        "unknown": 10
+      },
+      "trial_ids": [
+        "2d131960ada649489b9642354fa930a8",
+        "50941032ea3747a39e1db8ec3739e467",
+        "55423628405241178656e00f328e7973",
+        "6b99bf1a012a4119a853e5b3f604ebed",
+        "713a0af0263f4d6b90459cabec427ec5",
+        "86dd489c459145499f652a1bdd0b14fc",
+        "a85b682cc4dd41ebb21c1770df22db7f",
+        "bad96f5b793d431899bd09a0bc62de1a",
+        "d9c1ca28070a4a8fab67e011331f687f",
+        "ebc62c8d68014534ae420480d046de44"
+      ],
+      "source_fingerprint": "7d5bef58b941967522e922cf0dfb5c23ab6f7d057fadc1d8607ae61e6f8ad1a0",
+      "calibration_id": "f3659fe2b75b976622f20ff33aa4193f8f7514e70f8a755f84149a9fbee6f502",
+      "uncertainty_method": "sample-standard-deviation; descriptive, not a confidence interval",
+      "tail_claim": "p90 is descriptive; these samples do not establish stable tail latency",
+      "fingerprint": "4379ae4a6f480cbf3d02a7bdbfe4c9863c2ef8347962bc156a378b6acb6e7bc3"
+    },
+    {
+      "deployment_id": "local-ollama",
+      "deployment_fingerprint": "d1abfac5892a4ab70b40f2df548ff0824f554ed1a68341d4a112763e718c21f0",
+      "model_id": "local-qwen3.5",
+      "step_id": "summarize",
+      "task_type": "summarization",
+      "workload_version": "support-workflow.v1:b1da1662d616f68aee94",
+      "carbon_unit": "gCO2",
+      "settings": {
+        "output_limit_tokens": 128,
+        "enable_thinking": false,
+        "temperature": 0.2
+      },
+      "input_size": {
+        "unit": "utf8-bytes-proxy",
+        "minimum": 837,
+        "maximum": 1776
+      },
+      "sample_counts": {
+        "attempts": 10,
+        "completed": 10,
+        "failed": 0,
+        "valid_natural_completions": 10,
+        "invalid_output": 0,
+        "truncated": 0,
+        "reviewed_quality": 0
+      },
+      "metrics": {
+        "latency": {
+          "unit": "s",
+          "count": 10,
+          "minimum": 3.0056622000047355,
+          "maximum": 4.023310200005653,
+          "mean": 3.450996730001498,
+          "median": 3.5032567500020377,
+          "p90": 3.7517007299997203,
+          "stddev": 0.3173315717301326,
+          "provenance": "estimated"
+        },
+        "accuracy": {
+          "unit": "ratio",
+          "count": 0,
+          "minimum": null,
+          "maximum": null,
+          "mean": null,
+          "median": null,
+          "p90": null,
+          "stddev": null,
+          "sources": [],
+          "comparable": false,
+          "provenance": "unknown"
+        },
+        "cost": {
+          "unit": "USD",
+          "count": 10,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p90": 0.0,
+          "stddev": 0.0,
+          "provenance": "estimated",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "estimated": 10
+          },
+          "sources": [
+            "local-no-api-subscription; api-only; electricity-excluded"
+          ]
+        },
+        "energy": {
+          "unit": "kWh",
+          "count": 10,
+          "minimum": 6.13933379516851e-05,
+          "maximum": 0.00011712289657811613,
+          "mean": 8.762874329817778e-05,
+          "median": 8.566512463033734e-05,
+          "p90": 0.0001079282636374101,
+          "stddev": 1.909479454655781e-05,
+          "provenance": "mixed",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "mixed": 10
+          },
+          "sources": [
+            "CodeCarbon sensor/model composition (RAM modeled)"
+          ]
+        },
+        "carbon": {
+          "unit": "gCO2",
+          "count": 10,
+          "minimum": 0.04144050311738744,
+          "maximum": 0.07905795519022839,
+          "mean": 0.05914940172627,
+          "median": 0.057823959125477706,
+          "p90": 0.07285157795525181,
+          "stddev": 0.012888986318926522,
+          "provenance": "estimated",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "estimated": 10
+          },
+          "sources": [
+            "energy-times-Derived annual static CO2 proxy: CEA v22 FY2025-26 Table S (https://cea.nic.in/api/cdm-report-version/view-pdf/en/82); estimate issued by this application, not a live forecast"
+          ]
+        }
+      },
+      "all_attempt_latency": {
+        "count": 10,
+        "minimum": 3.0056622000047355,
+        "maximum": 4.023310200005653,
+        "mean": 3.450996730001498,
+        "median": 3.5032567500020377,
+        "p90": 3.7517007299997203,
+        "stddev": 0.3173315717301326
+      },
+      "latency_model": {
+        "method": "nonnegative-input-size-slope",
+        "distinct_input_sizes": 5,
+        "slope_seconds_per_byte": 0.0005194443211005117,
+        "intercept_seconds": 2.715567460187393,
+        "residual_stddev_seconds": 0.24462610404535903
+      },
+      "input_tokens": {
+        "count": 10,
+        "minimum": 179,
+        "maximum": 420,
+        "mean": 320.2,
+        "median": 366.0,
+        "p90": 420.0,
+        "stddev": 97.36848680256986
+      },
+      "output_tokens": {
+        "count": 10,
+        "minimum": 26,
+        "maximum": 64,
+        "mean": 42.3,
+        "median": 43.0,
+        "p90": 60.4,
+        "stddev": 12.693392857003293
+      },
+      "start_states": {
+        "cold": {
+          "attempt_count": 0,
+          "valid_latency": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          },
+          "load_seconds": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          }
+        },
+        "warm": {
+          "attempt_count": 10,
+          "valid_latency": {
+            "count": 10,
+            "minimum": 3.0056622000047355,
+            "maximum": 4.023310200005653,
+            "mean": 3.450996730001498,
+            "median": 3.5032567500020377,
+            "p90": 3.7517007299997203,
+            "stddev": 0.3173315717301326
+          },
+          "load_seconds": {
+            "count": 10,
+            "minimum": 0.0088497,
+            "maximum": 0.0111168,
+            "mean": 0.00959345,
+            "median": 0.009397599999999999,
+            "p90": 0.010421189999999999,
+            "stddev": 0.0007504259342385348
+          }
+        },
+        "unknown": {
+          "attempt_count": 0,
+          "valid_latency": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          },
+          "load_seconds": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          }
+        }
+      },
+      "quality_source_counts": {
+        "unknown": 10
+      },
+      "trial_ids": [
+        "04d76ccc1ea346b6a77901fd5c7e3e2a",
+        "0dd66f5d51e54ba9b037edc8bba3b599",
+        "48c264588f4041ea95ab2cf95fca519e",
+        "606fe3f1fd64429b8008ba9800ebc8fe",
+        "7053044980f74100843d41af328c9b0c",
+        "b3e182bb38a14b4381acb0909814bd28",
+        "c8a912110dd54d0eb4f4152adc855d9f",
+        "d773a324a3f04ee28c0de836e4073c3c",
+        "f00822ff63e44d5ea9101e050d6c11de",
+        "fbc1dae3fe634ad38ac548dee8667165"
+      ],
+      "source_fingerprint": "1167fca10ca57d660b4e29b7797d81734fb13468a250dfafab8f393600063f20",
+      "calibration_id": "f3659fe2b75b976622f20ff33aa4193f8f7514e70f8a755f84149a9fbee6f502",
+      "uncertainty_method": "sample-standard-deviation; descriptive, not a confidence interval",
+      "tail_claim": "p90 is descriptive; these samples do not establish stable tail latency",
+      "fingerprint": "4ab34efc573ccea56ffdfdf4068ced5c9e77b6f78a9b39b909f15cf6ba850eed"
+    },
+    {
+      "deployment_id": "local-ollama",
+      "deployment_fingerprint": "d1abfac5892a4ab70b40f2df548ff0824f554ed1a68341d4a112763e718c21f0",
+      "model_id": "local-llama3.2",
+      "step_id": "draft",
+      "task_type": "drafting",
+      "workload_version": "support-workflow.v1:b1da1662d616f68aee94",
+      "carbon_unit": "gCO2",
+      "settings": {
+        "output_limit_tokens": 256,
+        "enable_thinking": false,
+        "temperature": 0.2
+      },
+      "input_size": {
+        "unit": "utf8-bytes-proxy",
+        "minimum": 1299,
+        "maximum": 2347
+      },
+      "sample_counts": {
+        "attempts": 10,
+        "completed": 10,
+        "failed": 0,
+        "valid_natural_completions": 10,
+        "invalid_output": 0,
+        "truncated": 0,
+        "reviewed_quality": 0
+      },
+      "metrics": {
+        "latency": {
+          "unit": "s",
+          "count": 10,
+          "minimum": 3.397662199997285,
+          "maximum": 3.9241269000049215,
+          "mean": 3.6629168300001766,
+          "median": 3.669923950001248,
+          "p90": 3.879325079998671,
+          "stddev": 0.17722945018781688,
+          "provenance": "estimated"
+        },
+        "accuracy": {
+          "unit": "ratio",
+          "count": 0,
+          "minimum": null,
+          "maximum": null,
+          "mean": null,
+          "median": null,
+          "p90": null,
+          "stddev": null,
+          "sources": [],
+          "comparable": false,
+          "provenance": "unknown"
+        },
+        "cost": {
+          "unit": "USD",
+          "count": 10,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p90": 0.0,
+          "stddev": 0.0,
+          "provenance": "estimated",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "estimated": 10
+          },
+          "sources": [
+            "local-no-api-subscription; api-only; electricity-excluded"
+          ]
+        },
+        "energy": {
+          "unit": "kWh",
+          "count": 10,
+          "minimum": 6.032916863314679e-05,
+          "maximum": 0.00011632148762679266,
+          "mean": 9.0834411853951e-05,
+          "median": 9.07735099820045e-05,
+          "p90": 0.00011152089351136882,
+          "stddev": 1.622463772899834e-05,
+          "provenance": "mixed",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "mixed": 10
+          },
+          "sources": [
+            "CodeCarbon sensor/model composition (RAM modeled)"
+          ]
+        },
+        "carbon": {
+          "unit": "gCO2",
+          "count": 10,
+          "minimum": 0.040722188827374085,
+          "maximum": 0.07851700414808505,
+          "mean": 0.06131322800141692,
+          "median": 0.06127211923785303,
+          "p90": 0.07527660312017397,
+          "stddev": 0.01095163046707388,
+          "provenance": "estimated",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "estimated": 10
+          },
+          "sources": [
+            "energy-times-Derived annual static CO2 proxy: CEA v22 FY2025-26 Table S (https://cea.nic.in/api/cdm-report-version/view-pdf/en/82); estimate issued by this application, not a live forecast"
+          ]
+        }
+      },
+      "all_attempt_latency": {
+        "count": 10,
+        "minimum": 3.397662199997285,
+        "maximum": 3.9241269000049215,
+        "mean": 3.6629168300001766,
+        "median": 3.669923950001248,
+        "p90": 3.879325079998671,
+        "stddev": 0.17722945018781688
+      },
+      "latency_model": {
+        "method": "nonnegative-input-size-slope",
+        "distinct_input_sizes": 5,
+        "slope_seconds_per_byte": 0.00017059570670613076,
+        "intercept_seconds": 3.3276962663226297,
+        "residual_stddev_seconds": 0.16163513415709924
+      },
+      "input_tokens": {
+        "count": 10,
+        "minimum": 283,
+        "maximum": 524,
+        "mean": 427.8,
+        "median": 474.0,
+        "p90": 524.0,
+        "stddev": 96.15589194404863
+      },
+      "output_tokens": {
+        "count": 10,
+        "minimum": 70,
+        "maximum": 103,
+        "mean": 82.5,
+        "median": 79.0,
+        "p90": 99.4,
+        "stddev": 12.285944995988077
+      },
+      "start_states": {
+        "cold": {
+          "attempt_count": 0,
+          "valid_latency": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          },
+          "load_seconds": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          }
+        },
+        "warm": {
+          "attempt_count": 10,
+          "valid_latency": {
+            "count": 10,
+            "minimum": 3.397662199997285,
+            "maximum": 3.9241269000049215,
+            "mean": 3.6629168300001766,
+            "median": 3.669923950001248,
+            "p90": 3.879325079998671,
+            "stddev": 0.17722945018781688
+          },
+          "load_seconds": {
+            "count": 10,
+            "minimum": 0.0101748,
+            "maximum": 0.0144181,
+            "mean": 0.01187508,
+            "median": 0.011333900000000001,
+            "p90": 0.01357678,
+            "stddev": 0.001318755107246561
+          }
+        },
+        "unknown": {
+          "attempt_count": 0,
+          "valid_latency": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          },
+          "load_seconds": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          }
+        }
+      },
+      "quality_source_counts": {
+        "unknown": 10
+      },
+      "trial_ids": [
+        "3e81344db2834c3a8e4e00aec3bcc817",
+        "4db5970813f541639d23ea3fa6f88a49",
+        "55a345e0ffef45a795d7b2e9ac7ab1af",
+        "56900529ca6047bd91bd4ae1bf6acd2c",
+        "6427d47ac4dd4f05bcf332b39d1aa502",
+        "81f40c418d6d4a9aa27b44d61438034f",
+        "b343aa2007b244648099d652b434acfa",
+        "de524cb80f2947a2a8580728622a26aa",
+        "e72a0aa4ae2340428a0028ef0b614a9d",
+        "ed7c076c218b4f1fb57646b2f4566f63"
+      ],
+      "source_fingerprint": "0b7e722156b497cf7e52929056ae84a7c146c9983196707e4d33ea1e08152062",
+      "calibration_id": "f3659fe2b75b976622f20ff33aa4193f8f7514e70f8a755f84149a9fbee6f502",
+      "uncertainty_method": "sample-standard-deviation; descriptive, not a confidence interval",
+      "tail_claim": "p90 is descriptive; these samples do not establish stable tail latency",
+      "fingerprint": "5e102e3e799c2d02f236dbea54c3dc2f8ffc78a531dc676f4926cd03400c6a1c"
+    },
+    {
+      "deployment_id": "local-ollama",
+      "deployment_fingerprint": "d1abfac5892a4ab70b40f2df548ff0824f554ed1a68341d4a112763e718c21f0",
+      "model_id": "local-llama3.2",
+      "step_id": "summarize",
+      "task_type": "summarization",
+      "workload_version": "support-workflow.v1:b1da1662d616f68aee94",
+      "carbon_unit": "gCO2",
+      "settings": {
+        "output_limit_tokens": 128,
+        "enable_thinking": false,
+        "temperature": 0.2
+      },
+      "input_size": {
+        "unit": "utf8-bytes-proxy",
+        "minimum": 837,
+        "maximum": 1776
+      },
+      "sample_counts": {
+        "attempts": 10,
+        "completed": 10,
+        "failed": 0,
+        "valid_natural_completions": 10,
+        "invalid_output": 0,
+        "truncated": 0,
+        "reviewed_quality": 0
+      },
+      "metrics": {
+        "latency": {
+          "unit": "s",
+          "count": 10,
+          "minimum": 2.784678600000916,
+          "maximum": 3.0462664000006043,
+          "mean": 2.940236920001189,
+          "median": 2.985867200000939,
+          "p90": 3.0436416399999873,
+          "stddev": 0.1065609025217686,
+          "provenance": "estimated"
+        },
+        "accuracy": {
+          "unit": "ratio",
+          "count": 0,
+          "minimum": null,
+          "maximum": null,
+          "mean": null,
+          "median": null,
+          "p90": null,
+          "stddev": null,
+          "sources": [],
+          "comparable": false,
+          "provenance": "unknown"
+        },
+        "cost": {
+          "unit": "USD",
+          "count": 10,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p90": 0.0,
+          "stddev": 0.0,
+          "provenance": "estimated",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "estimated": 10
+          },
+          "sources": [
+            "local-no-api-subscription; api-only; electricity-excluded"
+          ]
+        },
+        "energy": {
+          "unit": "kWh",
+          "count": 10,
+          "minimum": 5.563792938035072e-05,
+          "maximum": 8.273752762345738e-05,
+          "mean": 6.584683155824538e-05,
+          "median": 6.466024261316173e-05,
+          "p90": 7.821832860224138e-05,
+          "stddev": 9.109795094369403e-06,
+          "provenance": "mixed",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "mixed": 10
+          },
+          "sources": [
+            "CodeCarbon sensor/model composition (RAM modeled)"
+          ]
+        },
+        "carbon": {
+          "unit": "gCO2",
+          "count": 10,
+          "minimum": 0.037555602331736736,
+          "maximum": 0.055847831145833735,
+          "mean": 0.044446611301815625,
+          "median": 0.043645663763884165,
+          "p90": 0.05279737180651293,
+          "stddev": 0.006149111688699347,
+          "provenance": "estimated",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "estimated": 10
+          },
+          "sources": [
+            "energy-times-Derived annual static CO2 proxy: CEA v22 FY2025-26 Table S (https://cea.nic.in/api/cdm-report-version/view-pdf/en/82); estimate issued by this application, not a live forecast"
+          ]
+        }
+      },
+      "all_attempt_latency": {
+        "count": 10,
+        "minimum": 2.784678600000916,
+        "maximum": 3.0462664000006043,
+        "mean": 2.940236920001189,
+        "median": 2.985867200000939,
+        "p90": 3.0436416399999873,
+        "stddev": 0.1065609025217686
+      },
+      "latency_model": {
+        "method": "nonnegative-input-size-slope",
+        "distinct_input_sizes": 5,
+        "slope_seconds_per_byte": 0.00013572615120827157,
+        "intercept_seconds": 2.748075835120518,
+        "residual_stddev_seconds": 0.0925514369758396
+      },
+      "input_tokens": {
+        "count": 10,
+        "minimum": 190,
+        "maximum": 413,
+        "mean": 320.4,
+        "median": 363.0,
+        "p90": 413.0,
+        "stddev": 90.25051554177159
+      },
+      "output_tokens": {
+        "count": 10,
+        "minimum": 33,
+        "maximum": 46,
+        "mean": 38,
+        "median": 37.5,
+        "p90": 43.3,
+        "stddev": 4.4969125210773475
+      },
+      "start_states": {
+        "cold": {
+          "attempt_count": 0,
+          "valid_latency": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          },
+          "load_seconds": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          }
+        },
+        "warm": {
+          "attempt_count": 10,
+          "valid_latency": {
+            "count": 10,
+            "minimum": 2.784678600000916,
+            "maximum": 3.0462664000006043,
+            "mean": 2.940236920001189,
+            "median": 2.985867200000939,
+            "p90": 3.0436416399999873,
+            "stddev": 0.1065609025217686
+          },
+          "load_seconds": {
+            "count": 10,
+            "minimum": 0.0092847,
+            "maximum": 0.0172308,
+            "mean": 0.01167934,
+            "median": 0.011520450000000002,
+            "p90": 0.012533699999999998,
+            "stddev": 0.002117663871240088
+          }
+        },
+        "unknown": {
+          "attempt_count": 0,
+          "valid_latency": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          },
+          "load_seconds": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          }
+        }
+      },
+      "quality_source_counts": {
+        "unknown": 10
+      },
+      "trial_ids": [
+        "2073444c51b04becb8da4528d9400fe5",
+        "210882e906cd49f298850856bcea9482",
+        "24da7e69743340a7bf06476d5d2809fb",
+        "7b5d501bab7545319e153765667fefed",
+        "830bf9d4fd774b84b2fda5c01b1df7f7",
+        "90fbec38338843ee80f41159c5df5858",
+        "9baae4715f08495b8005c17517e01bea",
+        "be77ed3b26544a32abe3f238c63e03cf",
+        "bfaf003156e44f0db627094fef44299e",
+        "f0bc09a5f63148d696eb4aa5f55e5dd5"
+      ],
+      "source_fingerprint": "09337e95b0e717ab564f9f36a50175ad34e8a3324512c0aeb1af8a559209ca74",
+      "calibration_id": "f3659fe2b75b976622f20ff33aa4193f8f7514e70f8a755f84149a9fbee6f502",
+      "uncertainty_method": "sample-standard-deviation; descriptive, not a confidence interval",
+      "tail_claim": "p90 is descriptive; these samples do not establish stable tail latency",
+      "fingerprint": "b5db89cc8355113b0a1acd5cb1d2df3f016a5600217d84404be186ce8c1e6de7"
+    },
+    {
+      "deployment_id": "local-ollama",
+      "deployment_fingerprint": "d1abfac5892a4ab70b40f2df548ff0824f554ed1a68341d4a112763e718c21f0",
+      "model_id": "local-qwen3.5",
+      "step_id": "draft",
+      "task_type": "drafting",
+      "workload_version": "support-workflow.v1:b1da1662d616f68aee94",
+      "carbon_unit": "gCO2",
+      "settings": {
+        "output_limit_tokens": 256,
+        "enable_thinking": false,
+        "temperature": 0.2
+      },
+      "input_size": {
+        "unit": "utf8-bytes-proxy",
+        "minimum": 1299,
+        "maximum": 2347
+      },
+      "sample_counts": {
+        "attempts": 10,
+        "completed": 10,
+        "failed": 0,
+        "valid_natural_completions": 10,
+        "invalid_output": 0,
+        "truncated": 0,
+        "reviewed_quality": 0
+      },
+      "metrics": {
+        "latency": {
+          "unit": "s",
+          "count": 10,
+          "minimum": 3.747778600001766,
+          "maximum": 4.566175400002976,
+          "mean": 4.2331384000004615,
+          "median": 4.209558049999032,
+          "p90": 4.5139934899991205,
+          "stddev": 0.26298624053656366,
+          "provenance": "estimated"
+        },
+        "accuracy": {
+          "unit": "ratio",
+          "count": 0,
+          "minimum": null,
+          "maximum": null,
+          "mean": null,
+          "median": null,
+          "p90": null,
+          "stddev": null,
+          "sources": [],
+          "comparable": false,
+          "provenance": "unknown"
+        },
+        "cost": {
+          "unit": "USD",
+          "count": 10,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p90": 0.0,
+          "stddev": 0.0,
+          "provenance": "estimated",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "estimated": 10
+          },
+          "sources": [
+            "local-no-api-subscription; api-only; electricity-excluded"
+          ]
+        },
+        "energy": {
+          "unit": "kWh",
+          "count": 10,
+          "minimum": 9.918418046856712e-05,
+          "maximum": 0.00012545061964455454,
+          "mean": 0.00010820654820858636,
+          "median": 0.00010604025907294095,
+          "p90": 0.00011719520570416605,
+          "stddev": 7.83400935946316e-06,
+          "provenance": "mixed",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "mixed": 10
+          },
+          "sources": [
+            "CodeCarbon sensor/model composition (RAM modeled)"
+          ]
+        },
+        "carbon": {
+          "unit": "gCO2",
+          "count": 10,
+          "minimum": 0.06694932181628281,
+          "maximum": 0.08467916826007431,
+          "mean": 0.07303942004079579,
+          "median": 0.07157717487423515,
+          "p90": 0.07910676385031208,
+          "stddev": 0.0052879563176376305,
+          "provenance": "estimated",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "estimated": 10
+          },
+          "sources": [
+            "energy-times-Derived annual static CO2 proxy: CEA v22 FY2025-26 Table S (https://cea.nic.in/api/cdm-report-version/view-pdf/en/82); estimate issued by this application, not a live forecast"
+          ]
+        }
+      },
+      "all_attempt_latency": {
+        "count": 10,
+        "minimum": 3.747778600001766,
+        "maximum": 4.566175400002976,
+        "mean": 4.2331384000004615,
+        "median": 4.209558049999032,
+        "p90": 4.5139934899991205,
+        "stddev": 0.26298624053656366
+      },
+      "latency_model": {
+        "method": "median",
+        "distinct_input_sizes": 5,
+        "slope_seconds_per_byte": null,
+        "intercept_seconds": null,
+        "residual_stddev_seconds": null
+      },
+      "input_tokens": {
+        "count": 10,
+        "minimum": 273,
+        "maximum": 532,
+        "mean": 428.6,
+        "median": 478.0,
+        "p90": 532.0,
+        "stddev": 103.28515005663797
+      },
+      "output_tokens": {
+        "count": 10,
+        "minimum": 63,
+        "maximum": 98,
+        "mean": 76.4,
+        "median": 73.5,
+        "p90": 89.0,
+        "stddev": 11.187294380481616
+      },
+      "start_states": {
+        "cold": {
+          "attempt_count": 0,
+          "valid_latency": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          },
+          "load_seconds": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          }
+        },
+        "warm": {
+          "attempt_count": 10,
+          "valid_latency": {
+            "count": 10,
+            "minimum": 3.747778600001766,
+            "maximum": 4.566175400002976,
+            "mean": 4.2331384000004615,
+            "median": 4.209558049999032,
+            "p90": 4.5139934899991205,
+            "stddev": 0.26298624053656366
+          },
+          "load_seconds": {
+            "count": 10,
+            "minimum": 0.0086364,
+            "maximum": 0.0126048,
+            "mean": 0.01050542,
+            "median": 0.01023985,
+            "p90": 0.01211853,
+            "stddev": 0.001183570714969466
+          }
+        },
+        "unknown": {
+          "attempt_count": 0,
+          "valid_latency": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          },
+          "load_seconds": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          }
+        }
+      },
+      "quality_source_counts": {
+        "unknown": 10
+      },
+      "trial_ids": [
+        "02bb01c353254fff8f8107ee80900814",
+        "03c91a916a974df4868f783f8c4391c5",
+        "0640b6730cfe41699df8140ae36a650e",
+        "375a0e7dfe1242238d3e8e48a0a7b9fa",
+        "3eaa680894aa4fc99496243f8fbcf9f1",
+        "4124343975844cdda67b604ea26bc6c7",
+        "6405e21f2c584777a40661f70edd749f",
+        "659dd566efac438f92a1281ddb2c2977",
+        "bc5fdda33af1440e961b001f85f87baa",
+        "cc179ef5bda44ac280ed534a75944ef2"
+      ],
+      "source_fingerprint": "95047d2de7c6552bd5e7feb69e3e9c37634d4f73f1b83f62ea36c3e4c9852f96",
+      "calibration_id": "f3659fe2b75b976622f20ff33aa4193f8f7514e70f8a755f84149a9fbee6f502",
+      "uncertainty_method": "sample-standard-deviation; descriptive, not a confidence interval",
+      "tail_claim": "p90 is descriptive; these samples do not establish stable tail latency",
+      "fingerprint": "c7a59aad7abee6ad55bf0b493fd75b14059b648bcfa76ef7b530a7000cb78860"
+    },
+    {
+      "deployment_id": "local-ollama",
+      "deployment_fingerprint": "d1abfac5892a4ab70b40f2df548ff0824f554ed1a68341d4a112763e718c21f0",
+      "model_id": "local-llama3.2",
+      "step_id": "classify",
+      "task_type": "classification",
+      "workload_version": "support-workflow.v1:b1da1662d616f68aee94",
+      "carbon_unit": "gCO2",
+      "settings": {
+        "output_limit_tokens": 24,
+        "enable_thinking": false,
+        "temperature": 0.2
+      },
+      "input_size": {
+        "unit": "utf8-bytes-proxy",
+        "minimum": 550,
+        "maximum": 590
+      },
+      "sample_counts": {
+        "attempts": 20,
+        "completed": 10,
+        "failed": 10,
+        "valid_natural_completions": 10,
+        "invalid_output": 10,
+        "truncated": 0,
+        "reviewed_quality": 0
+      },
+      "metrics": {
+        "latency": {
+          "unit": "s",
+          "count": 10,
+          "minimum": 2.2556601999967825,
+          "maximum": 2.453758099996776,
+          "mean": 2.3461037899985966,
+          "median": 2.301227550000476,
+          "p90": 2.4511988599973846,
+          "stddev": 0.08749192770289531,
+          "provenance": "estimated"
+        },
+        "accuracy": {
+          "unit": "ratio",
+          "count": 0,
+          "minimum": null,
+          "maximum": null,
+          "mean": null,
+          "median": null,
+          "p90": null,
+          "stddev": null,
+          "sources": [],
+          "comparable": false,
+          "provenance": "unknown"
+        },
+        "cost": {
+          "unit": "USD",
+          "count": 10,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "p90": 0.0,
+          "stddev": 0.0,
+          "provenance": "estimated",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "estimated": 10
+          },
+          "sources": [
+            "local-no-api-subscription; api-only; electricity-excluded"
+          ]
+        },
+        "energy": {
+          "unit": "kWh",
+          "count": 10,
+          "minimum": 3.36947927712374e-05,
+          "maximum": 6.663180292188685e-05,
+          "mean": 4.7710315752967246e-05,
+          "median": 4.716777243622039e-05,
+          "p90": 5.9082038985582206e-05,
+          "stddev": 1.1457880792528948e-05,
+          "provenance": "mixed",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "mixed": 10
+          },
+          "sources": [
+            "CodeCarbon sensor/model composition (RAM modeled)"
+          ]
+        },
+        "carbon": {
+          "unit": "gCO2",
+          "count": 10,
+          "minimum": 0.022743985120585248,
+          "maximum": 0.04497646697227362,
+          "mean": 0.03220446313325289,
+          "median": 0.03183824639444876,
+          "p90": 0.03988037631526799,
+          "stddev": 0.00773406953495704,
+          "provenance": "estimated",
+          "observed_count": 10,
+          "missing_count": 0,
+          "provenance_counts": {
+            "estimated": 10
+          },
+          "sources": [
+            "energy-times-Derived annual static CO2 proxy: CEA v22 FY2025-26 Table S (https://cea.nic.in/api/cdm-report-version/view-pdf/en/82); estimate issued by this application, not a live forecast"
+          ]
+        }
+      },
+      "all_attempt_latency": {
+        "count": 20,
+        "minimum": 2.2556601999967825,
+        "maximum": 4.129027299997688,
+        "mean": 3.226642094999261,
+        "median": 3.2712581000014325,
+        "p90": 4.120337750000909,
+        "stddev": 0.9054760308482146
+      },
+      "latency_model": {
+        "method": "nonnegative-input-size-slope",
+        "distinct_input_sizes": 5,
+        "slope_seconds_per_byte": 0.0016790432824291233,
+        "intercept_seconds": 1.3920713969223686,
+        "residual_stddev_seconds": 0.08307406471118355
+      },
+      "input_tokens": {
+        "count": 10,
+        "minimum": 135,
+        "maximum": 142,
+        "mean": 139.2,
+        "median": 139.0,
+        "p90": 142.0,
+        "stddev": 2.780887148615228
+      },
+      "output_tokens": {
+        "count": 10,
+        "minimum": 2,
+        "maximum": 3,
+        "mean": 2.8,
+        "median": 3.0,
+        "p90": 3.0,
+        "stddev": 0.4216370213557839
+      },
+      "start_states": {
+        "cold": {
+          "attempt_count": 0,
+          "valid_latency": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          },
+          "load_seconds": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          }
+        },
+        "warm": {
+          "attempt_count": 10,
+          "valid_latency": {
+            "count": 10,
+            "minimum": 2.2556601999967825,
+            "maximum": 2.453758099996776,
+            "mean": 2.3461037899985966,
+            "median": 2.301227550000476,
+            "p90": 2.4511988599973846,
+            "stddev": 0.08749192770289531
+          },
+          "load_seconds": {
+            "count": 10,
+            "minimum": 0.0095628,
+            "maximum": 0.0134523,
+            "mean": 0.01168521,
+            "median": 0.01166735,
+            "p90": 0.01328157,
+            "stddev": 0.0011510349801133087
+          }
+        },
+        "unknown": {
+          "attempt_count": 10,
+          "valid_latency": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          },
+          "load_seconds": {
+            "count": 0,
+            "minimum": null,
+            "maximum": null,
+            "mean": null,
+            "median": null,
+            "p90": null,
+            "stddev": null
+          }
+        }
+      },
+      "quality_source_counts": {
+        "unknown": 20
+      },
+      "trial_ids": [
+        "0325de06ce274b5998d29fa54cc9bec2",
+        "091b3d06e5804f2bad1f7314c61f39cd",
+        "0e83247f2fa74dc2a69691ad24399362",
+        "0fce4248457c49a4812a5018df51d56c",
+        "1147df2b198c4d46b00eadbafbfe814b",
+        "20799746cfe249fb973a68c70e877eeb",
+        "2281a223480f4ff7b1335e6bf7988325",
+        "2e46a32e13fe497b94e3840660f4a1b8",
+        "31e4cac2feac4f09b13dd9fc7b6487bc",
+        "3e1a327bdcd24219b29f4fd3d42a86e7",
+        "48a31632c643482dba48eec87f6628ec",
+        "51722e288a9441a8a8acff478f381229",
+        "55e85fb673db472d80f534e7a3ce6899",
+        "6f553f16db2e4785a6219b1f1ecb28c9",
+        "86a5a2aaf06e4b938eabecdd2764a41e",
+        "9c0a61a4483f45de95b64e5ff645c131",
+        "a4dc00bc84634482891c14ccbfd79119",
+        "c3274602aefc4cd181d61412107f92b6",
+        "f51f6a6e9549465697898be47b983ca5",
+        "f7c976f7fc6b4554901c784b64d1b502"
+      ],
+      "source_fingerprint": "998aeae04c63ec7d8b409731fb07a2bb9c034a4742bf5e9007c24acc0bce2acb",
+      "calibration_id": "f3659fe2b75b976622f20ff33aa4193f8f7514e70f8a755f84149a9fbee6f502",
+      "uncertainty_method": "sample-standard-deviation; descriptive, not a confidence interval",
+      "tail_claim": "p90 is descriptive; these samples do not establish stable tail latency",
+      "fingerprint": "dfa336e3b3d6c16b90b517ab3dbd446855acb49db22955d30bee2f553453d1c4"
+    }
+  ],
+  "summary": {
+    "retained_trials": 99,
+    "profile_trials": 90,
+    "held_out_excluded": 0,
+    "calibration_warmups_excluded": 9,
+    "profile_count": 8
+  },
+  "fingerprint": "aa0229fb699669e032055fb8e3ab3de4af5aa7f69cd903f611bb74eb2e0cb8c3"
+}

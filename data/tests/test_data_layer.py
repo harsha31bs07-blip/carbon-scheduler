@@ -83,10 +83,16 @@ def test_live_failure_does_not_silently_fall_back(monkeypatch):
     assert res["is_measured"] is False and res["mode"] == "live_api_partial"
 
 
-def test_live_run_is_measured(monkeypatch):
+def test_live_responses_keep_proxy_score_estimated(monkeypatch):
     monkeypatch.setattr(run_eval, "call_live_model", lambda model, prompt: "P1 (Critical)")
     res = run_eval.run_evaluation(models=["local-qwen3.5"], verbose=False)
-    assert res["is_measured"] is True and res["mode"] == "live_api"
+    assert res["is_measured"] is False and res["mode"] == "live_api"
+    assert res["responses_live"] is True and res["simulated_items"] == 0
+    assert res["score_provenance"] == "estimated"
+    assert res["score_scope"] == "keyword-and-format-proxy; semantic-quality-unreviewed"
+    details = res["models"]["local-qwen3.5"]["details"]
+    assert details and all(item["response_source"] == "live" and item["score_provenance"] == "estimated"
+                           for item in details)
 
 
 def test_mock_results_are_not_treated_as_measured(tmp_path):

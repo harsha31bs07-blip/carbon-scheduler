@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "record_type": "QualityReviewPacketManifest",
+  "rubric_sha256": "89708abab523704044d21cc19f16c25bf4d709832c3596d8543396586063c630",
+  "retained_trials": 99,
+  "reviewable_trials": 80,
+  "excluded_trials": 19,
+  "files": {
+    "packet.json": "4ade3d62c2f1363de62d0779bcffa9e29e2a8e0a1de6e2ea5479444d360a1861",
+    "reviews.pending.json": "89098610e80435fe88a27e922f37874883bca2f4e6b3289b771cf0fb3bb2db5f"
+  }
+}

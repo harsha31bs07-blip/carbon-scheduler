@@ -1,0 +1,1866 @@
+{
+  "schema_version": 1,
+  "record_type": "LegacyEvalSmoke",
+  "status": "completed",
+  "dataset_sha256": "556af419a89c3765689db41ee20072ad8652691009ed9e8145bfff6bd4d5c668",
+  "source": "live-explicit-adapter",
+  "score_source": "keyword-format-proxy-v1",
+  "score_provenance": "estimated",
+  "is_measured": false,
+  "semantic_quality_status": "unreviewed",
+  "deployment": {
+    "deployment_id": "local-ollama",
+    "provider": "ollama",
+    "endpoint": "http://localhost:11434",
+    "models": {
+      "local-llama3.2": "llama3.2:3b",
+      "local-qwen3.5": "qwen3.5:4b"
+    },
+    "hardware_profile_id": null,
+    "credential_env": null,
+    "region": "IN-KA",
+    "grid": "IN",
+    "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+    "max_concurrency": 1
+  },
+  "models": [
+    "local-llama3.2",
+    "local-qwen3.5"
+  ],
+  "records": [
+    {
+      "model_id": "local-llama3.2",
+      "item": {
+        "id": "eval_01",
+        "category": "classification",
+        "difficulty": "easy",
+        "prompt": "Classify the following customer query into exactly one category [Billing, Technical Support, Account Access, Sales]: 'I was charged twice on my credit card for invoice #98124 this morning.'",
+        "reference_answer": "Billing",
+        "rubric": {
+          "format_constraint": "single_label",
+          "expected_keywords": [
+            "Billing"
+          ],
+          "scoring_criteria": "Must identify the query as Billing without ambiguous qualifiers.",
+          "min_keyword_match_ratio": 1.0
+        }
+      },
+      "status": "completed",
+      "score": 0.91,
+      "started_at": "2026-10-19T12:55:05.875257+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-llama3.2",
+        "provider_model_id": "llama3.2:3b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 2278.0741000024136,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "I would classify this customer query as \"Billing\".",
+        "reported_model_id": "llama3.2:3b",
+        "provider_timings_seconds": {
+          "load": 0.0106858,
+          "total": 0.2202138,
+          "prefill": 0.030945,
+          "decode": 0.147303
+        },
+        "completion_reason": "stop",
+        "input_tokens": 63,
+        "output_tokens": 11,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:55:08.154732+00:00"
+    },
+    {
+      "model_id": "local-llama3.2",
+      "item": {
+        "id": "eval_02",
+        "category": "classification",
+        "difficulty": "medium",
+        "prompt": "Classify the severity of this IT incident as P1 (Critical), P2 (Major), P3 (Moderate), or P4 (Minor): 'The primary payment gateway API is throwing 500 errors for all EU customers, blocking 100% of checkout transactions.'",
+        "reference_answer": "P1",
+        "rubric": {
+          "format_constraint": "single_label",
+          "expected_keywords": [
+            "P1",
+            "Critical"
+          ],
+          "scoring_criteria": "Must classify as P1 or P1 (Critical) due to 100% loss of revenue-generating checkouts.",
+          "min_keyword_match_ratio": 0.5
+        }
+      },
+      "status": "completed",
+      "score": 0.91,
+      "started_at": "2026-10-19T12:55:08.156475+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-llama3.2",
+        "provider_model_id": "llama3.2:3b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 3849.852200000896,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "I would classify the severity of this IT incident as P1 (Critical). Here's why:\n\n* The primary payment gateway API is down, which means that a significant portion of the organization's revenue is being blocked.\n* The impact is 100% of checkout transactions for EU customers, which suggests a high level of disruption to business operations.\n* A 500 error code typically indicates a server-side error, which can be difficult to resolve without further investigation.\n\nOverall, the incident has a high potential for financial loss, reputational damage, and customer dissatisfaction, making it a critical incident that requires immediate attention and resolution.",
+        "reported_model_id": "llama3.2:3b",
+        "provider_timings_seconds": {
+          "load": 0.0105183,
+          "total": 1.8152003,
+          "prefill": 0.034179,
+          "decode": 1.755442
+        },
+        "completion_reason": "stop",
+        "input_tokens": 80,
+        "output_tokens": 124,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:55:12.007723+00:00"
+    },
+    {
+      "model_id": "local-llama3.2",
+      "item": {
+        "id": "eval_03",
+        "category": "classification",
+        "difficulty": "medium",
+        "prompt": "Classify the sentiment of the following product review into [Positive, Neutral, Negative] and state the primary pain point: 'The battery lasts three full days which is fantastic, but the Bluetooth connection constantly drops during calls.'",
+        "reference_answer": "Negative / Mixed (Primary Pain Point: Bluetooth connectivity drops during calls)",
+        "rubric": {
+          "format_constraint": "structured_text",
+          "expected_keywords": [
+            "Bluetooth",
+            "drops",
+            "calls",
+            "Negative"
+          ],
+          "scoring_criteria": "Identifies negative/mixed sentiment and highlights unstable Bluetooth connection.",
+          "min_keyword_match_ratio": 0.5
+        }
+      },
+      "status": "completed",
+      "score": 0.825,
+      "started_at": "2026-10-19T12:55:12.009453+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-llama3.2",
+        "provider_model_id": "llama3.2:3b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 3209.9882000038633,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "I would classify the sentiment of this product review as [Neutral].\n\nAlthough the reviewer mentions that the battery lasts three full days, which is a positive aspect, they also mention a significant drawback (Bluetooth connection constantly dropping during calls), which is a negative aspect. The reviewer is providing a balanced view of the product, highlighting both a pro and a con, which is characteristic of a neutral sentiment.",
+        "reported_model_id": "llama3.2:3b",
+        "provider_timings_seconds": {
+          "load": 0.0145738,
+          "total": 1.1809536,
+          "prefill": 0.029319,
+          "decode": 1.114088
+        },
+        "completion_reason": "stop",
+        "input_tokens": 69,
+        "output_tokens": 79,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:55:15.220888+00:00"
+    },
+    {
+      "model_id": "local-llama3.2",
+      "item": {
+        "id": "eval_04",
+        "category": "classification",
+        "difficulty": "hard",
+        "prompt": "Identify the CWE category [CWE-89: SQL Injection, CWE-79: XSS, CWE-22: Path Traversal, CWE-502: Deserialization] for this snippet: `query = f\"SELECT * FROM users WHERE username = '{request.args.get('user')}'\"`",
+        "reference_answer": "CWE-89: SQL Injection",
+        "rubric": {
+          "format_constraint": "single_label",
+          "expected_keywords": [
+            "CWE-89",
+            "SQL Injection"
+          ],
+          "scoring_criteria": "Must accurately identify SQL Injection vulnerability and CWE-89.",
+          "min_keyword_match_ratio": 0.5
+        }
+      },
+      "status": "completed",
+      "score": 0.91,
+      "started_at": "2026-10-19T12:55:15.222716+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-llama3.2",
+        "provider_model_id": "llama3.2:3b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 4416.750900003535,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "The CWE category for this snippet is:\n\n* CWE-89: SQL Injection\n\nExplanation:\n\nThe snippet is using a user-provided input (`request.args.get('user')`) directly in a SQL query without proper sanitization or parameterization. This makes it vulnerable to SQL injection attacks, where an attacker could inject malicious SQL code to extract or modify sensitive data.\n\nWhile the snippet may also be vulnerable to other CWE categories, such as CWE-79 (XSS) if the `request.args.get('user')` value is not properly sanitized, CWE-22 (Path Traversal) is not directly applicable in this case, as there is no path traversal vulnerability being demonstrated. Similarly, CWE-502 (Deserialization) is not applicable, as there is no deserialization vulnerability being demonstrated.",
+        "reported_model_id": "llama3.2:3b",
+        "provider_timings_seconds": {
+          "load": 0.0171894,
+          "total": 2.3475644,
+          "prefill": 0.036267,
+          "decode": 2.267391
+        },
+        "completion_reason": "stop",
+        "input_tokens": 85,
+        "output_tokens": 159,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:55:19.641042+00:00"
+    },
+    {
+      "model_id": "local-llama3.2",
+      "item": {
+        "id": "eval_05",
+        "category": "qa",
+        "difficulty": "easy",
+        "prompt": "Under the Greenhouse Gas (GHG) Protocol, what is the key distinction between Scope 1 and Scope 2 carbon emissions?",
+        "reference_answer": "Scope 1 emissions are direct greenhouse gas emissions from sources owned or controlled by the reporting organization (e.g., fuel combustion in boilers, company vehicles). Scope 2 emissions are indirect emissions associated with the generation of purchased electricity, steam, heating, or cooling consumed by the organization.",
+        "rubric": {
+          "format_constraint": "concise_explanation",
+          "expected_keywords": [
+            "direct",
+            "owned",
+            "purchased electricity",
+            "indirect"
+          ],
+          "scoring_criteria": "Accurately defines Scope 1 as direct owned/controlled emissions and Scope 2 as indirect purchased electricity/energy emissions.",
+          "min_keyword_match_ratio": 0.75
+        }
+      },
+      "status": "completed",
+      "score": 0.825,
+      "started_at": "2026-10-19T12:55:19.642888+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-llama3.2",
+        "provider_model_id": "llama3.2:3b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 5259.538300000713,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "Under the Greenhouse Gas (GHG) Protocol, the key distinction between Scope 1 and Scope 2 carbon emissions is the source of the emissions.\n\nScope 1 emissions refer to direct emissions from owned or controlled sources, such as:\n\n* Fossil fuel combustion from company-owned power plants or facilities\n* Industrial processes that emit GHGs\n* Waste management activities\n\nThese emissions are considered \"direct\" because the company has control over the source of the emissions.\n\nScope 2 emissions, on the other hand, refer to indirect emissions from the purchase of energy, such as:\n\n* Electricity and heat purchased from the grid\n* Steam purchased from a steam generator\n* Fuel purchased for vehicles or other equipment\n\nThese emissions are considered \"indirect\" because the company does not have direct control over the source of the emissions, but rather relies on external sources to meet its energy needs.\n\nIn other words, Scope 1 emissions are emissions that the company can directly control and reduce, while Scope 2 emissions are emissions that the company can influence by changing its energy purchasing decisions, but not directly control.",
+        "reported_model_id": "llama3.2:3b",
+        "provider_timings_seconds": {
+          "load": 0.0107927,
+          "total": 3.213349,
+          "prefill": 0.026533,
+          "decode": 3.151206
+        },
+        "completion_reason": "stop",
+        "input_tokens": 52,
+        "output_tokens": 221,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:55:24.904221+00:00"
+    },
+    {
+      "model_id": "local-llama3.2",
+      "item": {
+        "id": "eval_06",
+        "category": "qa",
+        "difficulty": "medium",
+        "prompt": "Explain how the PACELC theorem extends the CAP theorem for distributed databases when there is no network partition.",
+        "reference_answer": "While the CAP theorem posits that in the presence of a Partition (P), a system must trade off Availability (A) versus Consistency (C), PACELC extends this by stating that Else (E) when the network is operating normally (no partition), the system must still trade off Latency (L) versus Consistency (C).",
+        "rubric": {
+          "format_constraint": "concise_explanation",
+          "expected_keywords": [
+            "Else",
+            "Latency",
+            "Consistency",
+            "partition",
+            "CAP"
+          ],
+          "scoring_criteria": "Must explicitly identify the 'Else -> Latency vs Consistency' trade-off during normal non-partitioned operation.",
+          "min_keyword_match_ratio": 0.6
+        }
+      },
+      "status": "completed",
+      "score": null,
+      "started_at": "2026-10-19T12:55:24.906223+00:00",
+      "error_code": "generation-not-natural-stop",
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-llama3.2",
+        "provider_model_id": "llama3.2:3b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 9510.2693000008,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "The PACELC (Partition, Availability, Consistency, Durability, and Durability) theorem is an extension of the CAP (Consistency, Availability, Partition tolerance) theorem for distributed databases. While the CAP theorem only considers the presence of network partitions, the PACELC theorem takes into account the absence of network partitions and provides a more comprehensive framework for designing distributed databases.\n\nHere's how the PACELC theorem extends the CAP theorem:\n\n1. **Partition**: The CAP theorem states that a distributed system can only guarantee two out of three properties: Consistency, Availability, and Partition tolerance. The PACELC theorem extends this by adding Durability as a separate property, which is guaranteed in addition to Consistency and Availability. This means that the PACELC theorem guarantees that a distributed system can maintain Consistency and Availability even in the presence of network partitions, and also guarantees Durability, which ensures that once data is written, it is not lost even in the presence of network partitions.\n\n2. **Availability**: The PACELC theorem extends the CAP theorem by adding Durability as a separate property, which is guaranteed in addition to Consistency and Availability. This means that the PACELC theorem guarantees that a distributed system can maintain Consistency and Availability even in the presence of network partitions, and also guarantees Durability, which ensures that once data is written, it is not lost even in the presence of network partitions.\n\n3. **Consistency**: The PACELC theorem extends the CAP theorem by adding Durability as a separate property, which is guaranteed in addition to Consistency and Availability. This means that the PACELC theorem guarantees that a distributed system can maintain Consistency and Availability even in the presence of network partitions, and also guarantees Durability, which ensures that once data is written, it is not lost even in the presence of network partitions.\n\n4. **Durability**: The PACELC theorem guarantees that a distributed system can maintain Consistency and Availability even in the presence of network partitions, and also guarantees Durability, which ensures that once data is written, it is not lost even in the presence of network partitions.\n\nIn summary, the PACELC theorem extends the CAP theorem by adding Durability as a separate property, which is guaranteed in addition to Consistency and Availability. This means that the PACELC theorem provides a more comprehensive framework for designing distributed databases, ensuring that they can maintain Consistency, Availability, and Durability even in the absence of network partitions.\n\nHere is a simple example to illustrate the difference between",
+        "reported_model_id": "llama3.2:3b",
+        "provider_timings_seconds": {
+          "load": 0.0131056,
+          "total": 7.4718359,
+          "prefill": 0.025117,
+          "decode": 7.409206
+        },
+        "completion_reason": "length",
+        "input_tokens": 47,
+        "output_tokens": 512,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:55:34.418234+00:00"
+    },
+    {
+      "model_id": "local-llama3.2",
+      "item": {
+        "id": "eval_07",
+        "category": "qa",
+        "difficulty": "medium",
+        "prompt": "What does PUE stand for in data center energy efficiency, how is it calculated, and what is the theoretical ideal score?",
+        "reference_answer": "PUE stands for Power Usage Effectiveness. It is calculated as (Total Facility Energy / IT Equipment Energy). The theoretical ideal score is 1.0, representing that 100% of facility power is utilized directly by IT hardware with zero overhead for cooling or power distribution losses.",
+        "rubric": {
+          "format_constraint": "concise_explanation",
+          "expected_keywords": [
+            "Power Usage Effectiveness",
+            "Total Facility Energy",
+            "IT Equipment",
+            "1.0"
+          ],
+          "scoring_criteria": "Must provide full expansion, exact formula ratio, and identify 1.0 as ideal.",
+          "min_keyword_match_ratio": 0.75
+        }
+      },
+      "status": "completed",
+      "score": 0.825,
+      "started_at": "2026-10-19T12:55:34.420300+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-llama3.2",
+        "provider_model_id": "llama3.2:3b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 7969.890500004112,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "In data center energy efficiency, PUE stands for Power Usage Effectiveness. It is a metric used to measure the energy efficiency of a data center by comparing the total power used by the data center to the power used by the IT equipment.\n\nPUE is calculated by dividing the total power used by the IT equipment (also known as IT power) by the total power used by the data center (including IT power and non-IT power, such as cooling, lighting, and other facility power). The formula is:\n\nPUE = (IT Power / Total Power)\n\nWhere:\n\n* IT Power is the total power used by the IT equipment, including servers, storage, networking equipment, and other IT-related devices.\n* Total Power is the total power used by the data center, including IT power and non-IT power.\n\nThe theoretical ideal score for PUE is 1.0, which means that 100% of the data center's power is used by the IT equipment. However, achieving a PUE of 1.0 is extremely challenging, if not impossible, due to the need for cooling, lighting, and other facility power to support the IT equipment.\n\nIn practice, most data centers aim for a PUE of 1.1 or lower, with a score of 1.0 being considered ideal. A lower PUE indicates a more energy-efficient data center.\n\nHere's an example of how PUE is calculated:\n\nLet's say a data center has a total power consumption of 100 kW, with 80 kW of that power being used by the IT equipment. The non-IT power consumption would be 20 kW (100 kW - 80 kW).\n\nPUE = (IT Power / Total Power) = 80 kW / 100 kW = 0.8\n\nIn this example, the data center has a PUE of 0.8, which means that 80% of the power is used by the IT equipment, and 20% is used by non-IT power.",
+        "reported_model_id": "llama3.2:3b",
+        "provider_timings_seconds": {
+          "load": 0.0118196,
+          "total": 5.9435657,
+          "prefill": 0.025662,
+          "decode": 5.867364
+        },
+        "completion_reason": "stop",
+        "input_tokens": 50,
+        "output_tokens": 407,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:55:42.392084+00:00"
+    },
+    {
+      "model_id": "local-llama3.2",
+      "item": {
+        "id": "eval_08",
+        "category": "qa",
+        "difficulty": "hard",
+        "prompt": "Why can the 0/1 Knapsack Problem be solved in pseudo-polynomial time using Dynamic Programming, but not in strict polynomial time with respect to the input size?",
+        "reference_answer": "The dynamic programming algorithm runs in O(n * W) time, where n is the number of items and W is the knapsack capacity. The input size of W is proportional to the number of bits needed to represent it, log2(W). Because O(n * 2^(log W)) is exponential in the bit-length of the numeric input W, the runtime is pseudo-polynomial rather than polynomial in input representation size.",
+        "rubric": {
+          "format_constraint": "technical_proof",
+          "expected_keywords": [
+            "O(n * W)",
+            "capacity",
+            "pseudo-polynomial",
+            "bits",
+            "log",
+            "exponential"
+          ],
+          "scoring_criteria": "Clearly distinguishes numeric value W from its bit-length representation size log(W).",
+          "min_keyword_match_ratio": 0.5
+        }
+      },
+      "status": "completed",
+      "score": 0.4167,
+      "started_at": "2026-10-19T12:55:42.394133+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-llama3.2",
+        "provider_model_id": "llama3.2:3b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 9313.963200002036,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "The 0/1 Knapsack Problem can be solved in pseudo-polynomial time using Dynamic Programming because the recurrence relation has a constant number of subproblems, but the number of subproblems grows linearly with the size of the input.\n\nThe recurrence relation for the 0/1 Knapsack Problem is:\n\n`dp[i][w] = max(dp[i-1][w], dp[i-1][w-x[i-1]] + x[i-1] * v[i-1])`\n\nwhere `dp[i][w]` is the maximum value that can be obtained with a weight limit of `w` and considering the first `i` items, `x[i-1]` is the weight of the `i-th` item, and `v[i-1]` is the value of the `i-th` item.\n\nThe number of subproblems grows linearly with the size of the input because each subproblem depends on the previous one, and the number of previous subproblems is equal to the number of previous items. Therefore, the number of subproblems is `O(n)`, where `n` is the number of items.\n\nHowever, the number of operations required to compute each subproblem grows linearly with the size of the input because we need to access and update `n` elements in the `dp` array. Therefore, the total number of operations required to compute all subproblems is `O(n^2)`, which is not polynomial in the input size.\n\nTo see why this is not polynomial in the input size, consider the following:\n\n* If the input size is `n`, then we need to compute `n` subproblems, each of which requires `n` operations to compute.\n* Therefore, the total number of operations required to compute all subproblems is `O(n^2)`.\n* Since `n^2` is not polynomial in `n`, we cannot say that the algorithm runs in polynomial time with respect to the input size.\n\nIn contrast, if we were to solve the 0/1 Knapsack Problem using a different algorithm, such as a greedy algorithm or a branch-and-bound algorithm, we might be able to solve it in polynomial time with respect to the input size. However, the Dynamic Programming approach is the most efficient known algorithm for solving the 0/1 Knapsack Problem, and it has a pseudo-polynomial time complexity of `O(n^2)`.",
+        "reported_model_id": "llama3.2:3b",
+        "provider_timings_seconds": {
+          "load": 0.0173413,
+          "total": 7.2534954,
+          "prefill": 0.02843,
+          "decode": 7.17115
+        },
+        "completion_reason": "stop",
+        "input_tokens": 60,
+        "output_tokens": 497,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:55:51.709860+00:00"
+    },
+    {
+      "model_id": "local-llama3.2",
+      "item": {
+        "id": "eval_09",
+        "category": "generation",
+        "difficulty": "easy",
+        "prompt": "Generate a JSON object matching this schema for a book: `{\"title\": str, \"author\": str, \"published_year\": int, \"genres\": list[str]}`. Use the classic novel '1984'. Output only raw JSON.",
+        "reference_answer": "{\n  \"title\": \"1984\",\n  \"author\": \"George Orwell\",\n  \"published_year\": 1949,\n  \"genres\": [\"Dystopian\", \"Political Fiction\", \"Science Fiction\"]\n}",
+        "rubric": {
+          "format_constraint": "valid_json",
+          "expected_keywords": [
+            "1984",
+            "George Orwell",
+            "1949",
+            "genres"
+          ],
+          "scoring_criteria": "Must produce valid parseable JSON matching the exact schema keys.",
+          "min_keyword_match_ratio": 0.75
+        }
+      },
+      "status": "completed",
+      "score": 1.0,
+      "started_at": "2026-10-19T12:55:51.712348+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-llama3.2",
+        "provider_model_id": "llama3.2:3b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 2650.518499998725,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "{\"title\": \"1984\", \"author\": \"George Orwell\", \"published_year\": 1949, \"genres\": [\"Dystopian\", \"Science Fiction\", \"Classic\"]}",
+        "reported_model_id": "llama3.2:3b",
+        "provider_timings_seconds": {
+          "load": 0.0133387,
+          "total": 0.6200889,
+          "prefill": 0.032514,
+          "decode": 0.53244
+        },
+        "completion_reason": "stop",
+        "input_tokens": 74,
+        "output_tokens": 38,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:55:54.364496+00:00"
+    },
+    {
+      "model_id": "local-llama3.2",
+      "item": {
+        "id": "eval_10",
+        "category": "generation",
+        "difficulty": "medium",
+        "prompt": "Write a Python function `def is_palindrome(s: str) -> bool:` that ignores non-alphanumeric characters and case sensitivity. Include type hints.",
+        "reference_answer": "def is_palindrome(s: str) -> bool:\n    cleaned = [c.lower() for c in s if c.isalnum()]\n    return cleaned == cleaned[::-1]",
+        "rubric": {
+          "format_constraint": "python_code",
+          "expected_keywords": [
+            "def is_palindrome",
+            "isalnum",
+            "lower",
+            "bool"
+          ],
+          "scoring_criteria": "Produces valid Python code that filters out punctuation/spaces, ignores case, and tests equality with reverse.",
+          "min_keyword_match_ratio": 0.75
+        }
+      },
+      "status": "completed",
+      "score": 1.0,
+      "started_at": "2026-10-19T12:55:54.366615+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-llama3.2",
+        "provider_model_id": "llama3.2:3b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 3831.218400002399,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "def is_palindrome(s: str) -> bool:\n    \"\"\"\n    This function checks if a given string is a palindrome, ignoring non-alphanumeric characters and case sensitivity.\n\n    Args:\n        s (str): The input string to be checked.\n\n    Returns:\n        bool: True if the string is a palindrome, False otherwise.\n    \"\"\"\n    \n    # Remove non-alphanumeric characters and convert to lower case\n    cleaned_s = ''.join(char for char in s if char.isalnum()).lower()\n    \n    # Compare the cleaned string with its reverse\n    return cleaned_s == cleaned_s[::-1]",
+        "reported_model_id": "llama3.2:3b",
+        "provider_timings_seconds": {
+          "load": 0.0105451,
+          "total": 1.7893154,
+          "prefill": 0.027217,
+          "decode": 1.736806
+        },
+        "completion_reason": "stop",
+        "input_tokens": 55,
+        "output_tokens": 122,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:55:58.199666+00:00"
+    },
+    {
+      "model_id": "local-llama3.2",
+      "item": {
+        "id": "eval_11",
+        "category": "generation",
+        "difficulty": "medium",
+        "prompt": "Write a standard SQL query to compute a 7-day rolling average of daily active users (DAU) from a table `user_logins(login_date DATE, user_id VARCHAR)`. Return `login_date` and `rolling_avg_dau`.",
+        "reference_answer": "WITH daily_counts AS (\n  SELECT login_date, COUNT(DISTINCT user_id) AS dau\n  FROM user_logins\n  GROUP BY login_date\n)\nSELECT login_date,\n  AVG(dau) OVER (\n    ORDER BY login_date\n    ROWS BETWEEN 6 PRECEDING AND CURRENT ROW\n  ) AS rolling_avg_dau\nFROM daily_counts\nORDER BY login_date;",
+        "rubric": {
+          "format_constraint": "sql_query",
+          "expected_keywords": [
+            "AVG",
+            "OVER",
+            "ORDER BY",
+            "login_date",
+            "PRECEDING",
+            "COUNT(DISTINCT"
+          ],
+          "scoring_criteria": "Uses window function with rolling frame specification (6 preceding and current row) over distinct user counts.",
+          "min_keyword_match_ratio": 0.5
+        }
+      },
+      "status": "completed",
+      "score": 1.0,
+      "started_at": "2026-10-19T12:55:58.201760+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-llama3.2",
+        "provider_model_id": "llama3.2:3b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 6439.8329999967245,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "Here's a SQL query that calculates a 7-day rolling average of daily active users (DAU) from the `user_logins` table:\n\n```sql\nWITH daily_active_users AS (\n  SELECT login_date, COUNT(DISTINCT user_id) AS dau\n  FROM user_logins\n  GROUP BY login_date\n),\nrolling_average AS (\n  SELECT \n    login_date,\n    AVG(dau) OVER (ORDER BY login_date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) AS rolling_avg_dau\n  FROM daily_active_users\n)\nSELECT \n  login_date,\n  rolling_avg_dau\nFROM rolling_average\nORDER BY login_date;\n```\n\nThis query uses two Common Table Expressions (CTEs): `daily_active_users` and `rolling_average`. \n\n- The `daily_active_users` CTE calculates the daily active users (DAU) by grouping the `user_logins` table by `login_date` and counting the distinct `user_id`s for each date.\n- The `rolling_average` CTE calculates the 7-day rolling average of DAU by using the `AVG` function with an `OVER` clause that specifies the window of rows to consider. The `ROWS BETWEEN 6 PRECEDING AND CURRENT ROW` clause means that the average will be calculated over the current row and the 6 preceding rows.\n\nThe final result is a table with the `login_date` and the corresponding 7-day rolling average of DAU.",
+        "reported_model_id": "llama3.2:3b",
+        "provider_timings_seconds": {
+          "load": 0.0111627,
+          "total": 4.3920706,
+          "prefill": 0.031979,
+          "decode": 4.330663
+        },
+        "completion_reason": "stop",
+        "input_tokens": 74,
+        "output_tokens": 302,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:56:04.643326+00:00"
+    },
+    {
+      "model_id": "local-llama3.2",
+      "item": {
+        "id": "eval_12",
+        "category": "generation",
+        "difficulty": "hard",
+        "prompt": "Implement a Python thread-safe Token Bucket rate limiter class `TokenBucketLimiter` with methods `__init__(self, capacity: int, fill_rate: float)` and `acquire(self, tokens: int = 1) -> bool`. Use `threading.Lock`.",
+        "reference_answer": "import time\nimport threading\n\nclass TokenBucketLimiter:\n    def __init__(self, capacity: int, fill_rate: float):\n        self.capacity = float(capacity)\n        self.fill_rate = float(fill_rate)\n        self.tokens = float(capacity)\n        self.last_update = time.monotonic()\n        self.lock = threading.Lock()\n\n    def acquire(self, tokens: int = 1) -> bool:\n        with self.lock:\n            now = time.monotonic()\n            elapsed = now - self.last_update\n            self.tokens = min(self.capacity, self.tokens + elapsed * self.fill_rate)\n            self.last_update = now\n            if self.tokens >= tokens:\n                self.tokens -= tokens\n                return True\n            return False",
+        "rubric": {
+          "format_constraint": "python_class",
+          "expected_keywords": [
+            "class TokenBucketLimiter",
+            "threading.Lock",
+            "acquire",
+            "capacity",
+            "fill_rate",
+            "time.monotonic"
+          ],
+          "scoring_criteria": "Must correctly manage token replenishment based on elapsed time, cap at capacity, and guard state with lock.",
+          "min_keyword_match_ratio": 0.6
+        }
+      },
+      "status": "completed",
+      "score": 0.8833,
+      "started_at": "2026-10-19T12:56:04.645457+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-llama3.2",
+        "provider_model_id": "llama3.2:3b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 8316.484300004959,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "Here's a Python implementation of a thread-safe Token Bucket rate limiter class using `threading.Lock`:\n\n```python\nimport threading\nimport time\n\nclass TokenBucketLimiter:\n    def __init__(self, capacity: int, fill_rate: float):\n        \"\"\"\n        Initialize the Token Bucket rate limiter.\n\n        Args:\n        capacity (int): The maximum number of tokens in the bucket.\n        fill_rate (float): The rate at which tokens are filled in the bucket per second.\n        \"\"\"\n        self.capacity = capacity\n        self.fill_rate = fill_rate\n        self.tokens = capacity\n        self.last_fill = time.time()\n        self.lock = threading.Lock()\n\n    def acquire(self, tokens: int = 1) -> bool:\n        \"\"\"\n        Acquire tokens from the bucket.\n\n        Args:\n        tokens (int): The number of tokens to acquire. Defaults to 1.\n\n        Returns:\n        bool: True if tokens were acquired, False otherwise.\n        \"\"\"\n        with self.lock:\n            now = time.time()\n            elapsed_time = now - self.last_fill\n            self.tokens = min(self.capacity, self.tokens + (elapsed_time * self.fill_rate))\n            self.last_fill = now\n\n            if self.tokens >= tokens:\n                self.tokens -= tokens\n                return True\n            else:\n                return False\n\n# Example usage:\nlimiter = TokenBucketLimiter(capacity=10, fill_rate=1.0)\nprint(limiter.acquire())  # True\nprint(limiter.acquire())  # True\nprint(limiter.acquire())  # True\nprint(limiter.acquire())  # False\n```\n\nIn this implementation, the `TokenBucketLimiter` class maintains a bucket of tokens, which is filled at a specified rate. The `acquire` method attempts to acquire a specified number of tokens from the bucket. If there are enough tokens available, the method returns `True`; otherwise, it returns `False`. The `fill_rate` parameter determines how quickly the bucket is filled, and the `capacity` parameter determines the maximum number of tokens that can be stored in the bucket.",
+        "reported_model_id": "llama3.2:3b",
+        "provider_timings_seconds": {
+          "load": 0.0114348,
+          "total": 6.2740796,
+          "prefill": 0.033045,
+          "decode": 6.198861
+        },
+        "completion_reason": "stop",
+        "input_tokens": 81,
+        "output_tokens": 430,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:56:12.963759+00:00"
+    },
+    {
+      "model_id": "local-llama3.2",
+      "item": {
+        "id": "eval_13",
+        "category": "summarization",
+        "difficulty": "easy",
+        "prompt": "Summarize the following release note into 2 bullet points:\n'Version 2.4.0 introduces two major updates. First, we revamped the caching engine using Redis, reducing query response times by 45%. Second, we resolved issue #312 where user sessions were intermittently invalidated during peak loads. Upgrades from v2.3 require running the database migration script db_migrate_v24.py.'",
+        "reference_answer": "- Query response times reduced by 45% via a new Redis caching engine.\n- Fixed intermittent session invalidation during peak loads; upgrade requires running `db_migrate_v24.py`.",
+        "rubric": {
+          "format_constraint": "bullet_points",
+          "expected_keywords": [
+            "Redis",
+            "45%",
+            "session",
+            "db_migrate_v24.py"
+          ],
+          "scoring_criteria": "Captures performance gain (45% Redis), bugfix, and mandatory migration step in concise bullets.",
+          "min_keyword_match_ratio": 0.75
+        }
+      },
+      "status": "completed",
+      "score": 1.0,
+      "started_at": "2026-10-19T12:56:12.965964+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-llama3.2",
+        "provider_model_id": "llama3.2:3b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 3273.254100000486,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "Here are 2 bullet points summarizing the release note:\n\n• Version 2.4.0 introduces two major updates: a revamped caching engine using Redis, which reduces query response times by 45%, and a fix for issue #312 where user sessions were intermittently invalidated during peak loads.\n• Upgrades from v2.3 require running the database migration script db_migrate_v24.py.",
+        "reported_model_id": "llama3.2:3b",
+        "provider_timings_seconds": {
+          "load": 0.0104121,
+          "total": 1.2414831,
+          "prefill": 0.04341,
+          "decode": 1.148333
+        },
+        "completion_reason": "stop",
+        "input_tokens": 109,
+        "output_tokens": 81,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:56:16.241019+00:00"
+    },
+    {
+      "model_id": "local-llama3.2",
+      "item": {
+        "id": "eval_14",
+        "category": "summarization",
+        "difficulty": "medium",
+        "prompt": "Summarize this incident root cause into an Executive Summary (max 3 sentences):\n'On Oct 12 at 14:02 UTC, a misconfigured BGP route announcement by transit provider AS1234 advertised invalid prefixes, routing traffic for our us-east edge PoP into a black hole. Edge load balancers began failing automated health checks at 14:05 UTC. SREs rerouted ingress traffic to the eu-west PoP at 14:18 UTC, and transit provider upstream reverted the BGP route leak at 14:32 UTC. Full recovery was achieved at 14:35 UTC with 0% data loss but 33 minutes of customer connection degradation.'",
+        "reference_answer": "An upstream BGP route leak by transit provider AS1234 caused a 33-minute network degradation for us-east traffic between 14:02 and 14:35 UTC. SRE teams mitigated customer impact by rerouting traffic to the eu-west edge until the provider corrected the bad route advertisement. No customer data was lost or compromised during the incident.",
+        "rubric": {
+          "format_constraint": "concise_summary",
+          "expected_keywords": [
+            "BGP",
+            "AS1234",
+            "33 minutes",
+            "rerouted",
+            "no data loss"
+          ],
+          "scoring_criteria": "Accurately identifies root cause (upstream BGP leak), duration/mitigation, and zero data loss in under 3 sentences.",
+          "min_keyword_match_ratio": 0.6
+        }
+      },
+      "status": "completed",
+      "score": 0.86,
+      "started_at": "2026-10-19T12:56:16.243429+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-llama3.2",
+        "provider_model_id": "llama3.2:3b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 3711.2572000041837,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "Here is a 3-sentence Executive Summary of the incident root cause:\n\nOn October 12, a misconfigured BGP route announcement by a transit provider (AS1234) caused invalid prefixes to be advertised, routing traffic for the US East Edge PoP into a black hole. This led to edge load balancers failing automated health checks and resulting in 33 minutes of customer connection degradation. The incident was resolved when the transit provider upstream reverted the BGP route leak, and the affected traffic was rerouted to the EU West PoP.",
+        "reported_model_id": "llama3.2:3b",
+        "provider_timings_seconds": {
+          "load": 0.0184587,
+          "total": 1.6701808,
+          "prefill": 0.065376999,
+          "decode": 1.565941
+        },
+        "completion_reason": "stop",
+        "input_tokens": 163,
+        "output_tokens": 110,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:56:19.956582+00:00"
+    },
+    {
+      "model_id": "local-llama3.2",
+      "item": {
+        "id": "eval_15",
+        "category": "summarization",
+        "difficulty": "medium",
+        "prompt": "Extract the key contractual commitments from this SLA clause into 3 concise bullet points:\n'Provider guarantees 99.95% monthly uptime excluding scheduled maintenance windows announced at least 72 hours in advance. For outages exceeding 0.05% in a calendar month, Customer shall receive a 15% service credit, increasing to 30% for outages exceeding 1.0%. All credit claims must be formally submitted within 30 days of the affected billing period.'",
+        "reference_answer": "- 99.95% monthly uptime guarantee, excluding maintenance announced 72+ hours prior.\n- Service credits: 15% credit for downtime >0.05%, escalating to 30% for downtime >1.0%.\n- Claims must be submitted within 30 days of the affected billing period.",
+        "rubric": {
+          "format_constraint": "bullet_points",
+          "expected_keywords": [
+            "99.95%",
+            "72 hours",
+            "15%",
+            "30%",
+            "30 days"
+          ],
+          "scoring_criteria": "Clearly outlines uptime threshold, tiered credits (15%/30%), and the 30-day claim submission window.",
+          "min_keyword_match_ratio": 0.8
+        }
+      },
+      "status": "completed",
+      "score": 0.86,
+      "started_at": "2026-10-19T12:56:19.959007+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-llama3.2",
+        "provider_model_id": "llama3.2:3b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 3435.6240999986767,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "Here are 3 concise bullet points summarizing the key contractual commitments:\n\n• The provider guarantees 99.95% monthly uptime, excluding scheduled maintenance windows announced in advance.\n• For outages exceeding 0.05% in a calendar month, the customer is entitled to a 15% service credit, increasing to 30% for outages exceeding 1.0%.\n• The customer must submit credit claims within 30 days of the affected billing period.",
+        "reported_model_id": "llama3.2:3b",
+        "provider_timings_seconds": {
+          "load": 0.0116348,
+          "total": 1.4003259,
+          "prefill": 0.047045,
+          "decode": 1.316571
+        },
+        "completion_reason": "stop",
+        "input_tokens": 120,
+        "output_tokens": 93,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:56:23.396549+00:00"
+    },
+    {
+      "model_id": "local-llama3.2",
+      "item": {
+        "id": "eval_16",
+        "category": "summarization",
+        "difficulty": "hard",
+        "prompt": "Summarize the primary biochemical findings, sample size, and clinical safety conclusions from this trial abstract into a structured markdown table with columns [Category, Finding]:\n'In a randomized double-blind Phase 3 trial involving 1,420 adult patients with treatment-resistant hypertension, oral Compound X (25mg daily) demonstrated a mean systolic blood pressure reduction of 14.2 mmHg (p < 0.001) compared to 2.1 mmHg in the placebo cohort over 24 weeks. Plasma aldosterone levels decreased by 38% without significant changes in serum potassium or creatinine. Incidence of adverse events was comparable to placebo (4.1% vs 3.8%), with headache and transient dizziness reported most frequently.'",
+        "reference_answer": "| Category | Finding |\n|---|---|\n| Sample Size | 1,420 adult patients with treatment-resistant hypertension |\n| Efficacy | Systolic BP reduced by 14.2 mmHg vs 2.1 mmHg placebo (p < 0.001); 38% decrease in aldosterone |\n| Safety | Adverse event rate comparable to placebo (4.1% vs 3.8%); no significant serum potassium or creatinine changes |",
+        "rubric": {
+          "format_constraint": "markdown_table",
+          "expected_keywords": [
+            "1,420",
+            "14.2 mmHg",
+            "38%",
+            "aldosterone",
+            "4.1%",
+            "safety"
+          ],
+          "scoring_criteria": "Formats correctly as a Markdown table capturing sample size (1420), BP reduction (14.2 mmHg), aldosterone decline (38%), and safety comparability.",
+          "min_keyword_match_ratio": 0.6
+        }
+      },
+      "status": "completed",
+      "score": 1.0,
+      "started_at": "2026-10-19T12:56:23.399064+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-llama3.2",
+        "provider_model_id": "llama3.2:3b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 4046.765300001425,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "Here is the summary in a structured markdown table:\n\n| Category | Finding |\n| --- | --- |\n| Primary Biochemical Finding | Plasma aldosterone levels decreased by 38% |\n| Sample Size | 1,420 adult patients |\n| Clinical Safety Conclusion | Incidence of adverse events was comparable to placebo (4.1% vs 3.8%) |\n| Blood Pressure Reduction | Mean systolic blood pressure reduction of 14.2 mmHg (p < 0.001) |\n| Comparison | 2.1 mmHg reduction in placebo cohort |\n| Most Frequent Adverse Events | Headache and transient dizziness |",
+        "reported_model_id": "llama3.2:3b",
+        "provider_timings_seconds": {
+          "load": 0.0154748,
+          "total": 2.0199045,
+          "prefill": 0.068331,
+          "decode": 1.909596
+        },
+        "completion_reason": "stop",
+        "input_tokens": 177,
+        "output_tokens": 132,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:56:27.447902+00:00"
+    },
+    {
+      "model_id": "local-qwen3.5",
+      "item": {
+        "id": "eval_01",
+        "category": "classification",
+        "difficulty": "easy",
+        "prompt": "Classify the following customer query into exactly one category [Billing, Technical Support, Account Access, Sales]: 'I was charged twice on my credit card for invoice #98124 this morning.'",
+        "reference_answer": "Billing",
+        "rubric": {
+          "format_constraint": "single_label",
+          "expected_keywords": [
+            "Billing"
+          ],
+          "scoring_criteria": "Must identify the query as Billing without ambiguous qualifiers.",
+          "min_keyword_match_ratio": 1.0
+        }
+      },
+      "status": "completed",
+      "score": 1.0,
+      "started_at": "2026-10-19T12:56:27.450681+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-qwen3.5",
+        "provider_model_id": "qwen3.5:4b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 11237.129399996775,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "Billing",
+        "reported_model_id": "qwen3.5:4b",
+        "provider_timings_seconds": {
+          "load": 8.9960742,
+          "total": 9.2011293,
+          "prefill": 0.170581,
+          "decode": 0.026724
+        },
+        "completion_reason": "stop",
+        "input_tokens": 53,
+        "output_tokens": 2,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:56:38.690075+00:00"
+    },
+    {
+      "model_id": "local-qwen3.5",
+      "item": {
+        "id": "eval_02",
+        "category": "classification",
+        "difficulty": "medium",
+        "prompt": "Classify the severity of this IT incident as P1 (Critical), P2 (Major), P3 (Moderate), or P4 (Minor): 'The primary payment gateway API is throwing 500 errors for all EU customers, blocking 100% of checkout transactions.'",
+        "reference_answer": "P1",
+        "rubric": {
+          "format_constraint": "single_label",
+          "expected_keywords": [
+            "P1",
+            "Critical"
+          ],
+          "scoring_criteria": "Must classify as P1 or P1 (Critical) due to 100% loss of revenue-generating checkouts.",
+          "min_keyword_match_ratio": 0.5
+        }
+      },
+      "status": "completed",
+      "score": 0.91,
+      "started_at": "2026-10-19T12:56:38.692649+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-qwen3.5",
+        "provider_model_id": "qwen3.5:4b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 5049.142999996548,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "This incident should be classified as **P1 (Critical)**.\n\n**Reasoning:**\n*   **Impact Scope**: The failure affects \"all EU customers,\" representing a massive geographic and customer base impact.\n*   **Functional Severity**: It blocks \"100% of checkout transactions,\" completely halting revenue generation for the affected region.\n*   **Urgency**: A 500 error on the primary payment gateway indicates a complete system failure that requires immediate investigation and resolution to restore business operations.\n\nAny incident resulting in zero transaction capability for a significant user segment meets the definition of a Critical (P1) severity level.",
+        "reported_model_id": "qwen3.5:4b",
+        "provider_timings_seconds": {
+          "load": 0.009036,
+          "total": 3.0188337,
+          "prefill": 0.102119,
+          "decode": 2.858029
+        },
+        "completion_reason": "stop",
+        "input_tokens": 71,
+        "output_tokens": 131,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:56:43.743768+00:00"
+    },
+    {
+      "model_id": "local-qwen3.5",
+      "item": {
+        "id": "eval_03",
+        "category": "classification",
+        "difficulty": "medium",
+        "prompt": "Classify the sentiment of the following product review into [Positive, Neutral, Negative] and state the primary pain point: 'The battery lasts three full days which is fantastic, but the Bluetooth connection constantly drops during calls.'",
+        "reference_answer": "Negative / Mixed (Primary Pain Point: Bluetooth connectivity drops during calls)",
+        "rubric": {
+          "format_constraint": "structured_text",
+          "expected_keywords": [
+            "Bluetooth",
+            "drops",
+            "calls",
+            "Negative"
+          ],
+          "scoring_criteria": "Identifies negative/mixed sentiment and highlights unstable Bluetooth connection.",
+          "min_keyword_match_ratio": 0.5
+        }
+      },
+      "status": "completed",
+      "score": 1.0,
+      "started_at": "2026-10-19T12:56:43.746194+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-qwen3.5",
+        "provider_model_id": "qwen3.5:4b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 5131.554400002642,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "**Sentiment:** Mixed (leaning Positive)\n*Note: While the prompt asks for a single label, this review contains both strong positive elements (\"fantastic\") and significant negative elements (\"constantly drops\"). In many classification systems, this is labeled as \"Mixed\" or \"Ambiguous.\" However, if forced to choose the dominant emotional tone regarding the product's core utility (battery life), it leans **Positive**. If focusing on user experience reliability, it leans **Negative**. Given the explicit praise for the main feature, I will classify it as **Positive** with a caveat about the flaw.*\n\n**Primary Pain Point:** Unstable Bluetooth connectivity during calls.",
+        "reported_model_id": "qwen3.5:4b",
+        "provider_timings_seconds": {
+          "load": 0.0092559,
+          "total": 3.0820173,
+          "prefill": 0.091862,
+          "decode": 2.927535
+        },
+        "completion_reason": "stop",
+        "input_tokens": 56,
+        "output_tokens": 134,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:56:48.880083+00:00"
+    },
+    {
+      "model_id": "local-qwen3.5",
+      "item": {
+        "id": "eval_04",
+        "category": "classification",
+        "difficulty": "hard",
+        "prompt": "Identify the CWE category [CWE-89: SQL Injection, CWE-79: XSS, CWE-22: Path Traversal, CWE-502: Deserialization] for this snippet: `query = f\"SELECT * FROM users WHERE username = '{request.args.get('user')}'\"`",
+        "reference_answer": "CWE-89: SQL Injection",
+        "rubric": {
+          "format_constraint": "single_label",
+          "expected_keywords": [
+            "CWE-89",
+            "SQL Injection"
+          ],
+          "scoring_criteria": "Must accurately identify SQL Injection vulnerability and CWE-89.",
+          "min_keyword_match_ratio": 0.5
+        }
+      },
+      "status": "completed",
+      "score": 0.91,
+      "started_at": "2026-10-19T12:56:48.882655+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-qwen3.5",
+        "provider_model_id": "qwen3.5:4b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 8302.492500006338,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "The code snippet provided is vulnerable to **CWE-89: Improper Neutralization of Input During Web Page Generation (SQL Injection)**.\n\n### Analysis\nThe vulnerability exists because the variable `request.args.get('user')` is directly interpolated into the SQL query string using an f-string. This means that any special characters or malicious input provided by the user in the `user` parameter will be treated as part of the SQL command rather than a literal string value.\n\nFor example, if an attacker inputs `' OR '1'='1`, the resulting query becomes:\n```sql\nSELECT * FROM users WHERE username = '' OR '1'='1''\n```\nThis allows the attacker to bypass authentication or retrieve unauthorized data.\n\n### Corrected Approach\nTo fix this issue, you should use parameterized queries (also known as prepared statements), which separate the SQL logic from the data. This ensures that user input is always treated strictly as data, not as executable code.\n\n**Python Example using `sqlite3` with parameters:**\n```python\n# Vulnerable approach (removed)\n# query = f\"SELECT * FROM users WHERE username = '{request.args.get('user')}'\"\n\n# Secure approach\nquery = \"SELECT * FROM users WHERE username = ?\"\ncursor.execute(query, (request.args.get('user'),))\n```",
+        "reported_model_id": "qwen3.5:4b",
+        "provider_timings_seconds": {
+          "load": 0.0113381,
+          "total": 6.2656097,
+          "prefill": 0.104311,
+          "decode": 6.072714
+        },
+        "completion_reason": "stop",
+        "input_tokens": 77,
+        "output_tokens": 277,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:56:57.187404+00:00"
+    },
+    {
+      "model_id": "local-qwen3.5",
+      "item": {
+        "id": "eval_05",
+        "category": "qa",
+        "difficulty": "easy",
+        "prompt": "Under the Greenhouse Gas (GHG) Protocol, what is the key distinction between Scope 1 and Scope 2 carbon emissions?",
+        "reference_answer": "Scope 1 emissions are direct greenhouse gas emissions from sources owned or controlled by the reporting organization (e.g., fuel combustion in boilers, company vehicles). Scope 2 emissions are indirect emissions associated with the generation of purchased electricity, steam, heating, or cooling consumed by the organization.",
+        "rubric": {
+          "format_constraint": "concise_explanation",
+          "expected_keywords": [
+            "direct",
+            "owned",
+            "purchased electricity",
+            "indirect"
+          ],
+          "scoring_criteria": "Accurately defines Scope 1 as direct owned/controlled emissions and Scope 2 as indirect purchased electricity/energy emissions.",
+          "min_keyword_match_ratio": 0.75
+        }
+      },
+      "status": "completed",
+      "score": 1.0,
+      "started_at": "2026-10-19T12:56:57.190071+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-qwen3.5",
+        "provider_model_id": "qwen3.5:4b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 11257.05680000101,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "Under the **Greenhouse Gas (GHG) Protocol**, the fundamental distinction between **Scope 1** and **Scope 2** emissions lies in the **source of the energy** and the **location where the emission occurs**.\n\n### Scope 1: Direct Emissions\nScope 1 covers **direct greenhouse gas emissions** that result from the company's own operations. These are emissions that occur at the facility or location directly controlled by the organization.\n*   **Key Characteristic**: The company owns, operates, or controls the source of the emission.\n*   **Common Examples**: Emissions from burning fossil fuels in company-owned vehicles, natural gas flaring, fugitive methane leaks from oil and gas operations, and emissions from stationary combustion sources (like boilers) used directly on-site.\n\n### Scope 2: Indirect Energy-Related Emissions\nScope 2 covers **indirect greenhouse gas emissions** that result from the generation of purchased electricity, heat, or steam. These emissions occur at the power plant or utility facility where the energy is generated, not at the company's own facilities.\n*   **Key Characteristic**: The company purchases the energy but does not control the source of its generation. The emission happens \"upstream\" in the supply chain.\n*   **Common Examples**: Emissions associated with the electricity a company buys from the grid, or steam and heat purchased from external suppliers.\n\n### Summary of the Distinction\nThe core difference is essentially **\"Direct vs. Indirect\"** regarding energy generation:\n*   If you burn fuel yourself to run your machines or cars, it is **Scope 1**.\n*   If you buy electricity (or heat) from a utility provider, the emissions generated by that power plant are **Scope 2**.\n\n*(Note: There is also a Scope 3 category for other indirect emissions, such as those from purchased goods and services, but the distinction between 1 and 2 specifically focuses on direct operational fuel versus purchased energy.)*",
+        "reported_model_id": "qwen3.5:4b",
+        "provider_timings_seconds": {
+          "load": 0.0097495,
+          "total": 9.223895,
+          "prefill": 0.086123,
+          "decode": 9.050378
+        },
+        "completion_reason": "stop",
+        "input_tokens": 39,
+        "output_tokens": 410,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:57:08.449205+00:00"
+    },
+    {
+      "model_id": "local-qwen3.5",
+      "item": {
+        "id": "eval_06",
+        "category": "qa",
+        "difficulty": "medium",
+        "prompt": "Explain how the PACELC theorem extends the CAP theorem for distributed databases when there is no network partition.",
+        "reference_answer": "While the CAP theorem posits that in the presence of a Partition (P), a system must trade off Availability (A) versus Consistency (C), PACELC extends this by stating that Else (E) when the network is operating normally (no partition), the system must still trade off Latency (L) versus Consistency (C).",
+        "rubric": {
+          "format_constraint": "concise_explanation",
+          "expected_keywords": [
+            "Else",
+            "Latency",
+            "Consistency",
+            "partition",
+            "CAP"
+          ],
+          "scoring_criteria": "Must explicitly identify the 'Else -> Latency vs Consistency' trade-off during normal non-partitioned operation.",
+          "min_keyword_match_ratio": 0.6
+        }
+      },
+      "status": "completed",
+      "score": null,
+      "started_at": "2026-10-19T12:57:08.452113+00:00",
+      "error_code": "generation-not-natural-stop",
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-qwen3.5",
+        "provider_model_id": "qwen3.5:4b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 13492.638899995654,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "The **PACELC** theorem is an extension of the classic **CAP theorem**, introduced by Eriksson and Kephart in 2014. While CAP addresses scenarios involving network partitions, PACELC expands the analysis to include scenarios where the system operates normally (i.e., **no partition**) but faces a trade-off between consistency and availability due to other constraints like latency or resource limits.\n\nHere is a step-by-step breakdown of how it extends CAP:\n\n### 1. The Baseline: The CAP Theorem\nThe CAP theorem states that in a distributed system, you cannot simultaneously optimize for all three properties during a **network partition**:\n*   **C**onsistency (all nodes see the same data at the same time).\n*   **A**vailability (every request receives a response, regardless of whether some nodes are unavailable).\n*   **P**artition Tolerance (the system continues to operate despite an arbitrary number of node failures or network partitions).\n\n**The CAP Rule:** In the presence of a partition ($P$), you must choose between $C$ and $A$. You cannot have both.\n\n### 2. The Extension: Introducing \"E\"\nPACELC adds a fourth dimension, represented by **E**, which stands for **Latency** (or sometimes interpreted as general resource constraints). It asks: *What happens when there is no network partition?*\n\nThe theorem states that even without a partition, you still face a trade-off between Consistency and Availability based on latency requirements. The acronym represents the four possible states of a distributed system:\n\n1.  **P**artition occurs $\\rightarrow$ Choose **C**onsistency or **A**vailability (CAP).\n2.  **No Partition** ($E$) $\\rightarrow$ Choose **A**vailability or **L**atency (which implies Consistency).\n\n### 3. The Trade-off Without Partitions (The \"EL\" Scenario)\nWhen there is no network partition, the system is theoretically capable of being both consistent and available. However, achieving this simultaneously often incurs high latency. PACELC formalizes this as a choice between **A**vailability and **L**atency:\n\n*   **Prioritizing Availability (A):** The system returns results immediately to users. To do this, it may serve stale or inconsistent data. This results in **low latency** but potentially **lower consistency**.\n    *   *",
+        "reported_model_id": "qwen3.5:4b",
+        "provider_timings_seconds": {
+          "load": 0.0112879,
+          "total": 11.431914,
+          "prefill": 0.08416,
+          "decode": 11.255562
+        },
+        "completion_reason": "length",
+        "input_tokens": 34,
+        "output_tokens": 512,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:57:21.947074+00:00"
+    },
+    {
+      "model_id": "local-qwen3.5",
+      "item": {
+        "id": "eval_07",
+        "category": "qa",
+        "difficulty": "medium",
+        "prompt": "What does PUE stand for in data center energy efficiency, how is it calculated, and what is the theoretical ideal score?",
+        "reference_answer": "PUE stands for Power Usage Effectiveness. It is calculated as (Total Facility Energy / IT Equipment Energy). The theoretical ideal score is 1.0, representing that 100% of facility power is utilized directly by IT hardware with zero overhead for cooling or power distribution losses.",
+        "rubric": {
+          "format_constraint": "concise_explanation",
+          "expected_keywords": [
+            "Power Usage Effectiveness",
+            "Total Facility Energy",
+            "IT Equipment",
+            "1.0"
+          ],
+          "scoring_criteria": "Must provide full expansion, exact formula ratio, and identify 1.0 as ideal.",
+          "min_keyword_match_ratio": 0.75
+        }
+      },
+      "status": "completed",
+      "score": 0.825,
+      "started_at": "2026-10-19T12:57:21.949886+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-qwen3.5",
+        "provider_model_id": "qwen3.5:4b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 13069.006199999421,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "**PUE** stands for **Power Usage Effectiveness**. It is a key performance indicator (KPI) used to measure the overall energy efficiency of a data center. Developed by the Uptime Institute, PUE represents the ratio of the total power consumed by the entire facility to the power actually consumed by the IT equipment itself.\n\n### How it is Calculated\n\nThe formula for calculating PUE is straightforward:\n\n$$ \\text{PUE} = \\frac{\\text{Total Facility Power}}{\\text{IT Equipment Power}} $$\n\nWhere:\n*   **Total Facility Power** includes all electricity used by the data center, such as cooling systems (HVAC), lighting, UPS (Uninterruptible Power Supply) overheads, and other infrastructure.\n*   **IT Equipment Power** refers strictly to the power drawn by servers, storage arrays, networking gear, and other computing devices.\n\n**Example:**\nIf a data center consumes **10,000 kW** of total power, and the IT equipment within it consumes **8,000 kW**, the calculation would be:\n$$ \\text{PUE} = \\frac{10,000}{8,000} = 1.25 $$\n\nThis means that for every 1 unit of energy used by the computers, 0.25 units are wasted on supporting infrastructure (primarily cooling).\n\n### Theoretical Ideal Score\n\nThe theoretical ideal score for PUE is **1.0**.\n\nA PUE of 1.0 indicates perfect efficiency, meaning **100%** of the power consumed goes directly to the IT equipment, and zero energy is lost to auxiliary systems like cooling or lighting. In reality, achieving a PUE of exactly 1.0 is impossible because data centers require energy for climate control, redundancy, and operational support.\n\nHowever, modern \"green\" data centers strive for scores as close to **1.0** as possible. Industry benchmarks often consider:\n*   **PUE < 1.3**: Excellent efficiency (common in older or less optimized centers).\n*   **PUE < 1.25**: Very good efficiency (standard for many modern Tier III+ facilities).\n*   **PUE < 1.15**: World-class efficiency (often achieved through advanced cooling technologies like free cooling, liquid cooling, or AI-driven optimization).",
+        "reported_model_id": "qwen3.5:4b",
+        "provider_timings_seconds": {
+          "load": 0.0111304,
+          "total": 11.0119571,
+          "prefill": 0.082741,
+          "decode": 10.845944
+        },
+        "completion_reason": "stop",
+        "input_tokens": 37,
+        "output_tokens": 495,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:57:35.021213+00:00"
+    },
+    {
+      "model_id": "local-qwen3.5",
+      "item": {
+        "id": "eval_08",
+        "category": "qa",
+        "difficulty": "hard",
+        "prompt": "Why can the 0/1 Knapsack Problem be solved in pseudo-polynomial time using Dynamic Programming, but not in strict polynomial time with respect to the input size?",
+        "reference_answer": "The dynamic programming algorithm runs in O(n * W) time, where n is the number of items and W is the knapsack capacity. The input size of W is proportional to the number of bits needed to represent it, log2(W). Because O(n * 2^(log W)) is exponential in the bit-length of the numeric input W, the runtime is pseudo-polynomial rather than polynomial in input representation size.",
+        "rubric": {
+          "format_constraint": "technical_proof",
+          "expected_keywords": [
+            "O(n * W)",
+            "capacity",
+            "pseudo-polynomial",
+            "bits",
+            "log",
+            "exponential"
+          ],
+          "scoring_criteria": "Clearly distinguishes numeric value W from its bit-length representation size log(W).",
+          "min_keyword_match_ratio": 0.5
+        }
+      },
+      "status": "completed",
+      "score": null,
+      "started_at": "2026-10-19T12:57:35.024157+00:00",
+      "error_code": "generation-not-natural-stop",
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-qwen3.5",
+        "provider_model_id": "qwen3.5:4b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 13480.384800001048,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "The distinction between **pseudo-polynomial time** and **strict (true) polynomial time** for the 0/1 Knapsack Problem lies in how the algorithm's runtime scales relative to the *numerical value* of the input weights versus the *bit-length* (size) of those numbers.\n\nHere is the step-by-step logical deduction explaining this phenomenon.\n\n### 1. The Input Representation and Size\nIn computer science, the \"input size\" $N$ is measured in bits, not in the numerical magnitude of the values.\nLet us define the input for a Knapsack instance as:\n*   $n$: Number of items (an integer).\n*   $w_i$: Weight of item $i$.\n*   $v_i$: Value of item $i$.\n*   $W$: Capacity of the knapsack.\n\nThe **size** of the input ($|I|$) is proportional to the number of bits required to represent these numbers:\n$$ |I| \\approx n + \\log_2(W_{max}) + \\sum \\log_2(w_i, v_i) $$\nCrucially, if a weight $w$ is very large (e.g., $10^{100}$), it requires roughly $\\log_2(10^{100}) \\approx 332$ bits to represent. However, the numerical value itself is $10^{100}$.\n\n### 2. The Dynamic Programming Approach\nThe standard DP solution for the 0/1 Knapsack problem uses a table (or array) of size roughly $n \\times W$. Let's denote this as $O(nW)$.\n\nThe algorithm iterates through each item and updates the maximum value achievable for every capacity from $0$ to $W$:\n$$ dp[i][j] = \\max(dp[i-1][j], \\quad v_i + dp[i-1][j-w_i]) $$\n\n**Runtime Complexity:**\nThe time complexity is **$O(n \\cdot W)$**.\n*   This depends linearly on the numerical value of the capacity $W$.\n*   If we double $W$, the runtime doubles.\n\n### 3. The Relationship Between Value and Bit-Length\nThis is where the \"pseudo-polynomial\" nature emerges. Consider a case where all weights are powers of 2, or simply consider the worst-case scenario where $W$ is exponentially larger than",
+        "reported_model_id": "qwen3.5:4b",
+        "provider_timings_seconds": {
+          "load": 0.0089557,
+          "total": 11.4326004,
+          "prefill": 0.089251,
+          "decode": 11.254912
+        },
+        "completion_reason": "length",
+        "input_tokens": 47,
+        "output_tokens": 512,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:57:48.506777+00:00"
+    },
+    {
+      "model_id": "local-qwen3.5",
+      "item": {
+        "id": "eval_09",
+        "category": "generation",
+        "difficulty": "easy",
+        "prompt": "Generate a JSON object matching this schema for a book: `{\"title\": str, \"author\": str, \"published_year\": int, \"genres\": list[str]}`. Use the classic novel '1984'. Output only raw JSON.",
+        "reference_answer": "{\n  \"title\": \"1984\",\n  \"author\": \"George Orwell\",\n  \"published_year\": 1949,\n  \"genres\": [\"Dystopian\", \"Political Fiction\", \"Science Fiction\"]\n}",
+        "rubric": {
+          "format_constraint": "valid_json",
+          "expected_keywords": [
+            "1984",
+            "George Orwell",
+            "1949",
+            "genres"
+          ],
+          "scoring_criteria": "Must produce valid parseable JSON matching the exact schema keys.",
+          "min_keyword_match_ratio": 0.75
+        }
+      },
+      "status": "completed",
+      "score": 1.0,
+      "started_at": "2026-10-19T12:57:48.509689+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-qwen3.5",
+        "provider_model_id": "qwen3.5:4b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 3157.656399998814,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "{\"title\": \"1984\", \"author\": \"George Orwell\", \"published_year\": 1949, \"genres\": [\"Dystopian Fiction\", \"Political Fiction\", \"Science Fiction\"]}",
+        "reported_model_id": "qwen3.5:4b",
+        "provider_timings_seconds": {
+          "load": 0.0095816,
+          "total": 1.1178852,
+          "prefill": 0.099226,
+          "decode": 0.948146
+        },
+        "completion_reason": "stop",
+        "input_tokens": 63,
+        "output_tokens": 44,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:57:51.669785+00:00"
+    },
+    {
+      "model_id": "local-qwen3.5",
+      "item": {
+        "id": "eval_10",
+        "category": "generation",
+        "difficulty": "medium",
+        "prompt": "Write a Python function `def is_palindrome(s: str) -> bool:` that ignores non-alphanumeric characters and case sensitivity. Include type hints.",
+        "reference_answer": "def is_palindrome(s: str) -> bool:\n    cleaned = [c.lower() for c in s if c.isalnum()]\n    return cleaned == cleaned[::-1]",
+        "rubric": {
+          "format_constraint": "python_code",
+          "expected_keywords": [
+            "def is_palindrome",
+            "isalnum",
+            "lower",
+            "bool"
+          ],
+          "scoring_criteria": "Produces valid Python code that filters out punctuation/spaces, ignores case, and tests equality with reverse.",
+          "min_keyword_match_ratio": 0.75
+        }
+      },
+      "status": "completed",
+      "score": 0.825,
+      "started_at": "2026-10-19T12:57:51.672927+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-qwen3.5",
+        "provider_model_id": "qwen3.5:4b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 7631.632999997237,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "```python\nimport re\nfrom typing import Optional\n\ndef is_palindrome(s: str) -> bool:\n    \"\"\"\n    Check if a string is a palindrome, ignoring non-alphanumeric characters \n    and case sensitivity.\n    \n    Args:\n        s (str): The input string to check.\n        \n    Returns:\n        bool: True if the string is a palindrome, False otherwise.\n    \"\"\"\n    # Keep only alphanumeric characters and convert to lowercase\n    cleaned = re.sub(r'[^a-zA-Z0-9]', '', s).lower()\n    \n    # Check if the cleaned string reads the same forwards and backwards\n    return cleaned == cleaned[::-1]\n\n\n# Example usage:\nif __name__ == \"__main__\":\n    test_cases = [\n        \"A man, a plan, a canal: Panama\",\n        \"race a car\",\n        \"Was it a car or a cat I saw?\",\n        \"No 'x' in Nixon\",\n        \"\"\n    ]\n    \n    for test in test_cases:\n        result = is_palindrome(test)\n        print(f\"'{test}' -> {result}\")\n```",
+        "reported_model_id": "qwen3.5:4b",
+        "provider_timings_seconds": {
+          "load": 0.0110426,
+          "total": 5.5805185,
+          "prefill": 0.086828,
+          "decode": 5.408656
+        },
+        "completion_reason": "stop",
+        "input_tokens": 42,
+        "output_tokens": 246,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:57:59.306909+00:00"
+    },
+    {
+      "model_id": "local-qwen3.5",
+      "item": {
+        "id": "eval_11",
+        "category": "generation",
+        "difficulty": "medium",
+        "prompt": "Write a standard SQL query to compute a 7-day rolling average of daily active users (DAU) from a table `user_logins(login_date DATE, user_id VARCHAR)`. Return `login_date` and `rolling_avg_dau`.",
+        "reference_answer": "WITH daily_counts AS (\n  SELECT login_date, COUNT(DISTINCT user_id) AS dau\n  FROM user_logins\n  GROUP BY login_date\n)\nSELECT login_date,\n  AVG(dau) OVER (\n    ORDER BY login_date\n    ROWS BETWEEN 6 PRECEDING AND CURRENT ROW\n  ) AS rolling_avg_dau\nFROM daily_counts\nORDER BY login_date;",
+        "rubric": {
+          "format_constraint": "sql_query",
+          "expected_keywords": [
+            "AVG",
+            "OVER",
+            "ORDER BY",
+            "login_date",
+            "PRECEDING",
+            "COUNT(DISTINCT"
+          ],
+          "scoring_criteria": "Uses window function with rolling frame specification (6 preceding and current row) over distinct user counts.",
+          "min_keyword_match_ratio": 0.5
+        }
+      },
+      "status": "completed",
+      "score": 1.0,
+      "started_at": "2026-10-19T12:57:59.309829+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-qwen3.5",
+        "provider_model_id": "qwen3.5:4b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 11576.078400001279,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "To compute a 7-day rolling average of Daily Active Users (DAU), we need to:\n1.  Count the number of distinct users (`COUNT(DISTINCT user_id)`) for each day.\n2.  Use a window function (`OVER`) to calculate the average over the preceding 7 days (including the current day).\n\nHere is the standard SQL query using `SUM` and `AVG` with a range specification, which is compatible with most major databases (PostgreSQL, MySQL 8.0+, SQL Server, Oracle):\n\n```sql\nSELECT \n    login_date,\n    AVG(dau) AS rolling_avg_dau\nFROM (\n    -- Subquery to calculate DAU per day\n    SELECT \n        login_date,\n        COUNT(DISTINCT user_id) AS dau\n    FROM user_logins\n    GROUP BY login_date\n) AS daily_stats\nWINDOW w AS (PARTITION BY login_date ORDER BY login_date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW)\nGROUP BY login_date;\n```\n\n### Explanation of the Logic:\n\n1.  **Inner Query (`daily_stats`)**:\n    *   Groups the raw `user_logins` data by `login_date`.\n    *   Calculates the Daily Active Users (DAU) for that specific day using `COUNT(DISTINCT user_id)`.\n2.  **Outer Query**:\n    *   Applies a Window Function (`AVG(dau)`).\n    *   The `ROWS BETWEEN 6 PRECEDING AND CURRENT ROW` clause defines the window size: it includes the current row and the 6 rows immediately before it, totaling 7 days.\n    *   Groups by `login_date` to return one result row per day with the calculated average.\n\n*Note: If your database does not support the `ROWS BETWEEN` syntax (e.g., older MySQL versions), you can replace the window clause with `RANGE BETWEEN INTERVAL '6' DAY PRECEDING AND CURRENT ROW` or use a correlated subquery approach.*",
+        "reported_model_id": "qwen3.5:4b",
+        "provider_timings_seconds": {
+          "load": 0.0094558,
+          "total": 9.5323205,
+          "prefill": 0.093171,
+          "decode": 9.374363
+        },
+        "completion_reason": "stop",
+        "input_tokens": 61,
+        "output_tokens": 426,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:58:10.888246+00:00"
+    },
+    {
+      "model_id": "local-qwen3.5",
+      "item": {
+        "id": "eval_12",
+        "category": "generation",
+        "difficulty": "hard",
+        "prompt": "Implement a Python thread-safe Token Bucket rate limiter class `TokenBucketLimiter` with methods `__init__(self, capacity: int, fill_rate: float)` and `acquire(self, tokens: int = 1) -> bool`. Use `threading.Lock`.",
+        "reference_answer": "import time\nimport threading\n\nclass TokenBucketLimiter:\n    def __init__(self, capacity: int, fill_rate: float):\n        self.capacity = float(capacity)\n        self.fill_rate = float(fill_rate)\n        self.tokens = float(capacity)\n        self.last_update = time.monotonic()\n        self.lock = threading.Lock()\n\n    def acquire(self, tokens: int = 1) -> bool:\n        with self.lock:\n            now = time.monotonic()\n            elapsed = now - self.last_update\n            self.tokens = min(self.capacity, self.tokens + elapsed * self.fill_rate)\n            self.last_update = now\n            if self.tokens >= tokens:\n                self.tokens -= tokens\n                return True\n            return False",
+        "rubric": {
+          "format_constraint": "python_class",
+          "expected_keywords": [
+            "class TokenBucketLimiter",
+            "threading.Lock",
+            "acquire",
+            "capacity",
+            "fill_rate",
+            "time.monotonic"
+          ],
+          "scoring_criteria": "Must correctly manage token replenishment based on elapsed time, cap at capacity, and guard state with lock.",
+          "min_keyword_match_ratio": 0.6
+        }
+      },
+      "status": "completed",
+      "score": 0.8833,
+      "started_at": "2026-10-19T12:58:10.891392+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-qwen3.5",
+        "provider_model_id": "qwen3.5:4b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 12034.697600000072,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "```python\nimport threading\nfrom typing import Optional\n\nclass TokenBucketLimiter:\n    \"\"\"\n    A thread-safe Token Bucket rate limiter.\n\n    Attributes:\n        capacity (int): Maximum number of tokens the bucket can hold.\n        fill_rate (float): Number of tokens added per second.\n        current_tokens (float): Current number of tokens in the bucket.\n        last_refill_time (float): Timestamp of the last refill operation.\n\n    Methods:\n        __init__(capacity, fill_rate): Initialize the limiter.\n        acquire(tokens=1) -> bool: Try to acquire tokens and return success status.\n    \"\"\"\n\n    def __init__(self, capacity: int, fill_rate: float):\n        if capacity <= 0:\n            raise ValueError(\"Capacity must be a positive integer.\")\n        if fill_rate <= 0:\n            raise ValueError(\"Fill rate must be a positive number.\")\n\n        self.capacity = capacity\n        self.fill_rate = fill_rate\n        self.current_tokens = float(capacity)\n        self.last_refill_time = threading.Event().time()  # Initialize with current time\n        self._lock = threading.Lock()\n\n    def _refill(self, now: float) -> None:\n        \"\"\"Refill tokens based on elapsed time.\"\"\"\n        elapsed = now - self.last_refill_time\n        if elapsed > 0:\n            tokens_to_add = elapsed * self.fill_rate\n            self.current_tokens = min(self.capacity, self.current_tokens + tokens_to_add)\n\n    def acquire(self, tokens: int = 1) -> bool:\n        \"\"\"\n        Attempt to acquire the specified number of tokens.\n\n        Args:\n            tokens (int): Number of tokens to acquire. Defaults to 1.\n\n        Returns:\n            bool: True if tokens were acquired, False otherwise.\n        \"\"\"\n        with self._lock:\n            now = threading.Event().time()\n            self._refill(now)\n\n            if self.current_tokens >= tokens:\n                self.current_tokens -= tokens\n                return True\n            else:\n                return False\n```",
+        "reported_model_id": "qwen3.5:4b",
+        "provider_timings_seconds": {
+          "load": 0.010326,
+          "total": 9.9791252,
+          "prefill": 0.097592,
+          "decode": 9.790381
+        },
+        "completion_reason": "stop",
+        "input_tokens": 67,
+        "output_tokens": 445,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:58:22.928980+00:00"
+    },
+    {
+      "model_id": "local-qwen3.5",
+      "item": {
+        "id": "eval_13",
+        "category": "summarization",
+        "difficulty": "easy",
+        "prompt": "Summarize the following release note into 2 bullet points:\n'Version 2.4.0 introduces two major updates. First, we revamped the caching engine using Redis, reducing query response times by 45%. Second, we resolved issue #312 where user sessions were intermittently invalidated during peak loads. Upgrades from v2.3 require running the database migration script db_migrate_v24.py.'",
+        "reference_answer": "- Query response times reduced by 45% via a new Redis caching engine.\n- Fixed intermittent session invalidation during peak loads; upgrade requires running `db_migrate_v24.py`.",
+        "rubric": {
+          "format_constraint": "bullet_points",
+          "expected_keywords": [
+            "Redis",
+            "45%",
+            "session",
+            "db_migrate_v24.py"
+          ],
+          "scoring_criteria": "Captures performance gain (45% Redis), bugfix, and mandatory migration step in concise bullets.",
+          "min_keyword_match_ratio": 0.75
+        }
+      },
+      "status": "completed",
+      "score": 1.0,
+      "started_at": "2026-10-19T12:58:22.932046+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-qwen3.5",
+        "provider_model_id": "qwen3.5:4b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 3561.397199999192,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "- Version 2.4.0 features a revamped Redis caching engine that reduces query response times by 45% and fixes intermittent session invalidation issues during peak loads.\n- Upgrading from v2.3 requires running the database migration script `db_migrate_v24.py`.",
+        "reported_model_id": "qwen3.5:4b",
+        "provider_timings_seconds": {
+          "load": 0.0083627,
+          "total": 1.5278326,
+          "prefill": 0.119506,
+          "decode": 1.311757
+        },
+        "completion_reason": "stop",
+        "input_tokens": 101,
+        "output_tokens": 60,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:58:26.495866+00:00"
+    },
+    {
+      "model_id": "local-qwen3.5",
+      "item": {
+        "id": "eval_14",
+        "category": "summarization",
+        "difficulty": "medium",
+        "prompt": "Summarize this incident root cause into an Executive Summary (max 3 sentences):\n'On Oct 12 at 14:02 UTC, a misconfigured BGP route announcement by transit provider AS1234 advertised invalid prefixes, routing traffic for our us-east edge PoP into a black hole. Edge load balancers began failing automated health checks at 14:05 UTC. SREs rerouted ingress traffic to the eu-west PoP at 14:18 UTC, and transit provider upstream reverted the BGP route leak at 14:32 UTC. Full recovery was achieved at 14:35 UTC with 0% data loss but 33 minutes of customer connection degradation.'",
+        "reference_answer": "An upstream BGP route leak by transit provider AS1234 caused a 33-minute network degradation for us-east traffic between 14:02 and 14:35 UTC. SRE teams mitigated customer impact by rerouting traffic to the eu-west edge until the provider corrected the bad route advertisement. No customer data was lost or compromised during the incident.",
+        "rubric": {
+          "format_constraint": "concise_summary",
+          "expected_keywords": [
+            "BGP",
+            "AS1234",
+            "33 minutes",
+            "rerouted",
+            "no data loss"
+          ],
+          "scoring_criteria": "Accurately identifies root cause (upstream BGP leak), duration/mitigation, and zero data loss in under 3 sentences.",
+          "min_keyword_match_ratio": 0.6
+        }
+      },
+      "status": "completed",
+      "score": 0.58,
+      "started_at": "2026-10-19T12:58:26.499249+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-qwen3.5",
+        "provider_model_id": "qwen3.5:4b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 4572.094499999366,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "A misconfigured BGP route announcement from transit provider AS1234 leaked invalid prefixes, causing traffic to our us-east edge PoP to be routed into a black hole. This routing failure triggered automated health check failures on edge load balancers, leading to a 33-minute period of customer connection degradation while SREs worked to reroute traffic and the provider fixed the upstream route. The incident resulted in zero data loss but required manual intervention to fully restore service by 14:35 UTC.",
+        "reported_model_id": "qwen3.5:4b",
+        "provider_timings_seconds": {
+          "load": 0.0090505,
+          "total": 2.5368206,
+          "prefill": 0.165123,
+          "decode": 2.289012
+        },
+        "completion_reason": "stop",
+        "input_tokens": 165,
+        "output_tokens": 104,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:58:31.073971+00:00"
+    },
+    {
+      "model_id": "local-qwen3.5",
+      "item": {
+        "id": "eval_15",
+        "category": "summarization",
+        "difficulty": "medium",
+        "prompt": "Extract the key contractual commitments from this SLA clause into 3 concise bullet points:\n'Provider guarantees 99.95% monthly uptime excluding scheduled maintenance windows announced at least 72 hours in advance. For outages exceeding 0.05% in a calendar month, Customer shall receive a 15% service credit, increasing to 30% for outages exceeding 1.0%. All credit claims must be formally submitted within 30 days of the affected billing period.'",
+        "reference_answer": "- 99.95% monthly uptime guarantee, excluding maintenance announced 72+ hours prior.\n- Service credits: 15% credit for downtime >0.05%, escalating to 30% for downtime >1.0%.\n- Claims must be submitted within 30 days of the affected billing period.",
+        "rubric": {
+          "format_constraint": "bullet_points",
+          "expected_keywords": [
+            "99.95%",
+            "72 hours",
+            "15%",
+            "30%",
+            "30 days"
+          ],
+          "scoring_criteria": "Clearly outlines uptime threshold, tiered credits (15%/30%), and the 30-day claim submission window.",
+          "min_keyword_match_ratio": 0.8
+        }
+      },
+      "status": "completed",
+      "score": 1.0,
+      "started_at": "2026-10-19T12:58:31.077112+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-qwen3.5",
+        "provider_model_id": "qwen3.5:4b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 4126.013599998259,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "*   Provider guarantees 99.95% monthly uptime with scheduled maintenance windows announced at least 72 hours in advance.\n*   Customer receives a 15% service credit for outages exceeding 0.05%, escalating to 30% for outages exceeding 1.0%.\n*   All service credit claims must be formally submitted within 30 days of the affected billing period.",
+        "reported_model_id": "qwen3.5:4b",
+        "provider_timings_seconds": {
+          "load": 0.0095114,
+          "total": 2.0756192,
+          "prefill": 0.122696,
+          "decode": 1.892486
+        },
+        "completion_reason": "stop",
+        "input_tokens": 115,
+        "output_tokens": 87,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:58:35.205649+00:00"
+    },
+    {
+      "model_id": "local-qwen3.5",
+      "item": {
+        "id": "eval_16",
+        "category": "summarization",
+        "difficulty": "hard",
+        "prompt": "Summarize the primary biochemical findings, sample size, and clinical safety conclusions from this trial abstract into a structured markdown table with columns [Category, Finding]:\n'In a randomized double-blind Phase 3 trial involving 1,420 adult patients with treatment-resistant hypertension, oral Compound X (25mg daily) demonstrated a mean systolic blood pressure reduction of 14.2 mmHg (p < 0.001) compared to 2.1 mmHg in the placebo cohort over 24 weeks. Plasma aldosterone levels decreased by 38% without significant changes in serum potassium or creatinine. Incidence of adverse events was comparable to placebo (4.1% vs 3.8%), with headache and transient dizziness reported most frequently.'",
+        "reference_answer": "| Category | Finding |\n|---|---|\n| Sample Size | 1,420 adult patients with treatment-resistant hypertension |\n| Efficacy | Systolic BP reduced by 14.2 mmHg vs 2.1 mmHg placebo (p < 0.001); 38% decrease in aldosterone |\n| Safety | Adverse event rate comparable to placebo (4.1% vs 3.8%); no significant serum potassium or creatinine changes |",
+        "rubric": {
+          "format_constraint": "markdown_table",
+          "expected_keywords": [
+            "1,420",
+            "14.2 mmHg",
+            "38%",
+            "aldosterone",
+            "4.1%",
+            "safety"
+          ],
+          "scoring_criteria": "Formats correctly as a Markdown table capturing sample size (1420), BP reduction (14.2 mmHg), aldosterone decline (38%), and safety comparability.",
+          "min_keyword_match_ratio": 0.6
+        }
+      },
+      "status": "completed",
+      "score": 1.0,
+      "started_at": "2026-10-19T12:58:35.208805+00:00",
+      "error_code": null,
+      "result": {
+        "deployment_id": "local-ollama",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434",
+        "model_id": "local-qwen3.5",
+        "provider_model_id": "qwen3.5:4b",
+        "region": "IN-KA",
+        "grid": "IN",
+        "location_source": "User-confirmed Mangaluru, Karnataka, India (2026-10-19); Southern Region within Indian national grid: https://srpc.gov.in/en/constitution/",
+        "output_limit_tokens": 512,
+        "enable_thinking": false,
+        "effective_thinking_mode": "disabled",
+        "latency_ms": 6127.72259999474,
+        "energy_wh": null,
+        "energy_measured": false,
+        "energy_method": "unknown",
+        "carbon_g": null,
+        "attempt_count": 1,
+        "text": "| Category | Finding |\n| :--- | :--- |\n| **Sample Size** | 1,420 adult patients with treatment-resistant hypertension |\n| **Study Design** | Randomized double-blind Phase 3 trial over 24 weeks |\n| **Primary Efficacy (SBP Reduction)** | Compound X: 14.2 mmHg mean reduction vs Placebo: 2.1 mmHg (p < 0.001) |\n| **Secondary Biochemical Findings** | Plasma aldosterone decreased by 38%; no significant changes in serum potassium or creatinine |\n| **Clinical Safety (Adverse Events)** | Incidence comparable to placebo (4.1% vs 3.8%) |\n| **Most Common Adverse Events** | Headache and transient dizziness |",
+        "reported_model_id": "qwen3.5:4b",
+        "provider_timings_seconds": {
+          "load": 0.0115076,
+          "total": 4.0757715,
+          "prefill": 0.165295,
+          "decode": 3.8337
+        },
+        "completion_reason": "stop",
+        "input_tokens": 171,
+        "output_tokens": 175,
+        "token_source": "provider_reported"
+      },
+      "finished_at": "2026-10-19T12:58:41.339115+00:00"
+    }
+  ],
+  "started_at": "2026-10-19T12:55:05.872997+00:00",
+  "finished_at": "2026-10-19T12:58:41.342578+00:00"
+}

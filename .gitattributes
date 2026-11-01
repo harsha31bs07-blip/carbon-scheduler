@@ -2,3 +2,8 @@
 *.py   text eol=lf
 *.json text eol=lf
 *.md   text eol=lf
+
+# Retained evidence and historical guides bind exact bytes with checksums.
+results/** -text
+docs/plans/DEMO_GUIDE.pre-A2-2026-11-01.md -text
+docs/plans/DEMO_SCRIPT_LOCAL.pre-A2-2026-11-01.md -text
