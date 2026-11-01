@@ -45,7 +45,7 @@ def submit_fixed(store, registry, kb, ticket, *, deployment_id="local-ollama",
                  timeout_seconds=120, tariff_book=None, carbon_provider=None,
                  energy_mode="none", energy_country=None, assignments=None,
                  allow_summary_deferral=True, enable_thinking=_AUTOMATIC_THINKING,
-                 experiment_mode="live"):
+                 experiment_mode="live", submission=None):
     """Persist a real input and explicit assignment without dispatching anything."""
     _seconds(summary_delay_seconds, "summary_delay_seconds")
     _seconds(timeout_seconds, "timeout_seconds", positive=True)
@@ -90,7 +90,7 @@ def submit_fixed(store, registry, kb, ticket, *, deployment_id="local-ollama",
     from workflow.execution_accounting import make_accounting_context
     accounting_context = make_accounting_context(registry, request, tariff_book=tariff_book,
         carbon_provider=carbon_provider, energy_mode=energy_mode, energy_country=energy_country)
-    return store.enqueue(request, candidates, accounting_context=accounting_context, configuration={
+    return store.enqueue(request, candidates, accounting_context=accounting_context, submission=submission, configuration={
         "registry_snapshot": registry.to_dict(), "registry_fingerprint": registry.config_fingerprint(),
         "kb_fingerprint": kb.fingerprint(), "workload_fingerprint": workload_fingerprint(request, kb),
         "worker_version": WORKER_VERSION, "policy_version": "fixed-explicit-v1",

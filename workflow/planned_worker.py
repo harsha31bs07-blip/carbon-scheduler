@@ -108,7 +108,7 @@ def submit_planned(store, registry, kb, ticket, profiles, *, forecasts=(), carbo
                    response_seconds=300, completion_seconds=600, summary_delay_seconds=0,
                    timeout_seconds=120., enable_thinking=False, health_probe=None,
                    tariff_book=None, energy_mode="none", energy_country=None,
-                   allow_summary_deferral=True, experiment_mode="live", **controls):
+                   allow_summary_deferral=True, experiment_mode="live", submission=None, **controls):
     """Persist a feasible plan or a durable rejection, without inference."""
     from uuid import uuid4
     from workflow.worker import _seconds
@@ -162,7 +162,7 @@ def submit_planned(store, registry, kb, ticket, profiles, *, forecasts=(), carbo
                                       experiment_mode=experiment_mode), None
     report = _with_probe_time(report, probe_seconds)
     return store.enqueue_planned(request, assignments, configuration=config, planning_context=context,
-                                 decision=report, now=_now(clock), accounting_context=accounting_context)
+                                 decision=report, now=_now(clock), accounting_context=accounting_context, submission=submission)
 
 
 def _committed(state):

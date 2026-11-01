@@ -1,5 +1,15 @@
 # Integrated local dashboard
 
+Submission uses a durable token bound to the ticket, settings and retained input
+snapshots. Repeated clicks return the existing workflow. Changed details require
+**Start another ticket**, which also permits intentional repeats. Tokens survive
+queue reopen; browser sessions hold the token rather than a cross-device identity.
+History supports ticket/ID search, status/date filters and pages of twenty records,
+including work older than the newest hundred entries. Optional five-second refresh
+runs only the progress fragment with a fresh database connection; it never submits
+work or refreshes an evidence review form. Progress explains intentional waits and
+uncertain calls. Worker presence remains unknown pending presence telemetry.
+
 Login requests enforce a backend 60-second resend cooldown and at most three
 codes per normalized email in ten minutes. Expiring or consuming a code does not
 erase that request history. Codes expire at five minutes and verification is

@@ -6,7 +6,9 @@ import sqlite3
 from shared.deployments import load_deployments
 from shared.scheduling import SystemClock
 from workflow.queue_store import QueueStore
-from workflow.worker import submit_fixed
+from workflow.dashboard.queue_actions import submit_fixed_ticket, validate_fields
+from workflow.queue_store import SubmissionConflict
+from uuid import uuid4
 from workflow.workload import KnowledgeBase
 from workflow.dashboard.services import local_paths, startup_commands
 
@@ -53,6 +55,11 @@ def render_queue_view(root, *, registry_path=None, database_path=None):
         st.error("The workflow configuration or database is unavailable.")
         return
     try:
+        if "queue_submission_token" not in st.session_state:
+            st.session_state["queue_submission_token"] = uuid4().hex
+        if st.button("Start another ticket"):
+            st.session_state["queue_submission_token"] = uuid4().hex
+            st.info("A new submission is ready. Queueing the same details again will create a separate workflow.")
         with st.form("durable_ticket_submission", clear_on_submit=False):
             ticket = st.text_area("Support ticket", placeholder="Describe the customer's CarbonDesk issue.")
             left, right = st.columns(2)
@@ -63,8 +70,13 @@ def render_queue_view(root, *, registry_path=None, database_path=None):
             submitted = st.form_submit_button("Queue ticket")
         if submitted:
             try:
+                issues = validate_fields(ticket, response, completion, delay)
+                if issues:
+                    for field, message in issues.items():
+                        st.error(field + ": " + message)
+                    return
                 if mode == "Fixed assignment":
-                    identity = submit_fixed(store, registry, kb, ticket, deployment_id=deployment_id,
+                    identity = submit_fixed_ticket(store, registry, kb, ticket, token=st.session_state["queue_submission_token"], deployment_id=deployment_id,
                         model_id=model_id, response_seconds=response, completion_seconds=completion,
                         summary_delay_seconds=delay)
                 else:
@@ -74,25 +86,65 @@ def render_queue_view(root, *, registry_path=None, database_path=None):
                     weights = _load(weight_text) if weight_text is not None else None
                     with st.spinner("Saving planning inputs…"):
                         identity = submit_unverified(store, registry, kb, ticket, profiles_path=profiles_path,
-                            forecasts_path=forecasts_path, carbon_path=carbon_path, policy=policy,
+                            forecasts_path=forecasts_path, carbon_path=carbon_path, policy=policy, token=st.session_state["queue_submission_token"],
                             custom_weights=weights, quality_floor=floor, start_offsets_seconds=offsets,
                             response_seconds=response, completion_seconds=completion, summary_delay_seconds=delay)
                 st.session_state["queue_selected_workflow"] = identity
                 st.success("Ticket queued. A worker will run eligible steps when ready.")
+            except SubmissionConflict:
+                st.error("These details differ from the saved submission. Choose Start another ticket to queue a separate workflow.")
             except (ValueError, OSError, sqlite3.Error):
                 st.error("The ticket could not be saved. Check deadlines and planning evidence/settings. The summary must start before the final deadline.")
-        commands = startup_commands(root, database)
-        st.code(commands["worker"], language=commands["shell"])
-        st.caption("Run this worker in a terminal. Refresh below to load progress; this page does not run model calls.")
+    finally:
+        store.close()
+    commands = startup_commands(root, database)
+    st.code(commands["worker"], language=commands["shell"])
+    st.caption("Run this worker in a terminal. Refresh below to load progress; this page does not run model calls.")
+    refresh = st.checkbox("Refresh active workflow every 5 seconds", value=False)
+    active = st.session_state.get("queue_last_status") not in {"completed", "cancelled", "failed", "deadline_missed", "needs-reconciliation"}
+    @st.fragment(run_every="5s" if refresh and active else None)
+    def progress():
+        render_progress(database, config)
+    progress()
+
+
+def render_progress(database, config):
+    import streamlit as st
+    from datetime import timedelta
+    store = QueueStore(database)
+    try:
         st.button("Refresh progress")
-        ids = list(store.recent_workflow_ids())
+        query = st.text_input("Search ticket or workflow ID", key="queue_history_query")
+        status = st.selectbox("History status", ["All", "scheduled", "running", "response_ready", "completed", "infeasible", "planning-failed", "failed", "deadline_missed", "needs-reconciliation", "cancelled"])
+        age = st.selectbox("Submitted", ["All time", "Last 24 hours", "Last 7 days"])
+        signature = (query, status, age)
+        if st.session_state.get("queue_history_filter") != signature:
+            st.session_state["queue_history_filter"] = signature
+            st.session_state["queue_history_cursors"] = [None]
+        cursors = st.session_state.get("queue_history_cursors", [None])
+        since = None if age == "All time" else SystemClock().now() - timedelta(days=1 if age == "Last 24 hours" else 7)
+        rows = store.workflow_summaries(query=query, status=None if status == "All" else status,
+                                       before=cursors[-1], since=since, limit=21)
+        left, right = st.columns(2)
+        if left.button("Newer tickets", disabled=len(cursors) == 1):
+            st.session_state["queue_history_cursors"] = cursors[:-1]
+            st.rerun()
+        if right.button("Older tickets", disabled=len(rows) <= 20):
+            st.session_state["queue_history_cursors"] = [*cursors, rows[19]["cursor"]]
+            st.rerun()
+        rows = rows[:20]
+        ids = [row["workflow_id"] for row in rows]
+        labels = {row["workflow_id"]: f"{row['status']} ? {row['completed']}/{row['steps']} ? {row['ticket']} ? {row['workflow_id']}" for row in rows}
         if not ids:
-            st.info("No queued tickets yet.")
+            st.info("No tickets match this page and filters. Clear the search or change filters to find other work.")
             return
         selected = st.session_state.get("queue_selected_workflow")
-        identity = st.selectbox("Workflow", ids, index=ids.index(selected) if selected in ids else 0)
+        identity = st.selectbox("Workflow", ids, index=ids.index(selected) if selected in ids else 0, format_func=labels.get)
         st.session_state["queue_selected_workflow"] = identity
         snapshot = store.read(identity)
+        st.session_state["queue_last_status"] = snapshot.status
+        from workflow.dashboard.progress import explain_progress
+        st.info(explain_progress(snapshot, SystemClock().now()))
         st.caption(f"Evidence mode: {snapshot.configuration.get('experiment_mode', 'live')} · Policy: {snapshot.request.policy}")
         if snapshot.configuration.get("experiment_mode") == "simulation":
             st.info("Simulation workflow. Scripted observations do not establish live quality or savings.")
@@ -107,7 +159,7 @@ def render_queue_view(root, *, registry_path=None, database_path=None):
         st.caption(f"Response deadline: {snapshot.request.response_deadline.isoformat()} · "
                    f"Final deadline: {snapshot.request.completion_deadline.isoformat()}")
         attempts = {(attempt.planned_candidate.step_id, attempt.retry_index): attempt for attempt in snapshot.attempts}
-        destinations = registry
+        destinations = load_deployments(config)
         if "registry_snapshot" in snapshot.configuration:
             from shared.deployments import DeploymentRegistry
             destinations = DeploymentRegistry.from_dict(snapshot.configuration["registry_snapshot"])

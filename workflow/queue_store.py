@@ -36,6 +36,22 @@ class PlanningConflict(ValueError):
     """The durable workflow or shared occupancy changed during preparation."""
 
 
+class SubmissionConflict(ValueError):
+    """A submission token was already bound to different operator inputs."""
+
+
+def _workflow_status(statuses, required, cancelled, report=None):
+    values = set(statuses.values())
+    status = ("cancelled" if cancelled else "needs-reconciliation" if "needs-reconciliation" in values
+        else "deadline_missed" if "deadline_missed" in values else "failed" if values & {"failed", "cancelled"}
+        else "completed" if values == {"completed"} else "running" if "running" in values
+        else "response_ready" if all(statuses.get(step) == "completed" for step in required) else "scheduled")
+    if report is not None and QueueStore._decision_winner(report) is None and status not in {
+            "cancelled", "needs-reconciliation", "deadline_missed", "failed", "completed", "running"}:
+        status = QueueStore._planning_status(report)
+    return status
+
+
 def _text(value, name):
     if not isinstance(value, str) or not value.strip():
         raise ValueError(f"{name} must be nonempty text")
@@ -252,6 +268,10 @@ class QueueStore:
                 attempt_id TEXT PRIMARY KEY REFERENCES attempts(attempt_id),
                 workflow_id TEXT NOT NULL REFERENCES workflows(id), payload TEXT NOT NULL,
                 recorded_at TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS queue_submissions(
+                token TEXT PRIMARY KEY, payload_fingerprint TEXT NOT NULL,
+                workflow_id TEXT NOT NULL UNIQUE REFERENCES workflows(id),
+                version INTEGER NOT NULL CHECK(version=1));
         """)
         with self._transaction():
             versions = self.connection.execute("SELECT * FROM queue_meta").fetchall()
@@ -269,6 +289,81 @@ class QueueStore:
                 self.connection.execute("INSERT INTO accounting_meta VALUES (1)")
             elif len(accounting_versions) != 1 or accounting_versions[0][0] != 1:
                 raise ValueError("Unsupported accounting metadata version")
+            if [row[1] for row in self.connection.execute("PRAGMA table_info(queue_submissions)")] != [
+                    "token", "payload_fingerprint", "workflow_id", "version"]:
+                raise ValueError("Unsupported submission table schema")
+            if self.connection.execute("SELECT 1 FROM queue_submissions WHERE version != 1 LIMIT 1").fetchone():
+                raise ValueError("Unsupported submission record version")
+
+    @staticmethod
+    def _submission_fields(submission):
+        if submission is None:
+            return None
+        if not isinstance(submission, dict) or set(submission) != {"token", "payload"}:
+            raise ValueError("Submission requires token and original inputs")
+        token = submission["token"]
+        if not isinstance(token, str) or not 16 <= len(token) <= 128 or not all(
+                char.isascii() and (char.isalnum() or char in "-_") for char in token):
+            raise ValueError("Invalid submission token")
+        if not isinstance(submission["payload"], dict):
+            raise ValueError("Submission inputs must be an object")
+        return token, hashlib.sha256(_dump(submission["payload"]).encode()).hexdigest()
+
+    def submission_result(self, submission):
+        fields = self._submission_fields(submission)
+        if fields is None:
+            return None
+        row = self.connection.execute("SELECT payload_fingerprint,workflow_id,version FROM queue_submissions WHERE token=?",
+                                      (fields[0],)).fetchone()
+        if row is None:
+            return None
+        if row[2] != 1:
+            raise ValueError("Unsupported submission record version")
+        if row[0] != fields[1]:
+            raise SubmissionConflict("This submission token belongs to different inputs")
+        self.read(row[1])
+        return row[1]
+
+    def _record_submission(self, submission, workflow_id):
+        fields = self._submission_fields(submission)
+        if fields is not None:
+            self.connection.execute("INSERT INTO queue_submissions VALUES (?,?,?,1)", (*fields, workflow_id))
+
+    def workflow_summaries(self, *, query="", status=None, before=None, since=None, limit=20):
+        """Keyset pagination of light operator summaries; opening a run validates its full evidence."""
+        if not isinstance(query, str) or len(query) > 1000 or type(limit) is not int or not 1 <= limit <= 100:
+            raise ValueError("Invalid workflow search")
+        if before is not None and (type(before) is not int or before < 1):
+            raise ValueError("Invalid workflow cursor")
+        allowed = STATUSES | {"response_ready", "infeasible", "planning-failed"}
+        if status is not None and status not in allowed:
+            raise ValueError("Invalid workflow status filter")
+        sql = "SELECT rowid,id,request,cancelled_at FROM workflows WHERE (instr(lower(id),lower(?))>0 OR instr(lower(json_extract(request,'$.input_text')),lower(?))>0)"
+        args = [query, query]
+        if before is not None:
+            sql += " AND rowid<?"
+            args.append(before)
+        if since is not None:
+            sql += " AND julianday(json_extract(request,'$.arrived_at'))>=julianday(?)"
+            args.append(_stamp(since))
+        result = []
+        for row in self.connection.execute(sql + " ORDER BY rowid DESC", args):
+            request = WorkflowRequest.from_dict(_load(row["request"]))
+            jobs = list(self.connection.execute("SELECT step_id,status,error_code FROM jobs WHERE workflow_id=?", (row["id"],)))
+            latest = self.connection.execute("SELECT report FROM planning_decisions WHERE workflow_id=? ORDER BY revision DESC LIMIT 1", (row["id"],)).fetchone()
+            current = _workflow_status({job[0]: job[1] for job in jobs},
+                [step.step_id for step in request.steps if step.required_for_response], row["cancelled_at"],
+                _load(latest[0]) if latest else None)
+            if status is not None and current != status:
+                continue
+            result.append({"cursor": row["rowid"], "workflow_id": row["id"],
+                "ticket": " ".join(request.input_text.split())[:160], "policy": request.policy,
+                "arrived_at": request.arrived_at.isoformat(), "status": current,
+                "completed": sum(job[1] == "completed" for job in jobs), "steps": len(request.steps),
+                "issue": next((job[2] for job in jobs if job[2]), None)})
+            if len(result) == limit:
+                break
+        return result
 
     def recent_workflow_ids(self, *, limit=100):
         """Return recent identities without exposing SQL to operator views."""
@@ -292,7 +387,7 @@ class QueueStore:
             self.connection.commit()
 
     def enqueue(self, request: WorkflowRequest, assignments: tuple[PlannedCandidate, ...], *,
-                configuration: dict, accounting_context: dict | None = None) -> str:
+                configuration: dict, accounting_context: dict | None = None, submission=None) -> str:
         if not isinstance(request, WorkflowRequest):
             raise ValueError("request must be WorkflowRequest")
         config = _configuration(configuration)
@@ -303,6 +398,9 @@ class QueueStore:
             for candidate in plans.values():
                 registry.require_model(candidate.deployment_id, candidate.model_id)
         with self._transaction():
+            existing = self.submission_result(submission)
+            if existing is not None:
+                return existing
             self.connection.execute("INSERT INTO workflows VALUES (?,?,?,NULL)",
                                     (request.workflow_id, _dump(request.to_dict()), _dump(config)))
             self._insert_accounting_context(request.workflow_id, accounting_context)
@@ -314,6 +412,7 @@ class QueueStore:
                      _stamp(step.latest_finish), "scheduled"))
                 self.connection.execute("INSERT INTO plan_history VALUES (?,?,?)",
                     (request.workflow_id, _dump(candidate.to_dict()), _stamp(request.arrived_at)))
+            self._record_submission(submission, request.workflow_id)
         return request.workflow_id
 
     def _has_accounting_tables(self):
@@ -565,7 +664,7 @@ class QueueStore:
                 (request.workflow_id, _dump(candidate.to_dict()), _stamp(now)))
 
     def enqueue_planned(self, request, assignments, *, configuration, planning_context, decision, now,
-                        accounting_context=None):
+                        accounting_context=None, submission=None):
         """Atomically retain a request and decision, including honest infeasibility."""
         if not isinstance(request, WorkflowRequest):
             raise ValueError("request must be WorkflowRequest")
@@ -578,6 +677,9 @@ class QueueStore:
             raise ValueError("Initial decisions cannot claim previously executed workflow steps")
         self._validate_incumbent_link(report, ())
         with self._transaction():
+            existing = self.submission_result(submission)
+            if existing is not None:
+                return existing
             self.connection.execute("INSERT INTO workflows VALUES (?,?,?,NULL)",
                 (request.workflow_id, _dump(request.to_dict()), _dump(config)))
             self._insert_accounting_context(request.workflow_id, accounting_context)
@@ -586,6 +688,7 @@ class QueueStore:
                 (request.workflow_id, _stamp(now), _dump(report)))
             if plans:
                 self._insert_jobs(request, plans, now)
+            self._record_submission(submission, request.workflow_id)
         return request.workflow_id
 
     def _active_leases(self):
@@ -823,17 +926,9 @@ class QueueStore:
                     or (not nondispatched and (attempt.actual_finish is None or _time(record["recorded_at"]) < attempt.actual_finish))):
                 raise ValueError("Stored attempt identity mismatch")
             attempts.append(attempt)
-        statuses = {job.status for job in jobs}
-        status = ("cancelled" if row["cancelled_at"] else "needs-reconciliation" if "needs-reconciliation" in statuses
-                  else "deadline_missed" if "deadline_missed" in statuses else "failed" if statuses & {"failed", "cancelled"}
-                  else "completed" if statuses == {"completed"} else "running" if "running" in statuses
-                  else "response_ready" if all(job.status == "completed" for job in jobs if job.step_request.required_for_response)
-                  else "scheduled")
-        if planning_context is not None and self._decision_winner(decisions[-1]["report"]) is None:
-            if not jobs and row["cancelled_at"] is None:
-                status = self._planning_status(decisions[-1]["report"])
-            elif status not in {"cancelled", "needs-reconciliation", "deadline_missed", "failed", "completed", "running"}:
-                status = self._planning_status(decisions[-1]["report"])
+        status = _workflow_status({job.step_request.step_id: job.status for job in jobs},
+            [step.step_id for step in request.steps if step.required_for_response], row["cancelled_at"],
+            decisions[-1]["report"] if decisions else None)
         history = tuple(PlannedCandidate.from_dict(_load(record[0])) for record in self.connection.execute(
             "SELECT candidate FROM plan_history WHERE workflow_id=? ORDER BY rowid", (workflow_id,)))
         if any(candidate.step_id not in steps for candidate in history):
