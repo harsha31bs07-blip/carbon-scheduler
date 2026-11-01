@@ -1,7 +1,7 @@
 # App analysis and implementation plan
 
 Reviewed: 2026-11-01. Scope: improve the existing local Carbon Scheduler app.
-Milestone 1 is implemented; milestones 2-7 remain proposed work. This complements
+Milestones 1-2 are implemented; milestones 3-7 remain proposed work. This complements
 the [A2 completion plan](COMPLETION_PLAN-2026-10-26.md)
 and [release readiness record](../release-readiness.md).
 
@@ -35,7 +35,26 @@ authorization and storage design; email OTP alone does not provide tenant isolat
   `workflow/tests/test_data_loading.py`. The new total is 1,930 tests; a full local
   suite including the added tests has not been rerun at this checkpoint.
 - The OTP store and lock are process-local and reset on server restart; shared
-  hosting still needs its own durable identity/rate-limit design. Next: milestone 2.
+  hosting still needs its own durable identity/rate-limit design.
+- Milestone 2 extracts login/theme/legacy workspaces, reducing the entry point to
+  40 lines and deferring legacy execution/chart imports. Overview is the default
+  workspace, with explicit local readiness states and one-click validated demo
+  loading. Comparison inspection also supports a named bundled demo.
+- Shared services resolve config/path selection and produce commands using the
+  active interpreter with literal PowerShell/POSIX quoting. Recent workflow IDs
+  now come from a store API rather than SQL in the view. Durable duplicate
+  submission protection and paginated summaries remain milestone 3.
+- `python -m workflow.readiness` validates local schemas/evidence and reports
+  installed dependencies without provider IO, queue creation or migration.
+  `--probe` explicitly requests bounded read-only inventory. Worker presence stays
+  unknown pending milestone 6; observations are not yet persisted for the UI.
+- Milestone 2 focused verification: **165 tests passed in 31.56 seconds**.
+  Checks include old/new navigation, no provider IO, unavailable/stale/unknown
+  health distinctions, literal startup commands, and validation of the bundled
+  simulation. The full suite then passed **1,942 tests in 215.18 seconds**.
+  After tightening the CLI exit code for missing/invalid profiles, all 12 readiness
+  tests passed again in 4.24 seconds.
+  Next: milestone 3.
 
 ## Current architecture and strengths
 

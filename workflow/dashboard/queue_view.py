@@ -8,15 +8,15 @@ from shared.scheduling import SystemClock
 from workflow.queue_store import QueueStore
 from workflow.worker import submit_fixed
 from workflow.workload import KnowledgeBase
+from workflow.dashboard.services import local_paths, startup_commands
 
 
 def render_queue_view(root, *, registry_path=None, database_path=None):
     import streamlit as st
 
     root = Path(root)
-    local_config = root / "config" / "deployments.local.json"
-    config = registry_path or (local_config if local_config.exists() else root / "config" / "deployments.example.json")
-    database = Path(database_path) if database_path else root / ".runtime" / "queue.sqlite3"
+    paths = local_paths(root, registry_path=registry_path, database_path=database_path)
+    config, database = paths["registry"], paths["database"]
     st.title("Ticket workflows")
     st.caption("Durable execution through a separate worker. Completed steps survive a restart.")
     activity = st.radio("Activity", ("Workflows", "Comparison evidence"), horizontal=True)
@@ -81,11 +81,11 @@ def render_queue_view(root, *, registry_path=None, database_path=None):
                 st.success("Ticket queued. A worker will run eligible steps when ready.")
             except (ValueError, OSError, sqlite3.Error):
                 st.error("The ticket could not be saved. Check deadlines and planning evidence/settings. The summary must start before the final deadline.")
-        import subprocess
-        st.code(subprocess.list2cmdline(["python", "-m", "workflow.worker", "--db", str(database), "run", "--idle-exit-seconds", "90"]), language="bash")
+        commands = startup_commands(root, database)
+        st.code(commands["worker"], language=commands["shell"])
         st.caption("Run this worker in a terminal. Refresh below to load progress; this page does not run model calls.")
         st.button("Refresh progress")
-        ids = [row[0] for row in store.connection.execute("SELECT id FROM workflows ORDER BY rowid DESC LIMIT 100")]
+        ids = list(store.recent_workflow_ids())
         if not ids:
             st.info("No queued tickets yet.")
             return

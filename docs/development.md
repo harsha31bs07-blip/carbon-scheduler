@@ -1,5 +1,11 @@
 # Development and verification
 
+Dashboard improvement work adds `python -m workflow.readiness` for local-only setup
+diagnostics; the explicit `--probe` option performs read-only destination inventory.
+The authenticated landing page is now Overview, with direct access to the validated
+offline simulation. See [dashboard operation](dashboard.md) for input selection,
+command quoting, exit codes and evidence limits.
+
 The published baseline is commit `2c09887` on `main`. The A2 foundations are being
 implemented on `feat/a2-foundations`; the milestone checklist lives in
 `IMPLEMENTATION_PLAN.md`.

@@ -4,6 +4,17 @@ import json
 from pathlib import Path
 
 
+def load_evidence(state, path, kind):
+    """Cache only a fully validated report; discard stale content after failure."""
+    from workflow.policy_comparison import load_comparison, load_evaluation
+    state.pop("validated_comparison", None)
+    if kind not in {"Portable comparison", "Evaluation directory"}:
+        raise ValueError("Unsupported evidence format")
+    report = load_comparison(path) if kind == "Portable comparison" else load_evaluation(path)
+    state["validated_comparison"] = (str(path), kind, report)
+    return report
+
+
 def render_review_form(directory, protocol, wrapped, *, portable, already_reviewed):
     import streamlit as st
     from shared.scheduling import SystemClock
@@ -91,15 +102,20 @@ def render_report(report):
 
 def render_evidence_view(root):
     import streamlit as st
-    from workflow.policy_comparison import load_comparison, load_evaluation
+    from workflow.dashboard.services import local_paths
     st.subheader("Comparison evidence")
     kind = st.radio("Evidence format", ("Evaluation directory", "Portable comparison"))
     path = st.text_input("Evidence directory", placeholder="Path to an evaluation or exported comparison")
+    if st.button("Load bundled offline demonstration"):
+        try:
+            with st.spinner("Validating the demonstration…"):
+                load_evidence(st.session_state, local_paths(root)["demo"], "Portable comparison")
+        except (ValueError, OSError, KeyError):
+            st.error("The bundled simulation package could not be validated.")
     if st.button("Load evidence"):
         try:
             with st.spinner("Validating retained evidence…"):
-                report = load_comparison(path) if kind == "Portable comparison" else load_evaluation(path)
-            st.session_state["validated_comparison"] = (path, kind, report)
+                load_evidence(st.session_state, path, kind)
         except (ValueError, OSError, KeyError):
             st.session_state.pop("validated_comparison", None)
             st.error("Evidence could not be validated. Select the complete original evaluation or portable package.")

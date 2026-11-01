@@ -78,17 +78,17 @@ def test_invalid_deadlines_do_not_enqueue(panel):
         store.close()
 
 
-def test_authenticated_app_defaults_to_queue_workspace(monkeypatch):
-    from workflow.dashboard import queue_view
+def test_authenticated_app_defaults_to_overview_workspace(monkeypatch):
+    from workflow.dashboard import overview_view
     visited = []
-    monkeypatch.setattr(queue_view, "render_queue_view", lambda root: visited.append(root))
+    monkeypatch.setattr(overview_view, "render_overview", lambda root: visited.append(root))
     monkeypatch.setenv("PYTHON_DOTENV_DISABLED", "1")
     app = AppTest.from_file(str(ROOT / "workflow" / "dashboard" / "app.py"), default_timeout=20)
     app.session_state["authenticated"] = True
     app.session_state["user_email"] = "local-test@example.invalid"
     app.run()
     assert not app.exception and visited == [ROOT]
-    assert app.radio(key="dashboard_workspace").value == "Ticket workflows"
+    assert app.radio(key="dashboard_workspace").value == "Overview"
 
 
 def test_unauthenticated_app_cannot_open_queue_workspace(monkeypatch):

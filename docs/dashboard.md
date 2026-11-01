@@ -8,9 +8,21 @@ the in-memory store resets on restart and is intended for this local application
 Successful login removes the displayed development code. Logout from either
 workspace clears current-session codes, evidence and unfinished review fields.
 
-The default authenticated workspace is **Ticket workflows**. **Activity** selects
+The default authenticated workspace is **Overview**. It shows local configuration,
+reviewed profile coverage, selected forecast/carbon inputs and installed dependency
+versions. Availability and worker presence remain unknown until observed; a valid
+configuration never approves a dispatch. The overview does not open or migrate
+the queue. **Open offline demonstration** validates the bundled four-trial
+simulation without requiring a path or running an inference service.
+
+Choose **Ticket workflows** to submit and inspect work. **Activity** selects
 workflow submission/inspection or offline comparison evidence. The legacy policy
 workspace remains separate and retains its original scenario semantics.
+
+Login, styling and legacy views live in separate modules. Legacy execution and
+chart dependencies load only when that workspace is selected. Startup commands
+use the active Python interpreter, selected database and literal shell quoting;
+the worker command exits after 90 idle seconds, so restart it for later work.
 
 **Fixed assignment** preserves explicit endpoint/model selection. **Optimized
 policy** saves the registry, requested policy/custom weights, deadlines, profiles,
@@ -35,6 +47,34 @@ provenance. Timing and missing measurement evidence are separate.
 offline. It displays all outcomes, deadline results, resource/quality coverage,
 paired deltas and full evidence. Simulation is labeled; zero/unknown baselines
 produce no percentage. Trial views expose actual ticket, prompts and outputs.
+**Load bundled offline demonstration** opens the same validated simulation without
+typing a path. A failed load removes the previous cached report.
+
+Local diagnostics are also available outside Streamlit:
+
+```powershell
+python -m workflow.readiness
+python -m workflow.readiness --config config/deployments.example.json --probe
+```
+
+The default command only inspects local JSON schemas, KB, profiles, optional typed
+forecasts/carbon snapshots, queue-file presence and installed package versions.
+Use `--profiles`, `--forecasts`, `--carbon` and `--db` for other inputs. Relative
+paths resolve against `--root` (the project by default). Registry selection is
+explicit `--config`, then `CARBON_DEPLOYMENTS_FILE`, then local/example config.
+Neither command loads `.env`; set environment variables in the calling shell.
+Exit 2 denotes invalid configuration/input or missing runtime dependencies; exit 0
+means diagnostics ran without those errors, even when review/availability gates
+remain open. Read the component statuses; the report always has
+`dispatch_approved: false` because it is not request-specific eligibility.
+
+`--probe` explicitly performs read-only provider inventory without generation.
+It supports at most sixteen destinations with a three-second connection/read
+inactivity timeout per request; it is not a total wall-clock deadline. Cloud
+verification remains unknown where the adapter cannot establish availability.
+The command reports canonical observed models, timestamps and safe error states
+without returning endpoint URLs or credentials. It does not persist observations;
+the dashboard continues to show unknown until a future retained health integration.
 
 The human-review form is available for original evaluations with a frozen review
 policy. Every score starts blank. Each criterion has its description, score and

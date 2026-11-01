@@ -22,6 +22,9 @@ Human judgments can be bound to complete trial outputs with
 [workflow quality review](docs/workflow-quality-review.md).
 The [integrated dashboard](docs/dashboard.md) supports fixed/optimized submission,
 planning explanations, resource coverage, offline comparisons and human review.
+Its Overview page offers guided setup diagnostics and opens the bundled simulation
+without requiring file paths. Run `python -m workflow.readiness` for local-only
+configuration checks; `--probe` explicitly requests read-only provider inventory.
 Use the current [demo guide](DEMO_GUIDE.md) for local startup and scope limits.
 
 Two local Ollama models have empirical task profiles. A bounded joint planner

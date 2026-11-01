@@ -270,6 +270,13 @@ class QueueStore:
             elif len(accounting_versions) != 1 or accounting_versions[0][0] != 1:
                 raise ValueError("Unsupported accounting metadata version")
 
+    def recent_workflow_ids(self, *, limit=100):
+        """Return recent identities without exposing SQL to operator views."""
+        if type(limit) is not int or not 1 <= limit <= 1000:
+            raise ValueError("Workflow list limit must be from one to 1000")
+        return tuple(row[0] for row in self.connection.execute(
+            "SELECT id FROM workflows ORDER BY rowid DESC LIMIT ?", (limit,)))
+
     def close(self):
         self.connection.close()
 
