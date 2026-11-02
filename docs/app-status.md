@@ -3,6 +3,11 @@
 Updated 2026-11-02. Use this page for current state; linked milestone records retain
 their historical verification and limitations.
 
+A [second code review and follow-up plan](plans/APP_REANALYSIS-2026-11-02.md)
+found outstanding backup/restore validation and limit defects, a refresh timer
+transition defect, and status-filtered history query amplification. The earlier
+feature milestones are implemented; these newly reproduced issues remain open.
+
 Published verification is available in [the repository test workflow](https://github.com/harsha31bs07-blip/carbon-scheduler/actions/workflows/tests.yml).
 
 | Area | Current behavior |

@@ -222,6 +222,8 @@ class QueueStore:
         self.connection.row_factory = sqlite3.Row
         self.connection.execute("PRAGMA foreign_keys=ON")
         self.connection.execute("PRAGMA journal_mode=WAL")
+        if self.connection.execute("SELECT 1 FROM sqlite_master WHERE name='queue_meta'").fetchone():
+            self.validate_compatibility()
         # Missing accounting tables are a supported legacy database. A partial
         # extension must be rejected before CREATE IF NOT EXISTS could hide it.
         self._has_accounting_tables()
@@ -292,11 +294,32 @@ class QueueStore:
                 self.connection.execute("INSERT INTO accounting_meta VALUES (1)")
             elif len(accounting_versions) != 1 or accounting_versions[0][0] != 1:
                 raise ValueError("Unsupported accounting metadata version")
-            if [row[1] for row in self.connection.execute("PRAGMA table_info(queue_submissions)")] != [
-                    "token", "payload_fingerprint", "workflow_id", "version"]:
-                raise ValueError("Unsupported submission table schema")
-            if self.connection.execute("SELECT 1 FROM queue_submissions WHERE version != 1 LIMIT 1").fetchone():
-                raise ValueError("Unsupported submission record version")
+            self.validate_compatibility()
+
+    def validate_compatibility(self):
+        """Read-only compatibility check, shared by opening and recovery tools."""
+        versions = list(self.connection.execute("SELECT version,schema_version FROM queue_meta"))
+        if len(versions) != 1 or tuple(versions[0]) != (QUEUE_VERSION, SCHEMA_VERSION):
+            raise ValueError("Unsupported queue/schema version")
+        self._has_planning_tables()
+        self._has_accounting_tables()
+        schemas = {
+            "planning_meta": ["version"],
+            "planning_contexts": ["workflow_id", "context"],
+            "planning_decisions": ["workflow_id", "revision", "recorded_at", "report", "snapshot_token"],
+            "accounting_meta": ["version"],
+            "accounting_contexts": ["workflow_id", "context"],
+            "attempt_accounting": ["attempt_id", "workflow_id", "payload", "recorded_at"],
+            "queue_submissions": ["token", "payload_fingerprint", "workflow_id", "version"],
+            "worker_presence": ["worker_id", "state", "last_seen", "workflow_id", "version"],
+        }
+        for table, expected in schemas.items():
+            columns = [row[1] for row in self.connection.execute("PRAGMA table_info(" + table + ")")]
+            if columns and columns != expected:
+                raise ValueError("Unsupported " + table + " table schema")
+            if columns and table in {"queue_submissions", "worker_presence"}:
+                if self.connection.execute("SELECT 1 FROM " + table + " WHERE version != 1 LIMIT 1").fetchone():
+                    raise ValueError("Unsupported " + table + " record version")
 
     @staticmethod
     def _submission_fields(submission):

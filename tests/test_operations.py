@@ -95,6 +95,35 @@ def test_existing_backup_or_restore_directory_is_never_overwritten(tmp_path):
         store.close()
 
 
+@pytest.mark.parametrize("table", ["queue_submissions", "worker_presence", "planning_decisions", "attempt_accounting"])
+def test_recovery_rejects_incompatible_extensions_before_restore_output(tmp_path, table):
+    import hashlib
+    import sqlite3
+    from workflow.operations import _validate_database
+    database = tmp_path / "live.sqlite3"
+    store = QueueStore(database)
+    submit(store)
+    backup = tmp_path / "backup"
+    backup_queue(database, backup)
+    store.close()
+    captured = backup / "queue.sqlite3"
+    with sqlite3.connect(captured) as connection:
+        connection.execute("ALTER TABLE " + table + " ADD COLUMN unsupported TEXT")
+    manifest_path = backup / "manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    manifest["files"]["queue.sqlite3"] = hashlib.sha256(captured.read_bytes()).hexdigest()
+    manifest_path.write_text(json.dumps(manifest))
+    with pytest.raises(ValueError, match="schema"):
+        _validate_database(captured)
+    with pytest.raises(ValueError, match="schema"):
+        restore_queue(backup, tmp_path / "restore")
+    assert not (tmp_path / "restore").exists()
+    before = captured.read_bytes()
+    with pytest.raises(ValueError, match="schema"):
+        QueueStore(captured)
+    assert captured.read_bytes() == before
+
+
 def test_readonly_inventory_and_backup_support_fixed_queues_without_planning_extension(tmp_path):
     path = tmp_path / "legacy.sqlite3"
     store = QueueStore(path)

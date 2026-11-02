@@ -10,8 +10,7 @@ import sqlite3
 import time
 
 from data.quality_reviews import load_json
-from workflow.queue_store import QueueStore, QUEUE_VERSION, _dump
-from shared.scheduling import SCHEMA_VERSION
+from workflow.queue_store import QueueStore, _dump
 
 
 @contextmanager
@@ -79,9 +78,7 @@ def _digest(path):
 
 def _validate_database(path):
     with readonly_store(path) as store:
-        versions = list(store.connection.execute("SELECT version,schema_version FROM queue_meta"))
-        if len(versions) != 1 or tuple(versions[0]) != (QUEUE_VERSION, SCHEMA_VERSION):
-            raise ValueError("Unsupported queue schema version")
+        store.validate_compatibility()
         if store.connection.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
             raise ValueError("Queue integrity check failed")
         if store.connection.execute("PRAGMA foreign_key_check").fetchone() is not None:
