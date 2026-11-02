@@ -152,3 +152,5 @@ Milestone 1: opening, backup and restore now share read-only extension compatibi
 Milestone 2: shared prospective file/byte limits now cover both backup and restore, including committed WAL pages. All 12 operations tests passed, including exact-boundary round trips and one-over rejection.
 
 Milestone 3: refresh is reconfigured across both active/terminal transitions and cancellation updates saved status. The dashboard checks passed; the expanded headless Edge journey passed in 18.56 seconds, observing an externally cancelled workflow update without manual refresh. It revisits the workspace after submission before testing history navigation.
+
+Milestone 4: history status aggregation/filtering now runs in one SQLite statement before the page crosses into Python. Query counts remain constant between 100 and 200 workflows; precedence, rare/no-match filtering, pagination and legacy compatibility are covered. All 58 focused queue/dashboard/operations checks passed in 31.35 seconds.

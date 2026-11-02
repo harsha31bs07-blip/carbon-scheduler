@@ -364,7 +364,7 @@ class QueueStore:
         allowed = STATUSES | {"response_ready", "infeasible", "planning-failed"}
         if status is not None and status not in allowed:
             raise ValueError("Invalid workflow status filter")
-        sql = "SELECT rowid,id,request,cancelled_at FROM workflows WHERE (instr(lower(id),lower(?))>0 OR instr(lower(json_extract(request,'$.input_text')),lower(?))>0)"
+        sql = "SELECT rowid AS cursor,id,request,cancelled_at FROM workflows WHERE (instr(lower(id),lower(?))>0 OR instr(lower(json_extract(request,'$.input_text')),lower(?))>0)"
         args = [query, query]
         if before is not None:
             sql += " AND rowid<?"
@@ -372,24 +372,41 @@ class QueueStore:
         if since is not None:
             sql += " AND julianday(json_extract(request,'$.arrived_at'))>=julianday(?)"
             args.append(_stamp(since))
-        result = []
         planning_available = self._has_planning_tables()
-        for row in self.connection.execute(sql + " ORDER BY rowid DESC", args):
+        planning_join = ("LEFT JOIN planning_decisions p ON p.workflow_id=b.id AND p.revision="
+            "(SELECT max(revision) FROM planning_decisions WHERE workflow_id=b.id)" if planning_available else "")
+        report = "p.report" if planning_available else "NULL"
+        # Aggregate statuses in SQLite before filtering/limiting. Only the final
+        # page crosses the Python boundary; rare filters cause no per-run queries.
+        query_sql = """WITH base AS (""" + sql + """), summaries AS (
+            SELECT b.*,count(j.step_id) AS steps,
+                sum(j.status='completed') AS completed,
+                CASE WHEN b.cancelled_at IS NOT NULL THEN 'cancelled'
+                WHEN sum(j.status='needs-reconciliation')>0 THEN 'needs-reconciliation'
+                WHEN sum(j.status='deadline_missed')>0 THEN 'deadline_missed'
+                WHEN sum(j.status IN ('failed','cancelled'))>0 THEN 'failed'
+                WHEN count(j.step_id)>0 AND sum(j.status='completed')=count(j.step_id) THEN 'completed'
+                WHEN sum(j.status='running')>0 THEN 'running'
+                ELSE CASE WHEN """ + report + """ IS NOT NULL AND json_extract(""" + report + """,'$.result.winner') IS NULL
+                    THEN CASE WHEN json_extract(""" + report + """,'$.record_type')='PlanningPreparationFailure'
+                        THEN 'planning-failed' ELSE 'infeasible' END
+                    WHEN NOT EXISTS (SELECT 1 FROM json_each(b.request,'$.steps') s
+                        LEFT JOIN jobs r ON r.workflow_id=b.id AND r.step_id=json_extract(s.value,'$.step_id')
+                        WHERE json_extract(s.value,'$.required_for_response')=1 AND r.status IS NOT 'completed')
+                        THEN 'response_ready' ELSE 'scheduled' END END AS status,
+                (SELECT error_code FROM jobs WHERE workflow_id=b.id AND error_code IS NOT NULL
+                    AND error_code!='' ORDER BY rowid LIMIT 1) AS issue
+            FROM base b LEFT JOIN jobs j ON j.workflow_id=b.id """ + planning_join + """
+            GROUP BY b.id)
+            SELECT * FROM summaries WHERE (? IS NULL OR status=?) ORDER BY cursor DESC LIMIT ?"""
+        result = []
+        for row in self.connection.execute(query_sql, [*args, status, status, limit]):
             request = WorkflowRequest.from_dict(_load(row["request"]))
-            jobs = list(self.connection.execute("SELECT step_id,status,error_code FROM jobs WHERE workflow_id=?", (row["id"],)))
-            latest = self.connection.execute("SELECT report FROM planning_decisions WHERE workflow_id=? ORDER BY revision DESC LIMIT 1", (row["id"],)).fetchone() if planning_available else None
-            current = _workflow_status({job[0]: job[1] for job in jobs},
-                [step.step_id for step in request.steps if step.required_for_response], row["cancelled_at"],
-                _load(latest[0]) if latest else None)
-            if status is not None and current != status:
-                continue
-            result.append({"cursor": row["rowid"], "workflow_id": row["id"],
+            result.append({"cursor": row["cursor"], "workflow_id": row["id"],
                 "ticket": " ".join(request.input_text.split())[:160], "policy": request.policy,
-                "arrived_at": request.arrived_at.isoformat(), "status": current,
-                "completed": sum(job[1] == "completed" for job in jobs), "steps": len(request.steps),
-                "issue": next((job[2] for job in jobs if job[2]), None)})
-            if len(result) == limit:
-                break
+                "arrived_at": request.arrived_at.isoformat(), "status": row["status"],
+                "completed": row["completed"] or 0, "steps": len(request.steps),
+                "issue": row["issue"]})
         return result
 
     def recent_workflow_ids(self, *, limit=100):
