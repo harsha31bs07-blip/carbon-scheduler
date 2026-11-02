@@ -3,6 +3,10 @@
 Reviewed 2026-11-02 at commit `a6fafcffc3cc00b5b4aae04ef8b35e6e484def42`
 on `feat/a2-foundations`. The working tree was clean at the start.
 
+Implementation update: all four findings below have fixes and regression coverage
+in the follow-up milestones. The findings describe the reviewed starting commit;
+implementation checkpoints at the end record the delivered changes.
+
 The earlier improvement milestones are implemented, but a second review found
 three reproducible correctness defects and one query-scaling gap. The application
 remains a capable local prototype. Its next iteration should repair these
@@ -154,3 +158,13 @@ Milestone 2: shared prospective file/byte limits now cover both backup and resto
 Milestone 3: refresh is reconfigured across both active/terminal transitions and cancellation updates saved status. The dashboard checks passed; the expanded headless Edge journey passed in 18.56 seconds, observing an externally cancelled workflow update without manual refresh. It revisits the workspace after submission before testing history navigation.
 
 Milestone 4: history status aggregation/filtering now runs in one SQLite statement before the page crosses into Python. Query counts remain constant between 100 and 200 workflows; precedence, rare/no-match filtering, pagination and legacy compatibility are covered. All 58 focused queue/dashboard/operations checks passed in 31.35 seconds.
+
+Milestone 5: all five software milestones are implemented. Expanded lint, four-module
+incremental type checks and dependency checks pass. The final local full suite
+passed **1,987 tests, 1 skipped in 220.80 seconds**; the expanded Edge journey
+passed separately in **21.94 seconds**. The current release table now distinguishes
+automated platform checks from outstanding manual accessibility. Each milestone
+was committed and pushed separately; final hosted verification follows publication.
+An additional local sample confirmed three SQL statements for absent-status
+history filtering at 100, 200 and 1,000 workflows. Historical findings above remain
+as the starting evidence, rather than descriptions of the fixed source.

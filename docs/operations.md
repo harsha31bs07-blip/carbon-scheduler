@@ -35,7 +35,9 @@ uses SQLite's backup API to include committed WAL contents, validates integrity,
 foreign keys, supported schema and every workflow, and copies orphan JSON bytes
 with checksums. Its database snapshot is consistent; sidecars are individual
 captures, not atomic with a concurrently active worker. The manifest states this
-limit. Local bounds are 256 MiB and approximately 4,096 files. Failed/interrupted
+limit. Local bounds are 256 MiB and exactly 4,096 manifest members, including the
+database. Both backup and restore enforce the same prospective limits. Database
+size checks include committed WAL pages and the captured SQLite file. Failed/interrupted
 backups without a completed manifest are not valid backups.
 
 Backup and restore outputs must be new directories. Restore verifies paths,

@@ -4,9 +4,14 @@ Updated 2026-11-02. Use this page for current state; linked milestone records re
 their historical verification and limitations.
 
 A [second code review and follow-up plan](plans/APP_REANALYSIS-2026-11-02.md)
-found outstanding backup/restore validation and limit defects, a refresh timer
-transition defect, and status-filtered history query amplification. The earlier
-feature milestones are implemented; these newly reproduced issues remain open.
+found backup/restore validation and limit defects, a refresh timer transition
+defect, and status-filtered history query amplification. All four fixes are now
+implemented with regression coverage. Recovery uses shared read-only compatibility
+checks and exact package limits; refresh handles both state transitions; history
+filtering and pagination run together in SQLite.
+Final local follow-up verification: **1,987 passed, 1 optional browser skip**;
+the expanded Edge journey passed separately. Broader lint, incremental type checks
+and dependency checks passed. Each milestone was pushed separately.
 
 Published verification is available in [the repository test workflow](https://github.com/harsha31bs07-blip/carbon-scheduler/actions/workflows/tests.yml).
 

@@ -8,6 +8,7 @@ import json
 from pathlib import Path, PurePosixPath
 import sqlite3
 import time
+from typing import Any, Iterator
 
 from data.quality_reviews import load_json
 from workflow.queue_store import QueueStore, _dump
@@ -16,13 +17,13 @@ MAX_BACKUP_BYTES = 256 * 1024 * 1024
 MAX_BACKUP_MEMBERS = 4096
 
 
-def _check_bounds(members, size):
+def _check_bounds(members: int, size: int) -> None:
     if members > MAX_BACKUP_MEMBERS or size > MAX_BACKUP_BYTES:
         raise ValueError("Backup exceeds the local operator bound")
 
 
 @contextmanager
-def readonly_store(database):
+def readonly_store(database: str | Path) -> Iterator[QueueStore]:
     if Path(database).is_symlink():
         raise ValueError("Queue cannot follow a symlink")
     path = Path(database).resolve()
@@ -39,14 +40,14 @@ def readonly_store(database):
         store.close()
 
 
-def presence(database, *, now=None):
+def presence(database: str | Path, *, now: datetime | None = None) -> list[dict[str, Any]]:
     if not Path(database).is_file():
         return []
     with readonly_store(database) as store:
         return store.presence_report(now=now or datetime.now(timezone.utc))
 
 
-def inventory(database):
+def inventory(database: str | Path) -> dict[str, Any]:
     """Dry-run inventory: no deletes, lease recovery, migrations or inference."""
     started = time.perf_counter()
     with readonly_store(database) as store:
@@ -80,11 +81,11 @@ def inventory(database):
         "retention_action": "inventory-only; no files deleted", "inference_performed": False}
 
 
-def _digest(path):
+def _digest(path: str | Path) -> str:
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def _validate_database(path):
+def _validate_database(path: str | Path) -> None:
     with readonly_store(path) as store:
         store.validate_compatibility()
         if store.connection.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
@@ -95,7 +96,7 @@ def _validate_database(path):
             store.read(row[0])
 
 
-def backup_queue(database, output):
+def backup_queue(database: str | Path, output: str | Path) -> dict[str, Any]:
     """SQLite's backup API includes committed WAL contents; no raw DB file copy."""
     if Path(database).is_symlink() or Path(output).is_symlink():
         raise ValueError("Backup paths cannot follow symlinks")
@@ -110,11 +111,11 @@ def backup_queue(database, output):
         page_size = source.connection.execute("PRAGMA page_size").fetchone()[0]
         _check_bounds(1, pages * page_size)
         output.mkdir(parents=True, exist_ok=False)
-        target = sqlite3.connect(output / "queue.sqlite3")
+        target_connection = sqlite3.connect(output / "queue.sqlite3")
         try:
-            source.connection.backup(target)
+            source.connection.backup(target_connection)
         finally:
-            target.close()
+            target_connection.close()
     total = (output / "queue.sqlite3").stat().st_size
     _check_bounds(1, total)
     _validate_database(output / "queue.sqlite3")
@@ -143,7 +144,7 @@ def backup_queue(database, output):
     return manifest
 
 
-def restore_queue(backup, output):
+def restore_queue(backup: str | Path, output: str | Path) -> dict[str, Any]:
     if Path(backup).is_symlink() or Path(output).is_symlink():
         raise ValueError("Restore paths cannot follow symlinks")
     backup, output = Path(backup).resolve(), Path(output).resolve()
@@ -152,7 +153,8 @@ def restore_queue(backup, output):
     manifest = load_json(backup / "manifest.json")
     if manifest.get("schema_version") != 1 or manifest.get("record_type") != "QueueBackup" or "queue.sqlite3" not in manifest.get("files", {}):
         raise ValueError("Unsupported backup manifest")
-    files, total = {}, 0
+    files: dict[str, bytes] = {}
+    total = 0
     for name, checksum in manifest["files"].items():
         relative = PurePosixPath(name)
         if relative.is_absolute() or any(part in {"..", "."} or ":" in part or "\\" in part for part in relative.parts):
@@ -182,7 +184,7 @@ def restore_queue(backup, output):
             "inference_performed": False, "worker_started": False}
 
 
-def main(argv=None):
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
     item = commands.add_parser("inventory")

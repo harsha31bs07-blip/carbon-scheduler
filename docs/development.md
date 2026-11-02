@@ -1,5 +1,38 @@
 # Development and verification
 
+## Follow-up verification (2026-11-02)
+
+The reanalysis fixes share read-only queue compatibility validation, align exact
+backup/restore limits including WAL pages, reconfigure refresh across both state
+transitions and filter history in SQLite before returning a page to Python.
+Focused recovery, status precedence, query growth and refresh regressions cover
+the reproduced defects. See the [follow-up plan](plans/APP_REANALYSIS-2026-11-02.md)
+for per-milestone checkpoints.
+
+CI now runs the lightweight Ruff rules across `workflow`, `scheduler`, `shared`
+and `data`. Incremental mypy checks additionally cover operations and the typed
+history-query builder. These checks passed locally, as did `pip check`.
+The final local full suite passed **1,987 tests, with one optional browser skip,
+in 220.80 seconds**. The browser check passed separately as recorded below.
+
+```powershell
+python -m ruff check --select E9,F63,F7,F82 workflow scheduler shared data
+python -m mypy --follow-imports=skip --check-untyped-defs workflow/dashboard/services.py workflow/dashboard/progress.py workflow/operations.py workflow/history_query.py
+```
+
+The expanded isolated Edge journey passed in 21.94 seconds on the final runtime
+changes. It revisits the workflow workspace after submission, selects an active
+workflow through history search, then observes an external cancellation through
+the timer without manual refresh. It also retains the original login, demo,
+review rejection, layout and logout checks. This does not establish manual
+screen-reader conformance.
+
+A synthetic absent-status history sample required three SQL statements at each
+of 100, 200 and 1,000 workflows (approximately 0.003, 0.005 and 0.027 seconds).
+The earlier 100-workflow reproduction required 203 statements. These are local
+diagnostics, not throughput guarantees. Results are retained locally at
+`.runtime/reanalysis-20261102/history-after.json`.
+
 ## Current app verification (2026-11-02)
 
 The continuous improvement pass completed the submission/history, explanations,

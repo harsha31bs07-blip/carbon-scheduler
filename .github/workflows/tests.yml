@@ -26,8 +26,8 @@ jobs:
       - if: runner.os != 'Windows'
         run: python -m pip install -r requirements-dev.txt
       - run: python -m pip check
-      - run: python -m ruff check --select E9,F63,F7,F82 workflow/dashboard workflow/readiness.py workflow/operations.py workflow/review_drafts.py workflow/calibration_approvals.py
-      - run: python -m mypy --follow-imports=skip --check-untyped-defs workflow/dashboard/services.py workflow/dashboard/progress.py
+      - run: python -m ruff check --select E9,F63,F7,F82 workflow scheduler shared data
+      - run: python -m mypy --follow-imports=skip --check-untyped-defs workflow/dashboard/services.py workflow/dashboard/progress.py workflow/operations.py workflow/history_query.py
       # No API keys in CI: the suite runs in offline (local-models-only) mode.
       - run: python -m pytest -q
 

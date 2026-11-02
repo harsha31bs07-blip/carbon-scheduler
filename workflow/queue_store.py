@@ -223,7 +223,11 @@ class QueueStore:
         self.connection.execute("PRAGMA foreign_keys=ON")
         self.connection.execute("PRAGMA journal_mode=WAL")
         if self.connection.execute("SELECT 1 FROM sqlite_master WHERE name='queue_meta'").fetchone():
-            self.validate_compatibility()
+            try:
+                self.validate_compatibility()
+            except BaseException:
+                self.connection.close()
+                raise
         # Missing accounting tables are a supported legacy database. A partial
         # extension must be rejected before CREATE IF NOT EXISTS could hide it.
         self._has_accounting_tables()
@@ -355,7 +359,9 @@ class QueueStore:
         if fields is not None:
             self.connection.execute("INSERT INTO queue_submissions VALUES (?,?,?,1)", (*fields, workflow_id))
 
-    def workflow_summaries(self, *, query="", status=None, before=None, since=None, limit=20):
+    def workflow_summaries(self, *, query: str = "", status: str | None = None,
+                           before: int | None = None, since: datetime | None = None,
+                           limit: int = 20) -> list[dict[str, object]]:
         """Keyset pagination of light operator summaries; opening a run validates its full evidence."""
         if not isinstance(query, str) or len(query) > 1000 or type(limit) is not int or not 1 <= limit <= 100:
             raise ValueError("Invalid workflow search")
@@ -373,32 +379,8 @@ class QueueStore:
             sql += " AND julianday(json_extract(request,'$.arrived_at'))>=julianday(?)"
             args.append(_stamp(since))
         planning_available = self._has_planning_tables()
-        planning_join = ("LEFT JOIN planning_decisions p ON p.workflow_id=b.id AND p.revision="
-            "(SELECT max(revision) FROM planning_decisions WHERE workflow_id=b.id)" if planning_available else "")
-        report = "p.report" if planning_available else "NULL"
-        # Aggregate statuses in SQLite before filtering/limiting. Only the final
-        # page crosses the Python boundary; rare filters cause no per-run queries.
-        query_sql = """WITH base AS (""" + sql + """), summaries AS (
-            SELECT b.*,count(j.step_id) AS steps,
-                sum(j.status='completed') AS completed,
-                CASE WHEN b.cancelled_at IS NOT NULL THEN 'cancelled'
-                WHEN sum(j.status='needs-reconciliation')>0 THEN 'needs-reconciliation'
-                WHEN sum(j.status='deadline_missed')>0 THEN 'deadline_missed'
-                WHEN sum(j.status IN ('failed','cancelled'))>0 THEN 'failed'
-                WHEN count(j.step_id)>0 AND sum(j.status='completed')=count(j.step_id) THEN 'completed'
-                WHEN sum(j.status='running')>0 THEN 'running'
-                ELSE CASE WHEN """ + report + """ IS NOT NULL AND json_extract(""" + report + """,'$.result.winner') IS NULL
-                    THEN CASE WHEN json_extract(""" + report + """,'$.record_type')='PlanningPreparationFailure'
-                        THEN 'planning-failed' ELSE 'infeasible' END
-                    WHEN NOT EXISTS (SELECT 1 FROM json_each(b.request,'$.steps') s
-                        LEFT JOIN jobs r ON r.workflow_id=b.id AND r.step_id=json_extract(s.value,'$.step_id')
-                        WHERE json_extract(s.value,'$.required_for_response')=1 AND r.status IS NOT 'completed')
-                        THEN 'response_ready' ELSE 'scheduled' END END AS status,
-                (SELECT error_code FROM jobs WHERE workflow_id=b.id AND error_code IS NOT NULL
-                    AND error_code!='' ORDER BY rowid LIMIT 1) AS issue
-            FROM base b LEFT JOIN jobs j ON j.workflow_id=b.id """ + planning_join + """
-            GROUP BY b.id)
-            SELECT * FROM summaries WHERE (? IS NULL OR status=?) ORDER BY cursor DESC LIMIT ?"""
+        from workflow.history_query import history_query
+        query_sql = history_query(sql, planning_available)
         result = []
         for row in self.connection.execute(query_sql, [*args, status, status, limit]):
             request = WorkflowRequest.from_dict(_load(row["request"]))

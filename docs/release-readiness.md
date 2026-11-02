@@ -63,7 +63,8 @@ under `docs/plans/`.
 | Current local backend | November 1 read-only probe returned connection-failed | A running configured Ollama service with the exact installed models |
 | Workload/carbon support | Broader actual-context coverage and timestamped experimental carbon evidence remain insufficient | Calibrated size forecasts and defensible time/grid inputs; annual CO2 proxies cannot establish hourly benefits |
 | Final experiment | Retained pilot is reused data; no final reviewed live comparison was performed | Independent final tickets, controlled observations/sensitivity studies and matched live trials retaining failures |
-| Release platform checks | Local Windows checks passed; hosted Linux/Windows CI and manual browser/screen-reader rehearsal not observed | Validate the final source revision on those surfaces |
+| Automated platform checks | Windows/Linux unit and Chromium CI passed on `a6fafcf`; follow-up milestones are published with their own CI runs | Verify the final follow-up revision in the repository test workflow |
+| Manual accessibility | Automated browser checks cover login and progress refresh; manual screen-reader review remains unperformed | Perform and record a manual screen-reader review |
 
 Unknown quality remains a hard optimizer gate. No scores, destinations or savings
 were invented to close these items. There is no remaining permission question:
