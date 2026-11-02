@@ -272,6 +272,9 @@ class QueueStore:
                 token TEXT PRIMARY KEY, payload_fingerprint TEXT NOT NULL,
                 workflow_id TEXT NOT NULL UNIQUE REFERENCES workflows(id),
                 version INTEGER NOT NULL CHECK(version=1));
+            CREATE TABLE IF NOT EXISTS worker_presence(
+                worker_id TEXT PRIMARY KEY,state TEXT NOT NULL,last_seen TEXT NOT NULL,
+                workflow_id TEXT,version INTEGER NOT NULL CHECK(version=1));
         """)
         with self._transaction():
             versions = self.connection.execute("SELECT * FROM queue_meta").fetchall()
@@ -347,10 +350,11 @@ class QueueStore:
             sql += " AND julianday(json_extract(request,'$.arrived_at'))>=julianday(?)"
             args.append(_stamp(since))
         result = []
+        planning_available = self._has_planning_tables()
         for row in self.connection.execute(sql + " ORDER BY rowid DESC", args):
             request = WorkflowRequest.from_dict(_load(row["request"]))
             jobs = list(self.connection.execute("SELECT step_id,status,error_code FROM jobs WHERE workflow_id=?", (row["id"],)))
-            latest = self.connection.execute("SELECT report FROM planning_decisions WHERE workflow_id=? ORDER BY revision DESC LIMIT 1", (row["id"],)).fetchone()
+            latest = self.connection.execute("SELECT report FROM planning_decisions WHERE workflow_id=? ORDER BY revision DESC LIMIT 1", (row["id"],)).fetchone() if planning_available else None
             current = _workflow_status({job[0]: job[1] for job in jobs},
                 [step.step_id for step in request.steps if step.required_for_response], row["cancelled_at"],
                 _load(latest[0]) if latest else None)
@@ -371,6 +375,32 @@ class QueueStore:
             raise ValueError("Workflow list limit must be from one to 1000")
         return tuple(row[0] for row in self.connection.execute(
             "SELECT id FROM workflows ORDER BY rowid DESC LIMIT ?", (limit,)))
+
+    def worker_seen(self, worker_id, *, state, now, workflow_id=None):
+        """Observability only: never grants ownership, expires a lease or enables dispatch."""
+        _text(worker_id, "worker_id")
+        if len(worker_id) > 256 or state not in {"polling", "running", "idle", "stopped"}:
+            raise ValueError("Invalid worker presence")
+        if workflow_id is not None:
+            _text(workflow_id, "workflow_id")
+        with self._transaction():
+            self.connection.execute("INSERT INTO worker_presence VALUES (?,?,?,?,1) ON CONFLICT(worker_id) DO UPDATE SET state=excluded.state,last_seen=excluded.last_seen,workflow_id=excluded.workflow_id",
+                (worker_id, state, _stamp(now), workflow_id))
+
+    def presence_report(self, *, now, max_age_seconds=30):
+        now = _utc(now)
+        _seconds(max_age_seconds, "presence age")
+        if not self.connection.execute("SELECT 1 FROM sqlite_master WHERE name='worker_presence'").fetchone():
+            return []
+        result = []
+        for row in self.connection.execute("SELECT * FROM worker_presence ORDER BY worker_id"):
+            if row["version"] != 1 or row["state"] not in {"polling", "running", "idle", "stopped"}:
+                raise ValueError("Invalid worker presence record")
+            age = (now - _time(row["last_seen"])).total_seconds()
+            result.append({"worker_id": row["worker_id"], "reported_state": row["state"],
+                "state": row["state"] if 0 <= age <= max_age_seconds else "stale",
+                "last_seen": row["last_seen"], "workflow_id": row["workflow_id"]})
+        return result
 
     def close(self):
         self.connection.close()

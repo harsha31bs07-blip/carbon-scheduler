@@ -134,8 +134,10 @@ def test_ui_repeated_click_and_deliberate_new_submission(panel):
     app.run()
     app.text_area[0].input("My account is locked.")
     button(app, "Queue ticket").click().run()
+    next(item for item in app.selectbox if item.label == "History status").set_value("completed").run()
     button(app, "Queue ticket").click().run()
     assert not app.exception
+    assert app.selectbox(key="queue_history_status").value == "All"
     store = QueueStore(database)
     assert len(store.recent_workflow_ids()) == 1
     store.close()
@@ -145,6 +147,25 @@ def test_ui_repeated_click_and_deliberate_new_submission(panel):
     store = QueueStore(database)
     assert len(store.recent_workflow_ids()) == 2
     store.close()
+
+
+def test_active_refresh_remains_inspection_only_and_stops_after_cancel(panel):
+    app, database = panel
+    app.run()
+    app.text_area[0].input("My fictional account is locked.")
+    button(app, "Queue ticket").click().run()
+    app.checkbox[0].check().run()
+    button(app, "Refresh progress").click().run()
+    assert not app.exception
+    button(app, "Cancel remaining work").click().run()
+    assert not app.exception
+    store = QueueStore(database)
+    try:
+        ids = store.recent_workflow_ids()
+        assert len(ids) == 1 and store.read(ids[0]).status == "cancelled"
+        assert store.read(ids[0]).attempts == ()
+    finally:
+        store.close()
 
 
 def test_planned_repeated_submission_binds_evidence_contents(tmp_path, planned_inputs):

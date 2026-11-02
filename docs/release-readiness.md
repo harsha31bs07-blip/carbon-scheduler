@@ -1,5 +1,13 @@
 # Local implementation and A2 release readiness
 
+App improvement update **2026-11-02**: submission/history, decision explanations,
+review inbox/drafts, worker observations, backup/restore and automated browser/
+network/lint/type checks are implemented. The local suite passed 1,966 tests with
+one optional browser skip; the browser journey passed separately. See
+[current app status](app-status.md) and [development verification](development.md).
+This adds software/verification evidence and does not close the human-quality,
+second-destination or independent live-experiment gates below.
+
 Recorded 2026-11-01. Local implementation and experimental release validation
 are separate. The integrated local software is implemented and exercised. The
 full A2 experimental release remains blocked by missing real evidence.

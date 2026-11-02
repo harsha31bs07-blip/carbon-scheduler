@@ -1,5 +1,9 @@
 # A2 Implementation Plan: Carbon- and Latency-Aware Agent Workflow Scheduler
 
+Current app status: [2026-11-02 implementation and verification](docs/app-status.md).
+The local improvement pass implemented milestones 3-6 and automated milestone-7
+checks; manual screen-reader and external experimental gates remain open.
+
 New app improvement backlog: [App analysis and implementation plan (2026-11-01)](docs/plans/APP_IMPROVEMENT_PLAN-2026-11-01.md). It prioritizes authentication correctness, guided setup, workflow tracking, scheduling explanations, review usability and operational checks; the experimental release gates below remain separate.
 
 Latest repository review: **2026-10-26**. See the [project analysis and ordered completion plan](docs/plans/COMPLETION_PLAN-2026-10-26.md) for current verification, corrected capability status, implementation tasks, dependencies and release acceptance. The milestone history below is preserved.

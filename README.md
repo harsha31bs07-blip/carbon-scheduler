@@ -1,5 +1,8 @@
 # Carbon Scheduler
 
+See [current app status](docs/app-status.md) for the latest implementation,
+verification scope and remaining experimental gates.
+
 Carbon-aware scheduling for a multi-step LLM pipeline. For each step of a support-ticket
 triage workflow (`classify → retrieve → draft → summarize`), the scheduler picks a
 **model**, **location**, and **time offset** by trading off latency, cost, energy,

@@ -1,2 +1,5 @@
 -r requirements.txt
 pytest>=9.1,<10
+playwright>=1.58,<2
+ruff>=0.14,<1
+mypy>=1.15,<2

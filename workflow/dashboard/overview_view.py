@@ -22,7 +22,12 @@ def render_overview(root):
             st.error("The bundled demonstration is missing or invalid. Restore the complete package; no inference was attempted.")
     if st.session_state.get("overview_show_demo"):
         from workflow.dashboard.evidence_view import render_report
-        retained = st.session_state.get("validated_comparison")
+        from workflow.dashboard.evidence_cache import retained_evidence
+        try:
+            retained = retained_evidence(st.session_state)
+        except ValueError:
+            st.error("The loaded demonstration changed. Open and validate it again.")
+            retained = None
         if retained:
             render_report(retained[2])
             st.caption("Inspect individual outputs in Ticket workflows → Comparison evidence. The loaded package is retained for this session.")
@@ -36,13 +41,15 @@ def render_overview(root):
     report = inspect_readiness(root, profiles_path=profiles, forecasts_path=forecasts, carbon_path=carbon)
     st.subheader("Local readiness")
     st.dataframe(report["checks"], width="stretch", hide_index=True)
+    if report["workers"]:
+        st.dataframe(report["workers"], width="stretch", hide_index=True)
     st.caption("File validity does not approve dispatch. The planner checks exact model/settings, reviewed quality, context, deadlines, availability and carbon coverage for each request.")
     st.subheader("Configured destinations")
     if report["destinations"]:
         st.dataframe([{**item, "models": json.dumps(item["models"]),
                        "observed_models": ", ".join(item["observed_models"])}
                       for item in report["destinations"]], width="stretch", hide_index=True)
-    st.info("Endpoint availability and worker presence are unknown until observed. This overview performs local checks only.")
+    st.info("Endpoint availability is unknown until observed. Worker observations are informational; this overview performs local checks only.")
     st.subheader("Start a local session")
     st.caption("Run the worker in a separate terminal. This command exits after 90 idle seconds; restart it for later work. It can execute eligible live requests already in the queue.")
     st.code(report["commands"]["worker"], language=report["commands"]["shell"])

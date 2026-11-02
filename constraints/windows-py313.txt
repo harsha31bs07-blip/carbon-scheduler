@@ -1,7 +1,15 @@
-# Windows x64, CPython 3.13.14 snapshot; Streamlit/Pillow aligned 2026-11-01.
+# Windows x64, CPython 3.13.14 snapshot; app verification tools added 2026-11-02.
 # Install with: python -m pip install -r requirements-dev.txt -c constraints/windows-py313.txt
 # This is a platform-specific constraints snapshot, not a cross-platform lock.
 altair==6.3.0
+greenlet==3.5.6
+librt==0.16.0
+mypy==1.20.2
+mypy_extensions==1.1.0
+pathspec==1.1.1
+playwright==1.64.1
+pyee==14.0.0
+ruff==0.17.3
 annotated-doc==0.0.5
 annotated-types==0.8.0
 anyio==4.15.1

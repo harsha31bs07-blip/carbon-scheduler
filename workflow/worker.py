@@ -11,6 +11,7 @@ from dataclasses import replace
 from datetime import timedelta
 import json
 import math
+import sqlite3
 from pathlib import Path
 import threading
 import time
@@ -100,6 +101,14 @@ def submit_fixed(store, registry, kb, ticket, *, deployment_id="local-ollama",
     })
 
 
+def _note_presence(store, worker_id, state, clock=None, *, workflow_id=None):
+    try:
+        store.worker_seen(worker_id, state=state, now=_now(clock or SystemClock()), workflow_id=workflow_id)
+    except (ValueError, OSError, sqlite3.Error):
+        # Optional telemetry cannot change provider execution or lease semantics.
+        pass
+
+
 class _Heartbeat:
     """Renew using a separate SQLite connection; never redispatch on lease loss."""
 
@@ -122,6 +131,8 @@ class _Heartbeat:
             store = QueueStore(self.path)
             while not self.stop.wait(interval):
                 self.claim = store.renew(self.claim, now=_now(self.clock), lease_seconds=self.lease_seconds)
+                _note_presence(store, self.claim.worker_id, "running", self.clock,
+                               workflow_id=self.claim.workflow_id)
         except Exception:
             # An in-flight call cannot safely be repeated or cancelled here.
             # complete() verifies ownership; expiry remains visible on recovery.
@@ -244,6 +255,7 @@ def _execute_claim(store, claim, *, registry=None, kb=None, clock=None, dispatch
         except LeaseError:
             store.recover(now=_now(active_clock))
             return {"status": "claim-lost", "workflow_id": claim.workflow_id, "step_id": claim.candidate.step_id}
+        _note_presence(store, claim.worker_id, "running", active_clock, workflow_id=claim.workflow_id)
         attempt = (dispatcher or dispatch_planned_candidate)(
             claim.candidate, active_registry, rendered.step.prompt, workflow_id=claim.workflow_id,
             clock=active_clock, timeout_seconds=timeout, output_limit_tokens=rendered.step.output_limit_tokens,
@@ -500,8 +512,10 @@ def main(argv=None):
             kb = KnowledgeBase.load(args.kb) if args.kb else None
             count, last_work = 0, time.monotonic()
             while True:
+                _note_presence(store, args.worker_id, "polling")
                 result = work_once(store, worker_id=args.worker_id, registry=registry, kb=kb,
                                    lease_seconds=args.lease_seconds)
+                _note_presence(store, args.worker_id, "idle")
                 if result["status"] != "idle":
                     print(json.dumps(result), flush=True)
                     if result.get("job_processed", True):
@@ -519,6 +533,8 @@ def main(argv=None):
         return 2
     finally:
         if store is not None:
+            if args.command == "run":
+                _note_presence(store, args.worker_id, "stopped")
             store.close()
 
 

@@ -8,7 +8,15 @@ History supports ticket/ID search, status/date filters and pages of twenty recor
 including work older than the newest hundred entries. Optional five-second refresh
 runs only the progress fragment with a fresh database connection; it never submits
 work or refreshes an evidence review form. Progress explains intentional waits and
-uncertain calls. Worker presence remains unknown pending presence telemetry.
+uncertain calls. Worker observations distinguish reported idle/running/stopped
+states from stale data without granting dispatch or retry authority; see
+[operations](operations.md).
+
+**Review inbox** supports separate calibration/workflow judgments and local
+evidence-bound drafts; see [review inbox](review-inbox.md). Comparison tables and
+charts retain units, sample counts, failures and missing coverage. Changed evidence
+invalidates the cached report. A truncated search is identified separately from
+exhaustive infeasibility or optimality.
 
 Login requests enforce a backend 60-second resend cooldown and at most three
 codes per normalized email in ten minutes. Expiring or consuming a code does not
@@ -21,8 +29,8 @@ workspace clears current-session codes, evidence and unfinished review fields.
 The default authenticated workspace is **Overview**. It shows local configuration,
 reviewed profile coverage, selected forecast/carbon inputs and installed dependency
 versions. Availability and worker presence remain unknown until observed; a valid
-configuration never approves a dispatch. The overview does not open or migrate
-the queue. **Open offline demonstration** validates the bundled four-trial
+configuration never approves a dispatch. The overview reads worker observations
+from an existing queue without migrating it. **Open offline demonstration** validates the bundled four-trial
 simulation without requiring a path or running an inference service.
 
 Choose **Ticket workflows** to submit and inspect work. **Activity** selects
@@ -91,8 +99,7 @@ policy. Every score starts blank. Each criterion has its description, score and
 rationale. The reviewer supplies attribution and overall rationale and explicitly
 approves. Backend checks include arithmetic, identities, hashes and chronology.
 Imports are additive; raw attempts remain unchanged. Existing judgments and
-portable packages cannot be overwritten. Reload after approval to update
-coverage. See [workflow quality review](workflow-quality-review.md).
+portable packages cannot be overwritten. Approval automatically refreshes coverage. See [workflow quality review](workflow-quality-review.md).
 
 Native Streamlit controls have visible labels, and states/coverage are expressed
 in text rather than color alone. AppTest covers submission, cancellation,

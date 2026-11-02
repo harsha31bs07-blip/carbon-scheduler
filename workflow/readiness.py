@@ -4,6 +4,7 @@ import argparse
 from datetime import datetime, timezone
 from importlib import metadata
 import json
+import sqlite3
 from pathlib import Path
 
 from data.profiles import _validate_profiles
@@ -104,7 +105,15 @@ def inspect_readiness(root, *, registry_path=None, database_path=None, profiles_
             check(name, "valid-format", detail)
         except (ValueError, OSError, TypeError, KeyError):
             check(name, "invalid", "Selected evidence could not be validated.")
-    check("Worker", "unknown", "No worker-presence telemetry is retained yet. Job leases do not prove an idle worker is running.")
+    workers = []
+    try:
+        from workflow.operations import presence
+        workers = presence(paths["database"], now=now)
+        check("Worker", "observed" if workers else "unknown",
+              "Last reported observations are listed separately; stale records do not prove a stopped worker and never authorize dispatch."
+              if workers else "No worker observations are retained. Job leases do not prove an idle worker is running.")
+    except (ValueError, OSError, sqlite3.Error):
+        check("Worker", "invalid", "Worker observations could not be read. Existing queue records are preserved.")
     check("Queue file", "present" if paths["database"].is_file() else "not-created",
           "Submission creates the queue when needed. This check does not open or migrate the database.")
     for package in ("requests", "python-dotenv", "streamlit", "pandas", "plotly"):
@@ -113,7 +122,7 @@ def inspect_readiness(root, *, registry_path=None, database_path=None, profiles_
         except metadata.PackageNotFoundError:
             check("Dependency: " + package, "missing", "Install requirements.txt in the active Python environment.")
     return {"schema_version": 1, "checked_at": now.isoformat(), "checks": checks,
-            "destinations": destinations, "dispatch_approved": False,
+            "destinations": destinations, "workers": workers, "dispatch_approved": False,
             "commands": startup_commands(paths["root"], paths["database"]),
             "scope": "Local configuration inspection; no workflow-specific eligibility or full A2 validation."}
 

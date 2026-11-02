@@ -87,7 +87,7 @@ def test_comparison_panel_loads_coverage_and_outputs_offline(tmp_path, evaluatio
     app = AppTest.from_file(str(script), default_timeout=30).run()
     field(app, "text_input", "Evidence directory").set_value(str(root))
     button(app, "Load evidence").click().run()
-    assert not app.exception and len(app.dataframe) == 1
+    assert not app.exception and len(app.dataframe) == 2
     assert any("Simulation evidence" in item.value for item in app.info)
     assert any("Release checks remain open" in item.value for item in app.warning)
     assert any(item.label == "Trial outputs" for item in app.selectbox)

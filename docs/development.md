@@ -1,5 +1,49 @@
 # Development and verification
 
+## Current app verification (2026-11-02)
+
+The continuous improvement pass completed the submission/history, explanations,
+review inbox/drafts, operations and automated-release-check software. The final
+local suite passed **1,966 tests with one optional browser skip in 252.72 seconds**.
+The same browser journey passed separately in **10.27 seconds** using headless
+Edge, an isolated database and fictional inputs. No inference service was called.
+Ruff, the incremental two-file mypy check, `pip check` and resolution against the
+updated Windows constraints succeeded. These tools were added to the previously
+fresh release environment; this is not a claim of a second full clean install.
+A final filtered-history selection fix passed 16 targeted checks in 21.71 seconds
+after that full run. Hosted CI validates the resulting final source.
+
+Default tests deny outbound DNS/TCP and unmarked loopback connections. The
+`loopback` marker permits local test servers. Windows asyncio's internal socket-pair
+construction has a narrow thread-local exception; it does not permit ordinary
+provider connections. Subprocesses do not inherit monkeypatches and need their own
+offline/fixture configuration, as in the strict replay and browser harnesses.
+
+```powershell
+$env:PYTHON_DOTENV_DISABLED='1'
+python -m pytest -q
+python -m ruff check --select E9,F63,F7,F82 workflow/dashboard workflow/readiness.py workflow/operations.py workflow/review_drafts.py workflow/calibration_approvals.py
+python -m mypy --follow-imports=skip --check-untyped-defs workflow/dashboard/services.py workflow/dashboard/progress.py
+```
+
+To run the optional real browser journey:
+
+```powershell
+python -m playwright install chromium
+$env:RUN_BROWSER_TESTS='1'
+python -m pytest -q -m browser
+```
+
+On Windows, setting `PLAYWRIGHT_CHANNEL=msedge` uses the installed Edge executable
+in an isolated headless context rather than installing Chromium. Browser requests
+are restricted to the local test app. The harness sets its own development OTP,
+registry and `CARBON_QUEUE_DATABASE` values without loading `.env`. Screenshots
+after login are retained in `.runtime/browser-smoke-20261102`; no OTP screenshot
+is captured. Hosted CI adds a Linux Chromium job alongside Windows/Linux unit
+checks. Manual screen-reader/accessibility review remains an open check.
+
+See [current app status](app-status.md) for operation and experimental scope.
+
 Dashboard improvement work adds `python -m workflow.readiness` for local-only setup
 diagnostics; the explicit `--probe` option performs read-only destination inventory.
 The authenticated landing page is now Overview, with direct access to the validated

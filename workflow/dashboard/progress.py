@@ -1,7 +1,10 @@
 """Plain-language interpretation of existing durable workflow states."""
 
+from datetime import datetime
+from workflow.queue_store import WorkflowSnapshot
 
-def explain_progress(snapshot, now):
+
+def explain_progress(snapshot: WorkflowSnapshot, now: datetime) -> str:
     messages = {
         "completed": "All requested steps are complete. Retained outputs and measurement coverage are below.",
         "cancelled": "Remaining work was cancelled. A request already sent to a provider may still return; incurred usage is retained.",

@@ -1,7 +1,8 @@
 # App analysis and implementation plan
 
 Reviewed: 2026-11-01. Scope: improve the existing local Carbon Scheduler app.
-Milestones 1-2 are implemented; milestones 3-7 remain proposed work. This complements
+Milestones 1-6 and the automated checks in milestone 7 are implemented. Manual
+screen-reader review remains outstanding. This complements
 the [A2 completion plan](COMPLETION_PLAN-2026-10-26.md)
 and [release readiness record](../release-readiness.md).
 
@@ -17,6 +18,45 @@ Prioritize correctness and operator experience before adding providers, replacin
 the frontend or expanding to arbitrary workflows. Assume a local, single-operator
 application for this iteration. Shared hosting requires a separate identity,
 authorization and storage design; email OTP alone does not provide tenant isolation.
+
+## Continuous implementation checkpoint — 2026-11-02
+
+The user requested proceeding through successive milestones without waiting for
+another continuation. Work therefore continued through all locally implementable
+software milestones and automated verification.
+
+- **Milestone 3:** atomic submission-token/content binding, durable repeat-click
+  behavior, explicit intentional repeats, legacy database compatibility, searched/
+  filtered keyset history, field-specific deadline guidance and progress-only
+  refresh with fresh connections. Concurrent creation and rollback are covered.
+- **Milestone 4:** actionable rejection descriptions, search coverage/truncation,
+  retained score contributions, paired tables/charts with missing coverage and
+  validation-time/content fingerprints. Changed evidence invalidates cached reports.
+- **Milestone 5:** calibration/workflow inboxes, pending/approved/ineligible counts,
+  exact-output/context inspection, reviewer/evidence-bound local drafts, immutable
+  approvals, export of calibration review lists and automatic coverage refresh.
+  No real human scores or approvals were generated during implementation.
+- **Milestone 6:** independent worker observations, diagnostic inventory/profiling,
+  consistent SQLite backup and isolated validated restore with raw sidecars.
+  Presence never grants leases/retries. Sidecar consistency requires stopping
+  workers for a snapshot across the application; the manifest states that boundary.
+  Retention is deliberately inventory-only.
+- **Milestone 7 automated checks:** default network denial, a narrow Windows
+  asyncio socket-pair exception, explicit loopback/browser markers, real headless
+  Edge journey, incremental Ruff/mypy checks and hosted browser CI configuration.
+  Manual NVDA review remains unperformed; no WCAG certification is asserted.
+- Final local suite: **1,966 passed, 1 skipped in 252.72 seconds**. The skipped
+  browser journey passed separately in **10.27 seconds** against an isolated
+  loopback Streamlit server. Lint, two-file type checks, `pip check` and constrained
+  dependency-resolution rehearsal passed. Hosted checks for the final source are
+  pending publication at this checkpoint; prior published milestones passed CI.
+  A final filtered-history selection fix then passed 16 dashboard/submission
+  checks in 21.71 seconds; published CI will verify that final source.
+
+Current operation and scope are consolidated in [app status](../app-status.md),
+[review inbox](../review-inbox.md) and [operations/recovery](../operations.md).
+External A2 gates remain unchanged: actual human judgments, infrastructure and
+independent live evidence cannot be supplied by these local software changes.
 
 ## Implementation checkpoint — 2026-11-01
 

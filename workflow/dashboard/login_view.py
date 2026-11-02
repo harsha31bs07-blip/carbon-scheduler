@@ -35,7 +35,7 @@ def render_login_screen():
             "Email Address",
             placeholder="your@email.com",
             key="login_email_input",
-            label_visibility="collapsed"
+            label_visibility="visible"
         )
 
         if st.button("Send Verification Code", type="primary", use_container_width=True):
@@ -88,7 +88,7 @@ def render_login_screen():
             placeholder="123456",
             max_chars=6,
             key="otp_verification_input",
-            label_visibility="collapsed"
+            label_visibility="visible"
         )
 
         col1, col2 = st.columns([1, 1])

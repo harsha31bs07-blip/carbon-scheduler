@@ -26,5 +26,27 @@ jobs:
       - if: runner.os != 'Windows'
         run: python -m pip install -r requirements-dev.txt
       - run: python -m pip check
+      - run: python -m ruff check --select E9,F63,F7,F82 workflow/dashboard workflow/readiness.py workflow/operations.py workflow/review_drafts.py workflow/calibration_approvals.py
+      - run: python -m mypy --follow-imports=skip --check-untyped-defs workflow/dashboard/services.py workflow/dashboard/progress.py
       # No API keys in CI: the suite runs in offline (local-models-only) mode.
       - run: python -m pytest -q
+
+  browser:
+    runs-on: ubuntu-latest
+    env:
+      PYTHON_DOTENV_DISABLED: "1"
+      RUN_BROWSER_TESTS: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m playwright install --with-deps chromium
+      - run: python -m pytest -q -m browser
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-smoke
+          path: .runtime/browser-smoke-20261102/

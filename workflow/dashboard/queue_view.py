@@ -21,7 +21,11 @@ def render_queue_view(root, *, registry_path=None, database_path=None):
     config, database = paths["registry"], paths["database"]
     st.title("Ticket workflows")
     st.caption("Durable execution through a separate worker. Completed steps survive a restart.")
-    activity = st.radio("Activity", ("Workflows", "Comparison evidence"), horizontal=True)
+    activity = st.radio("Activity", ("Workflows", "Comparison evidence", "Review inbox"), horizontal=True)
+    if activity == "Review inbox":
+        from workflow.dashboard.review_inbox import render_review_inbox
+        render_review_inbox(root)
+        return
     if activity == "Comparison evidence":
         from workflow.dashboard.evidence_view import render_evidence_view
         render_evidence_view(root)
@@ -90,6 +94,13 @@ def render_queue_view(root, *, registry_path=None, database_path=None):
                             custom_weights=weights, quality_floor=floor, start_offsets_seconds=offsets,
                             response_seconds=response, completion_seconds=completion, summary_delay_seconds=delay)
                 st.session_state["queue_selected_workflow"] = identity
+                st.session_state["queue_last_status"] = store.read(identity).status
+                # Reveal the saved workflow even when prior filters/pages hid it.
+                st.session_state["queue_history_query"] = identity
+                st.session_state["queue_history_status"] = "All"
+                st.session_state["queue_history_age"] = "All time"
+                st.session_state["queue_history_cursors"] = [None]
+                st.session_state["queue_history_filter"] = None
                 st.success("Ticket queued. A worker will run eligible steps when ready.")
             except SubmissionConflict:
                 st.error("These details differ from the saved submission. Choose Start another ticket to queue a separate workflow.")
@@ -104,19 +115,27 @@ def render_queue_view(root, *, registry_path=None, database_path=None):
     active = st.session_state.get("queue_last_status") not in {"completed", "cancelled", "failed", "deadline_missed", "needs-reconciliation"}
     @st.fragment(run_every="5s" if refresh and active else None)
     def progress():
-        render_progress(database, config)
+        status = render_progress(database, config)
+        if refresh and active and status in {"completed", "cancelled", "failed", "deadline_missed", "needs-reconciliation"}:
+            st.rerun()
     progress()
 
 
 def render_progress(database, config):
     import streamlit as st
     from datetime import timedelta
-    store = QueueStore(database)
+    try:
+        if not Path(database).is_file():
+            raise OSError("Queue disappeared")
+        store = QueueStore(database)
+    except (ValueError, OSError, sqlite3.Error):
+        st.error("The queue is unavailable. Refresh after restoring access; no replacement database was created.")
+        return None
     try:
         st.button("Refresh progress")
         query = st.text_input("Search ticket or workflow ID", key="queue_history_query")
-        status = st.selectbox("History status", ["All", "scheduled", "running", "response_ready", "completed", "infeasible", "planning-failed", "failed", "deadline_missed", "needs-reconciliation", "cancelled"])
-        age = st.selectbox("Submitted", ["All time", "Last 24 hours", "Last 7 days"])
+        status = st.selectbox("History status", ["All", "scheduled", "running", "response_ready", "completed", "infeasible", "planning-failed", "failed", "deadline_missed", "needs-reconciliation", "cancelled"], key="queue_history_status")
+        age = st.selectbox("Submitted", ["All time", "Last 24 hours", "Last 7 days"], key="queue_history_age")
         signature = (query, status, age)
         if st.session_state.get("queue_history_filter") != signature:
             st.session_state["queue_history_filter"] = signature
@@ -143,8 +162,15 @@ def render_progress(database, config):
         st.session_state["queue_selected_workflow"] = identity
         snapshot = store.read(identity)
         st.session_state["queue_last_status"] = snapshot.status
+        workers = store.presence_report(now=SystemClock().now())
+        if workers:
+            st.dataframe(workers, width="stretch", hide_index=True)
+            st.caption("Worker observations are informational. Stale presence never frees an uncertain lease or authorizes a retry.")
         from workflow.dashboard.progress import explain_progress
-        st.info(explain_progress(snapshot, SystemClock().now()))
+        message = explain_progress(snapshot, SystemClock().now())
+        if workers:
+            message = message.replace("Worker presence is unknown.", "See the worker observations above; presence does not guarantee eligibility.")
+        st.info(message)
         st.caption(f"Evidence mode: {snapshot.configuration.get('experiment_mode', 'live')} · Policy: {snapshot.request.policy}")
         if snapshot.configuration.get("experiment_mode") == "simulation":
             st.info("Simulation workflow. Scripted observations do not establish live quality or savings.")
@@ -190,6 +216,8 @@ def render_progress(database, config):
         if snapshot.planning_context is not None:
             st.subheader("Planning decisions")
             latest = snapshot.decisions[-1]["report"]
+            from workflow.dashboard.explanations import render_planning
+            render_planning(latest)
             st.write(f"Policy: {snapshot.request.policy} · Revisions: {len(snapshot.decisions)}")
             if snapshot.status in {"infeasible", "planning-failed"}:
                 st.warning("No eligible plan is installed. Inspect the rejection reasons and missing inputs below; a worker will recheck eligibility.")
@@ -212,6 +240,7 @@ def render_progress(database, config):
                 st.write(job.step_request.step_id)
                 st.text(job.output or "No output retained")
             st.json([attempt.to_dict() for attempt in snapshot.attempts])
+        return snapshot.status
     except (ValueError, OSError, sqlite3.Error):
         st.error("Saved workflow data could not be loaded. Its records have been preserved.")
     finally:
