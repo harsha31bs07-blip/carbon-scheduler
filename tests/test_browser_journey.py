@@ -79,6 +79,39 @@ def test_keyboard_login_queue_cancel_comparison_review_and_logout(tmp_path):
                 expect(page.get_by_text(re.compile(r"Ticket queued\."))).to_be_visible()
                 page.get_by_role("button", name="Cancel remaining work", exact=True).click()
                 expect(page.get_by_text(re.compile(r"Cancellation saved\."))).to_be_visible()
+                page.get_by_text("Overview", exact=True).click()
+                expect(page.get_by_role("heading", name="Overview and setup", exact=True)).to_be_visible()
+                page.get_by_text("Ticket workflows", exact=True).click()
+                expect(page.get_by_role("heading", name="Ticket workflows", exact=True)).to_be_visible()
+                # A terminal selection must re-enable its timer when active work
+                # is selected. Change the database externally, then observe the
+                # update without any browser interaction or manual refresh.
+                from workflow.queue_store import QueueStore
+                from workflow.worker import submit_fixed
+                from workflow.workload import KnowledgeBase
+                from shared.scheduling import SystemClock
+                store = QueueStore(tmp_path / "queue.sqlite3")
+                try:
+                    active_id = submit_fixed(store, registry, KnowledgeBase.load(),
+                        "Another fictional account issue.", deployment_id="isolated", model_id="small")
+                    refresh = page.get_by_label("Refresh active workflow every 5 seconds", exact=True)
+                    refresh.focus()
+                    page.keyboard.press("Space")
+                    expect(refresh).to_be_checked()
+                    search = page.get_by_label("Search ticket or workflow ID", exact=True)
+                    expect(search).to_have_count(1)
+                    search.fill(active_id)
+                    expect(search).to_have_count(1)
+                    search.press("Enter")
+                    page.get_by_role("button", name="Refresh progress", exact=True).click()
+                    expect(search).to_have_value(active_id)
+                    status_metric = page.get_by_test_id("stMetric").filter(has=page.get_by_text("Status", exact=True))
+                    expect(status_metric.get_by_test_id("stMetricValue")).to_have_text("scheduled", timeout=20000)
+                    store.cancel(active_id, now=SystemClock().now())
+                    expect(status_metric.get_by_test_id("stMetricValue")).to_have_text("cancelled", timeout=20000)
+                    assert store.read(active_id).attempts == ()
+                finally:
+                    store.close()
                 page.get_by_text("Comparison evidence", exact=True).click()
                 page.get_by_role("button", name="Load bundled offline demonstration", exact=True).click()
                 expect(page.get_by_text(re.compile("Finished trials: 4 / 4"))).to_be_visible(timeout=30000)

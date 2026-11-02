@@ -177,6 +177,34 @@ def test_active_refresh_remains_inspection_only_and_stops_after_cancel(panel):
         store.close()
 
 
+def test_selecting_active_after_terminal_reconfigures_timer(panel, monkeypatch):
+    import streamlit as st
+    app, database = panel
+    app.run()
+    store = QueueStore(database)
+    try:
+        active = submit(store, token="active-workflow-12345678")
+        terminal = submit(store, token="terminal-workflow-12345678")
+        store.cancel(terminal, now=NOW)
+    finally:
+        store.close()
+    app.run()
+    app.checkbox[0].check().run()
+    registrations = []
+    original = st.fragment
+    def record(*args, **kwargs):
+        registrations.append(kwargs.get("run_every"))
+        return original(*args, **kwargs)
+    monkeypatch.setattr(st, "fragment", record)
+    next(item for item in app.selectbox if item.label == "Workflow").set_value(active).run()
+    assert not app.exception
+    assert app.session_state["queue_last_status"] == "scheduled"
+    assert registrations[-1] == "5s"
+    registrations.clear()
+    next(item for item in app.selectbox if item.label == "Workflow").set_value(terminal).run()
+    assert not app.exception and registrations[-1] is None
+
+
 def test_planned_repeated_submission_binds_evidence_contents(tmp_path, planned_inputs):
     import json
     args, *_ = planned_inputs

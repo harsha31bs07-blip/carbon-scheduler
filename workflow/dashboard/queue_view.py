@@ -13,6 +13,11 @@ from workflow.workload import KnowledgeBase
 from workflow.dashboard.services import local_paths, startup_commands
 
 
+def _refresh_active(status):
+    return status is not None and status not in {
+        "completed", "cancelled", "failed", "deadline_missed", "needs-reconciliation"}
+
+
 def render_queue_view(root, *, registry_path=None, database_path=None):
     import streamlit as st
 
@@ -117,11 +122,11 @@ def render_queue_view(root, *, registry_path=None, database_path=None):
     st.code(commands["worker"], language=commands["shell"])
     st.caption("Run this worker in a terminal. Refresh below to load progress; this page does not run model calls.")
     refresh = st.checkbox("Refresh active workflow every 5 seconds", value=False)
-    active = st.session_state.get("queue_last_status") not in {"completed", "cancelled", "failed", "deadline_missed", "needs-reconciliation"}
+    active = _refresh_active(st.session_state.get("queue_last_status"))
     @st.fragment(run_every="5s" if refresh and active else None)
     def progress():
         status = render_progress(database, config)
-        if refresh and active and status in {"completed", "cancelled", "failed", "deadline_missed", "needs-reconciliation"}:
+        if refresh and active != _refresh_active(status):
             st.rerun()
     progress()
 
@@ -257,6 +262,7 @@ def render_progress(database, config):
                 st.write(job.step_request.step_id)
                 st.text(job.output or "No output retained")
             st.json([attempt.to_dict() for attempt in snapshot.attempts])
+        st.session_state["queue_last_status"] = snapshot.status
         return snapshot.status
     except (ValueError, OSError, sqlite3.Error):
         st.error("Saved workflow data could not be loaded. Its records have been preserved.")
