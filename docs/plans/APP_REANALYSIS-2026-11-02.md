@@ -148,3 +148,5 @@ asserted reviewer attribution are not a tenant-isolated identity system.
 ## Implementation checkpoints
 
 Milestone 1: opening, backup and restore now share read-only extension compatibility validation. Added incompatible-extension recovery regressions; focused verification recorded in the commit.
+
+Milestone 2: shared prospective file/byte limits now cover both backup and restore, including committed WAL pages. All 12 operations tests passed, including exact-boundary round trips and one-over rejection.

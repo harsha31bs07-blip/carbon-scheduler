@@ -134,3 +134,43 @@ def test_readonly_inventory_and_backup_support_fixed_queues_without_planning_ext
     assert inventory(path)["planning"]["retained_decisions"] == 0
     manifest = backup_queue(path, tmp_path / "backup")
     assert "queue.sqlite3" in manifest["files"]
+
+
+def test_backup_member_boundary_round_trips_and_rejects_one_more(tmp_path, monkeypatch):
+    import workflow.operations as operations
+    monkeypatch.setattr(operations, "MAX_BACKUP_MEMBERS", 3)
+    database = tmp_path / "queue.sqlite3"
+    QueueStore(database).close()
+    sidecars = tmp_path / "queue.sqlite3.orphan-attempts"
+    sidecars.mkdir()
+    for name in ("one", "two"):
+        (sidecars / (name + ".json")).write_text("{}")
+    manifest = backup_queue(database, tmp_path / "accepted")
+    assert len(manifest["files"]) == 3
+    assert restore_queue(tmp_path / "accepted", tmp_path / "restored")["validated"]
+    (sidecars / "three.json").write_text("{}")
+    with pytest.raises(ValueError, match="bound"):
+        backup_queue(database, tmp_path / "rejected")
+    assert not (tmp_path / "rejected/manifest.json").exists()
+
+
+def test_backup_accounts_for_committed_wal_pages(tmp_path, monkeypatch):
+    import workflow.operations as operations
+    database = tmp_path / "queue.sqlite3"
+    store = QueueStore(database)
+    try:
+        store.connection.execute("PRAGMA wal_autocheckpoint=0")
+        store.connection.execute("CREATE TABLE large_fixture(value BLOB)")
+        store.connection.execute("INSERT INTO large_fixture VALUES (zeroblob(100000))")
+        logical_size = (store.connection.execute("PRAGMA page_count").fetchone()[0]
+                        * store.connection.execute("PRAGMA page_size").fetchone()[0])
+        assert database.stat().st_size < logical_size
+        monkeypatch.setattr(operations, "MAX_BACKUP_BYTES", logical_size - 1)
+        with pytest.raises(ValueError, match="bound"):
+            backup_queue(database, tmp_path / "rejected")
+        assert not (tmp_path / "rejected").exists()
+        monkeypatch.setattr(operations, "MAX_BACKUP_BYTES", logical_size)
+        backup_queue(database, tmp_path / "accepted")
+        assert restore_queue(tmp_path / "accepted", tmp_path / "restored")["validated"]
+    finally:
+        store.close()

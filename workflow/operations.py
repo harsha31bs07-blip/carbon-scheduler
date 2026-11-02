@@ -12,6 +12,14 @@ import time
 from data.quality_reviews import load_json
 from workflow.queue_store import QueueStore, _dump
 
+MAX_BACKUP_BYTES = 256 * 1024 * 1024
+MAX_BACKUP_MEMBERS = 4096
+
+
+def _check_bounds(members, size):
+    if members > MAX_BACKUP_MEMBERS or size > MAX_BACKUP_BYTES:
+        raise ValueError("Backup exceeds the local operator bound")
+
 
 @contextmanager
 def readonly_store(database):
@@ -94,20 +102,23 @@ def backup_queue(database, output):
     database, output = Path(database).resolve(), Path(output).resolve()
     if output.exists():
         raise ValueError("Backup output must be a new directory")
-    if database.stat().st_size > 256 * 1024 * 1024:
-        raise ValueError("Database exceeds the local backup bound")
     if output == database.parent or output in database.parents:
         raise ValueError("Backup output cannot contain the live database")
     with readonly_store(database) as source:
+        # page_count reflects committed WAL pages, unlike main-file stat size.
+        pages = source.connection.execute("PRAGMA page_count").fetchone()[0]
+        page_size = source.connection.execute("PRAGMA page_size").fetchone()[0]
+        _check_bounds(1, pages * page_size)
         output.mkdir(parents=True, exist_ok=False)
         target = sqlite3.connect(output / "queue.sqlite3")
         try:
             source.connection.backup(target)
         finally:
             target.close()
+    total = (output / "queue.sqlite3").stat().st_size
+    _check_bounds(1, total)
     _validate_database(output / "queue.sqlite3")
     files = {"queue.sqlite3": _digest(output / "queue.sqlite3")}
-    total = (output / "queue.sqlite3").stat().st_size
     for suffix in ("orphan-attempts", "orphan-accounting"):
         directory = Path(str(database) + "." + suffix)
         if directory.is_symlink():
@@ -115,10 +126,10 @@ def backup_queue(database, output):
         for path in sorted(directory.glob("*")) if directory.is_dir() else []:
             if path.is_symlink() or not path.is_file() or path.suffix != ".json":
                 raise ValueError("Unsupported sidecar file")
+            _check_bounds(len(files) + 1, total + path.stat().st_size)
             content = path.read_bytes()
             total += len(content)
-            if total > 256 * 1024 * 1024 or len(files) > 4096:
-                raise ValueError("Backup exceeds the local operator bound")
+            _check_bounds(len(files) + 1, total)
             relative = suffix + "/" + path.name
             target = output / relative
             target.parent.mkdir(exist_ok=True)
@@ -153,9 +164,9 @@ def restore_queue(backup, output):
             raise ValueError("Backup cannot follow symlinks")
         size = path.stat().st_size
         total += size
-        if total > 256 * 1024 * 1024 or len(files) >= 4096:
-            raise ValueError("Backup exceeds the local operator bound")
+        _check_bounds(len(files) + 1, total)
         content = path.read_bytes()
+        _check_bounds(len(files) + 1, sum(map(len, files.values())) + len(content))
         if hashlib.sha256(content).hexdigest() != checksum:
             raise ValueError("Backup checksum mismatch")
         files[name] = content
