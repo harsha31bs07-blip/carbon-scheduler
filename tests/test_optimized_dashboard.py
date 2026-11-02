@@ -69,6 +69,7 @@ def test_policy_form_preserves_rejection_and_inspects_zero_job_plan(tmp_path, pl
     field(app, "text_input", "Custom weights (JSON)").set_value('{"latency":1}')
     button(app, "Queue ticket").click().run()
     assert not app.exception and app.error
+    assert any("Custom weights:" in item.value for item in app.error)
     store = QueueStore(db)
     try:
         assert store.connection.execute("SELECT COUNT(*) FROM workflows").fetchone()[0] == 1

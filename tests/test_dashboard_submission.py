@@ -8,6 +8,7 @@ import pytest
 
 from shared.deployments import Deployment, DeploymentRegistry
 from workflow.dashboard.queue_actions import submit_fixed_ticket, submit_unverified
+from workflow.dashboard.queue_actions import parse_planning_fields, PlanningFieldError
 from workflow.queue_store import QueueStore, SubmissionConflict
 from workflow.workload import KnowledgeBase
 from test_queue_dashboard import panel, button
@@ -16,6 +17,14 @@ from test_staged_planning import inputs
 
 NOW = datetime(2026, 11, 1, tzinfo=timezone.utc)
 TOKEN = "submission-token-12345678"
+
+
+@pytest.mark.parametrize("offsets,weights,field", [("nan", None, "Offered delays"),
+    ("0,0", None, "Offered delays"), ("0", '{"latency":1}', "Custom weights"),
+    ("0", '{"latency":0,"accuracy":0,"cost":0,"energy":0,"carbon":0}', "Custom weights")])
+def test_invalid_planning_fields_explain_the_correction(offsets, weights, field):
+    with pytest.raises(PlanningFieldError, match=field):
+        parse_planning_fields(offsets, weights, "custom" if weights is not None else "balanced")
 
 
 class Clock:

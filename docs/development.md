@@ -53,6 +53,9 @@ Node 24 commits verified against official releases:
 [setup-python v7.1.0](https://github.com/actions/setup-python/releases/tag/v7.1.0) and
 [upload-artifact v7.0.2](https://github.com/actions/upload-artifact/releases/tag/v7.0.2).
 Their action definitions and resolved commit SHAs were checked before updating.
+All three hosted jobs passed again on `95c14e7` with those native Node 24 actions.
+The subsequent field-error/recovery/coverage refinements passed 30 targeted tests
+in 24.69 seconds, plus lint/type checks, before their final hosted verification.
 
 Dashboard improvement work adds `python -m workflow.readiness` for local-only setup
 diagnostics; the explicit `--probe` option performs read-only destination inventory.

@@ -10,6 +10,9 @@ It shows pending/approved/ineligible counts, the actual ticket/prompt/output and
 rubric criteria. Warmups, failed/truncated outputs and held-out data cannot become
 calibration judgments. Scores start blank. The existing `apply_reviews` contract
 validates approvals, which are additive and cannot be overwritten.
+The selected coverage-policy file also produces per-model/step review coverage.
+This progress view is recalculated from actual approvals; it does not replace
+freezing profiles or checking exact request/settings compatibility.
 
 **Download approved calibration reviews** produces the JSON list accepted by
 `workflow.profile_report`. Freeze new profiles with those approvals; the inbox

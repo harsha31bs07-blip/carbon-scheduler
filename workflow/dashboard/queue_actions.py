@@ -6,6 +6,34 @@ from shared.scheduling import SystemClock, WorkloadSizeForecast
 from workflow.planning_records import decode_carbon
 
 
+class PlanningFieldError(ValueError):
+    """A safe, field-specific correction for operator-supplied settings."""
+
+
+def parse_planning_fields(offset_text, weight_text, policy):
+    from workflow.planning import _weights
+    from workflow.planning_records import _offsets
+    from workflow.queue_store import _load
+    try:
+        offsets = tuple(float(value.strip()) for value in offset_text.split(","))
+        _offsets(list(offsets))
+    except ValueError:
+        raise PlanningFieldError("Offered delays: supply 1–128 unique finite delays between 0 and 604800 seconds.") from None
+    try:
+        weights = _load(weight_text) if weight_text is not None else None
+        _weights(policy, weights)
+    except ValueError:
+        raise PlanningFieldError("Custom weights: specify latency, accuracy, cost, energy and carbon with finite nonnegative values and a positive total.") from None
+    return offsets, weights
+
+
+def _read_input(path, field):
+    try:
+        return load_json(path)
+    except (ValueError, OSError):
+        raise PlanningFieldError(field + ": select a complete, valid JSON evidence file.") from None
+
+
 def _submission(token, registry, kb, ticket, settings, **evidence):
     if token is None:
         return None
@@ -37,21 +65,33 @@ def submit_unverified(store, registry, kb, ticket, *, profiles_path, forecasts_p
                       carbon_path=None, clock=None, token=None, **settings):
     from workflow.planned_worker import submit_planned
     active_clock = clock or SystemClock()
-    forecasts = load_json(forecasts_path) if forecasts_path else []
+    forecasts = _read_input(forecasts_path, "Workload forecasts") if forecasts_path else []
     if not isinstance(forecasts, list):
-        raise ValueError("Forecasts must contain a JSON array")
-    profiles = load_json(profiles_path)
-    carbon = load_json(carbon_path) if carbon_path else None
+        raise PlanningFieldError("Workload forecasts: supply a JSON array of typed forecasts.")
+    profiles = _read_input(profiles_path, "Reviewed profiles")
+    carbon = _read_input(carbon_path, "Carbon snapshot") if carbon_path else None
     submission = _submission(token, registry, kb, ticket, settings, strategy="optimized",
                              profiles=profiles, forecasts=forecasts, carbon=carbon)
     existing = store.submission_result(submission)
     if existing:
         return existing
+    from data.profiles import _validate_profiles
+    try:
+        _validate_profiles(profiles)
+    except (ValueError, TypeError, KeyError):
+        raise PlanningFieldError("Reviewed profiles: select a complete valid CalibrationProfiles snapshot.") from None
+    try:
+        typed_forecasts = [WorkloadSizeForecast.from_dict(item) for item in forecasts]
+    except (ValueError, TypeError, KeyError):
+        raise PlanningFieldError("Workload forecasts: one or more entries have invalid fields or schema.") from None
+    try:
+        provider = decode_carbon(carbon)
+    except (ValueError, TypeError, KeyError):
+        raise PlanningFieldError("Carbon snapshot: select a supported versioned static estimate or timestamped trace.") from None
     # None denotes unobserved health, never an invented outage or availability.
     def unobserved(deployment, **kwargs):
         return DeploymentHealth(deployment.deployment_id, active_clock.now(), None, (),
                                 "awaiting-worker-verification")
     return submit_planned(store, registry, kb, ticket, profiles,
-        forecasts=[WorkloadSizeForecast.from_dict(item) for item in forecasts],
-        carbon_provider=decode_carbon(carbon), submission=submission,
+        forecasts=typed_forecasts, carbon_provider=provider, submission=submission,
         health_probe=unobserved, clock=active_clock, **settings)

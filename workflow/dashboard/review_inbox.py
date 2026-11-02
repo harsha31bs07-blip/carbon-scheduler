@@ -98,6 +98,18 @@ def render_calibration(root):
     st.caption("Warmups, failed/truncated outputs and held-out data do not become calibration judgments.")
     with st.expander("Review coverage and frozen context"):
         st.json({"coverage": coverage, "rubric": rubric, "recorded_contexts": contexts})
+    from data.profiles import build_profiles
+    from data.quality_policy import validate_quality_policy
+    from data.quality_reviews import load_json
+    policy_path = st.text_input("Coverage policy file", value=str(Path(root) / "config/quality/pilot-v1.json"))
+    policy = validate_quality_policy(load_json(policy_path))
+    enriched, _ = apply_reviews(trials, approvals, rubric=rubric)
+    progress = build_profiles(enriched, calibration_id="review-inbox-progress", quality_policy=policy)
+    st.dataframe([{"Model": profile["model_id"], "Step": profile["step_id"],
+        "Reviewed trials": profile["metrics"]["accuracy"]["count"],
+        "Coverage": str(profile["metrics"]["accuracy"]["coverage"])} for profile in progress["profiles"]],
+        width="stretch", hide_index=True)
+    st.caption("Coverage uses the selected policy. Review progress does not replace freezing new reviewed profiles or request-specific planning checks.")
     if approvals:
         st.download_button("Download approved calibration reviews", json.dumps(approvals, indent=2, allow_nan=False),
                            file_name="calibration-reviews.approved.json", mime="application/json")

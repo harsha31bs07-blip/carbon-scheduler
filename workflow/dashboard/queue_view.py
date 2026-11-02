@@ -6,7 +6,7 @@ import sqlite3
 from shared.deployments import load_deployments
 from shared.scheduling import SystemClock
 from workflow.queue_store import QueueStore
-from workflow.dashboard.queue_actions import submit_fixed_ticket, validate_fields
+from workflow.dashboard.queue_actions import submit_fixed_ticket, validate_fields, parse_planning_fields, PlanningFieldError
 from workflow.queue_store import SubmissionConflict
 from uuid import uuid4
 from workflow.workload import KnowledgeBase
@@ -85,9 +85,7 @@ def render_queue_view(root, *, registry_path=None, database_path=None):
                         summary_delay_seconds=delay)
                 else:
                     from workflow.dashboard.queue_actions import submit_unverified
-                    from workflow.queue_store import _load
-                    offsets = tuple(float(value.strip()) for value in offset_text.split(","))
-                    weights = _load(weight_text) if weight_text is not None else None
+                    offsets, weights = parse_planning_fields(offset_text, weight_text, policy)
                     with st.spinner("Saving planning inputs…"):
                         identity = submit_unverified(store, registry, kb, ticket, profiles_path=profiles_path,
                             forecasts_path=forecasts_path, carbon_path=carbon_path, policy=policy, token=st.session_state["queue_submission_token"],
@@ -104,6 +102,13 @@ def render_queue_view(root, *, registry_path=None, database_path=None):
                 st.success("Ticket queued. A worker will run eligible steps when ready.")
             except SubmissionConflict:
                 st.error("These details differ from the saved submission. Choose Start another ticket to queue a separate workflow.")
+            except PlanningFieldError as exc:
+                st.error(str(exc))
+            except sqlite3.Error as exc:
+                import logging
+                reference = uuid4().hex[:12]
+                logging.getLogger(__name__).error("queue-storage-error reference=%s category=%s", reference, type(exc).__name__)
+                st.error("Queue storage is unavailable. Diagnostic reference: " + reference)
             except (ValueError, OSError, sqlite3.Error):
                 st.error("The ticket could not be saved. Check deadlines and planning evidence/settings. The summary must start before the final deadline.")
     finally:
@@ -171,6 +176,18 @@ def render_progress(database, config):
         if workers:
             message = message.replace("Worker presence is unknown.", "See the worker observations above; presence does not guarantee eligibility.")
         st.info(message)
+        if snapshot.status in {"failed", "needs-reconciliation", "deadline_missed"}:
+            from workflow.dashboard.services import worker_action_command
+            with st.expander("Recovery commands and duplicate-call risk"):
+                st.caption("These commands are guidance only. Inspect retained attempts and deadlines before retrying; the page executes neither command.")
+                shell, command = worker_action_command(Path(__file__).resolve().parents[2], database, "status", identity)
+                st.code(command, language=shell)
+                for job in snapshot.jobs:
+                    if job.status in {"failed", "needs-reconciliation"}:
+                        shell, command = worker_action_command(Path(__file__).resolve().parents[2], database,
+                                                               "retry", identity, job.step_request.step_id)
+                        st.code(command, language=shell)
+                st.caption("An uncertain call may already have executed. Reconcile orphan evidence first. Only after acknowledging possible duplication should an operator add --acknowledge-possible-duplicate. Saved retry limits and deadlines still apply; a missed deadline may require a new ticket.")
         st.caption(f"Evidence mode: {snapshot.configuration.get('experiment_mode', 'live')} · Policy: {snapshot.request.policy}")
         if snapshot.configuration.get("experiment_mode") == "simulation":
             st.info("Simulation workflow. Scripted observations do not establish live quality or savings.")

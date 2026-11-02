@@ -3,6 +3,8 @@
 Updated 2026-11-02. Use this page for current state; linked milestone records retain
 their historical verification and limitations.
 
+Published verification is available in [the repository test workflow](https://github.com/harsha31bs07-blip/carbon-scheduler/actions/workflows/tests.yml).
+
 | Area | Current behavior |
 |---|---|
 | Setup | Overview, local diagnostics, explicit inventory probe, named validated offline demo and active-interpreter commands. |

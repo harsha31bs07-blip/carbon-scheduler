@@ -1,5 +1,12 @@
 # Integrated local dashboard
 
+Planning input errors identify the affected delays, custom weights, profile,
+forecast or carbon field and describe a correction without echoing raw file data.
+Storage failures emit a short diagnostic reference and safe exception category.
+Failed/uncertain workflow inspection shows quoted status/retry commands as
+guidance; it executes neither command. Possible duplicate calls still require the
+existing explicit acknowledgement after reconciling retained evidence.
+
 Submission uses a durable token bound to the ticket, settings and retained input
 snapshots. Repeated clicks return the existing workflow. Changed details require
 **Start another ticket**, which also permits intentional repeats. Tokens survive

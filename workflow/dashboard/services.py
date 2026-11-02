@@ -25,12 +25,12 @@ def local_paths(root: str | Path, *, registry_path: str | Path | None = None,
             "profiles": resolve(profiles_path or PROFILES), "demo": root / DEMO}
 
 
-def startup_commands(root: str | Path, database: str | Path, *, executable: str | None = None,
-                     powershell: bool | None = None) -> dict[str, str]:
+def project_command(root: str | Path, arguments: list[str | Path], *, executable: str | None = None,
+                    powershell: bool | None = None) -> tuple[str, str]:
     """Quote literal arguments for the displayed shell; never execute commands."""
     executable = executable or sys.executable
     powershell = os.name == "nt" if powershell is None else powershell
-    root, database = Path(root).resolve(), Path(database).resolve()
+    root = Path(root).resolve()
     if powershell:
         quote = lambda value: "'" + str(value).replace("'", "''") + "'"
         prefix = "Set-Location -LiteralPath " + quote(root) + "\n& "
@@ -38,9 +38,18 @@ def startup_commands(root: str | Path, database: str | Path, *, executable: str 
     else:
         prefix = "cd -- " + shlex.quote(str(root)) + "\n"
         join = lambda args: shlex.join([str(arg) for arg in args])
-    return {"shell": "powershell" if powershell else "bash",
-            "worker": prefix + join([executable, "-m", "workflow.worker", "--db", database,
-                                      "run", "--idle-exit-seconds", "90"]),
-            "dashboard": prefix + join([executable, "-m", "streamlit", "run",
-                                         root / "workflow/dashboard/app.py",
-                                         "--server.address", "127.0.0.1"])}
+    return ("powershell" if powershell else "bash", prefix + join([executable, *arguments]))
+
+
+def worker_action_command(root: str | Path, database: str | Path, *arguments: str) -> tuple[str, str]:
+    return project_command(root, ["-m", "workflow.worker", "--db", Path(database).resolve(), *arguments])
+
+
+def startup_commands(root: str | Path, database: str | Path, *, executable: str | None = None,
+                     powershell: bool | None = None) -> dict[str, str]:
+    root, database = Path(root).resolve(), Path(database).resolve()
+    shell, worker = project_command(root, ["-m", "workflow.worker", "--db", database,
+        "run", "--idle-exit-seconds", "90"], executable=executable, powershell=powershell)
+    _, dashboard = project_command(root, ["-m", "streamlit", "run", root / "workflow/dashboard/app.py",
+        "--server.address", "127.0.0.1"], executable=executable, powershell=powershell)
+    return {"shell": shell, "worker": worker, "dashboard": dashboard}
