@@ -44,6 +44,16 @@ checks. Manual screen-reader/accessibility review remains an open check.
 
 See [current app status](app-status.md) for operation and experimental scope.
 
+The published `26696b7` source also passed 26 app checks from a fresh Git archive
+in 27.96 seconds. Hosted Linux and Chromium checks passed before workflow cleanup;
+the full Windows job was still running at that checkpoint. CI reported deprecated
+Node 20 action definitions being forced onto Node 24. The workflow now pins native
+Node 24 commits verified against official releases:
+[checkout v7.0.1](https://github.com/actions/checkout/releases/tag/v7.0.1),
+[setup-python v7.1.0](https://github.com/actions/setup-python/releases/tag/v7.1.0) and
+[upload-artifact v7.0.2](https://github.com/actions/upload-artifact/releases/tag/v7.0.2).
+Their action definitions and resolved commit SHAs were checked before updating.
+
 Dashboard improvement work adds `python -m workflow.readiness` for local-only setup
 diagnostics; the explicit `--probe` option performs read-only destination inventory.
 The authenticated landing page is now Overview, with direct access to the validated
