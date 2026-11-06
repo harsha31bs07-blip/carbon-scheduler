@@ -132,6 +132,105 @@ class TestPolicyWeights:
         with pytest.raises(ValueError, match="custom_weights required"):
             get_policy_weights("custom", None)
 
+    def test_custom_weights_empty_also_rejected(self):
+        """Empty custom weights raise ValueError."""
+        with pytest.raises(ValueError, match="custom_weights required"):
+            get_policy_weights("custom", {})
+
+    def test_custom_weights_list_rejected(self):
+        """A list instead of a mapping is rejected."""
+        with pytest.raises(ValueError, match="custom_weights must be a mapping"):
+            get_policy_weights("custom", [{"w_latency": 1.0}])
+
+    def test_custom_weights_falsey_non_mapping_rejected(self):
+        """A falsey non-collection such as 0 is reported as the wrong type, not as missing."""
+        for value in (0, 0.0, False):
+            with pytest.raises(ValueError, match="custom_weights must be a mapping"):
+                get_policy_weights("custom", value)
+
+    def test_custom_weights_typo_key_rejected(self):
+        """Unknown weight keys are reported."""
+        custom = {"w_carbn": 1}
+        with pytest.raises(ValueError, match="Unknown weight keys:"):
+            get_policy_weights("custom", custom)
+        with pytest.raises(ValueError, match="w_carbn"):
+            get_policy_weights("custom", custom)
+
+    def test_custom_weights_string_value_rejected(self):
+        """A string value instead of a number is rejected."""
+        with pytest.raises(ValueError, match="w_latency") as exc_info:
+            get_policy_weights("custom", {"w_latency": "0.5"})
+        assert "must be a number" in str(exc_info.value)
+
+    def test_custom_weights_bool_value_rejected(self):
+        """Booleans are rejected as weight values."""
+        with pytest.raises(ValueError, match="w_latency") as exc_info:
+            get_policy_weights("custom", {"w_latency": True})
+        assert "must be a number" in str(exc_info.value)
+
+    def test_custom_weights_nan_rejected(self):
+        """NaN weight values are rejected."""
+        with pytest.raises(ValueError, match="w_latency") as exc_info:
+            get_policy_weights("custom", {"w_latency": float("nan")})
+        assert "must be finite" in str(exc_info.value)
+
+    def test_custom_weights_infinity_rejected(self):
+        """Infinite weight values are rejected."""
+        for value in (float("inf"), float("-inf")):
+            with pytest.raises(ValueError, match="w_latency") as exc_info:
+                get_policy_weights("custom", {"w_latency": value})
+            assert "must be finite" in str(exc_info.value)
+
+    def test_custom_weights_mixed_int_float_normalized(self):
+        """Mixed int/float values normalize to sum 1.0 with float values."""
+        custom = {"w_latency": 2, "w_cost": 1.0, "w_energy": 1}
+        w = get_policy_weights("custom", custom)
+        assert list(w.keys()) == ["w_latency", "w_cost", "w_energy", "w_carbon", "w_accuracy"]
+        assert all(type(v) is float for v in w.values())
+        assert w["w_latency"] == pytest.approx(0.5)
+        assert w["w_cost"] == pytest.approx(0.25)
+        assert w["w_energy"] == pytest.approx(0.25)
+        assert sum(w.values()) == pytest.approx(1.0)
+
+    def test_custom_weights_missing_keys_still_zero_float(self):
+        """Missing required keys remain 0.0 in the result."""
+        w = get_policy_weights("custom", {"w_accuracy": 3})
+        assert w["w_accuracy"] == 1.0
+        for key in ("w_latency", "w_cost", "w_energy", "w_carbon"):
+            assert w[key] == 0.0
+
+    def test_custom_result_keys_in_required_order(self):
+        """Custom result is a new plain dict with exactly REQUIRED_KEYS in order."""
+        custom = {"w_carbon": 1}
+        w = get_policy_weights("custom", custom)
+        assert type(w) is dict
+        assert list(w.keys()) == ["w_latency", "w_cost", "w_energy", "w_carbon", "w_accuracy"]
+        assert all(type(v) is float for v in w.values())
+
+    def test_named_policy_returns_copy(self):
+        """Named policies return an equal, independent dict."""
+        w = get_policy_weights("eco")
+        assert type(w) is dict
+        assert w == POLICIES["eco"]
+        assert w is not POLICIES["eco"]
+
+    def test_mutating_named_result_leaves_policies_unchanged(self):
+        """Mutating the returned weights must not affect POLICIES."""
+        original = dict(POLICIES["eco"])
+        result = get_policy_weights("eco")
+        result["w_latency"] = object()
+        assert POLICIES["eco"] == original
+
+        original_speed = dict(POLICIES["speed"])
+        result_speed = get_policy_weights("speed")
+        result_speed["w_latency"] = object()
+        assert POLICIES["speed"] == original_speed
+
+        original_balanced = dict(POLICIES["balanced"])
+        result_balanced = get_policy_weights("balanced")
+        result_balanced["w_latency"] = object()
+        assert POLICIES["balanced"] == original_balanced
+
 
 def pin_step_rules(monkeypatch, min_accuracy=0.75, max_latency_ms=None):
     """Pin a step's constraints so tests don't depend on the production SLAs in STEP_DEFINITIONS."""
